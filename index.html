@@ -1,0 +1,1542 @@
+<title>Пережити КПІ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;700&display=swap">
+<style>
+/* Layout: full-screen canvas game; chalkboard panels in wooden frames float over it. Single dark "аудиторна дошка" look by choice. */
+:root{
+  --board:#1f3a32;      /* шкільна дошка */
+  --board-2:#264a3f;
+  --frame:#8a5a2b;      /* дерев'яна рамка */
+  --chalk:#f2efe6;      /* крейда */
+  --chalk-dim:#b9c4bb;
+  --yellow:#f5d76e;     /* жовта крейда (акцент) */
+  --red:#e87a6a;
+  --blue:#8ec9f0;
+  --green:#9fdc8a;
+  --ink:#14211c;
+  --f-display:"Press Start 2P", "Courier New", monospace;
+  --f-body:"Rubik", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:dark;
+}
+[hidden]{display:none!important;}
+html,body{height:100%;}
+body{background:var(--ink);color:var(--chalk);font-family:var(--f-body);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;}
+.ui{position:fixed;z-index:5;}
+button{font-family:var(--f-body);cursor:pointer;}
+button:focus-visible,input:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;}
+
+/* HUD */
+#hud{top:calc(env(safe-area-inset-top,0px) + 8px);left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;}
+.panel{background:var(--board);border:3px solid var(--frame);border-radius:6px;box-shadow:0 3px 0 rgba(0,0,0,.35);}
+#stats{padding:8px 10px;display:grid;gap:5px;min-width:0;width:min(250px,58vw);}
+#stats .who{font-family:var(--f-display);font-size:9px;color:var(--yellow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:6px;font-size:11px;color:var(--chalk-dim);}
+.bar .track{height:8px;background:rgba(0,0,0,.35);border-radius:2px;overflow:hidden;}
+.bar .fill{height:100%;width:50%;transition:width .3s;}
+.bar b{font-weight:500;color:var(--chalk);text-align:right;font-variant-numeric:tabular-nums;}
+.nums{display:flex;gap:10px;font-size:11px;color:var(--chalk-dim);flex-wrap:wrap;}
+.nums b{color:var(--chalk);font-weight:500;font-variant-numeric:tabular-nums;}
+#clockBox{padding:8px 10px;text-align:right;display:grid;gap:6px;justify-items:end;}
+#clock{font-family:var(--f-display);font-size:10px;color:var(--chalk);white-space:nowrap;}
+#mini{width:150px;height:102px;image-rendering:pixelated;border:2px solid var(--frame);border-radius:3px;pointer-events:auto;cursor:pointer;display:block;}
+.hbtns{display:flex;gap:6px;}
+@media (max-width:480px){#mini{width:110px;height:75px;}}
+#menuBtn,#mapBtn{pointer-events:auto;background:var(--board-2);color:var(--chalk);border:2px solid var(--frame);border-radius:4px;font-size:12px;padding:4px 10px;}
+
+/* prompt + touch */
+#prompt{left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);padding:8px 14px;font-size:14px;white-space:nowrap;pointer-events:none;}
+#prompt kbd{font-family:var(--f-display);font-size:10px;background:var(--yellow);color:var(--ink);padding:3px 6px;border-radius:3px;margin-right:6px;}
+#actBtn{right:max(18px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 26px);width:86px;height:86px;border-radius:50%;background:var(--yellow);color:var(--ink);border:4px solid var(--frame);font-weight:700;font-size:13px;line-height:1.1;padding:6px;}
+#actBtn:disabled{opacity:.35;}
+body.touch #prompt{bottom:calc(env(safe-area-inset-bottom,0px) + 128px);}
+#pauseBtn{top:calc(env(safe-area-inset-top,0px) + 8px);right:max(10px,env(safe-area-inset-right,0px));background:var(--board-2);color:var(--chalk);border:2px solid var(--frame);border-radius:4px;font-size:12px;padding:6px 10px;}
+
+/* toasts */
+#toasts{top:calc(env(safe-area-inset-top,0px) + 110px);left:50%;transform:translateX(-50%);display:grid;gap:6px;justify-items:center;pointer-events:none;width:min(420px,92vw);}
+.toast{background:var(--board-2);border:2px solid var(--frame);border-radius:4px;padding:6px 12px;font-size:13px;text-align:center;animation:tin .25s ease-out;}
+.toast.good{border-color:var(--green);} .toast.bad{border-color:var(--red);}
+@keyframes tin{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+
+/* screens & modal */
+.screen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;overflow:auto;padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+#modal{background:rgba(10,18,15,.55);z-index:20;}
+.card{width:min(560px,100%);max-height:calc(100% - 8px);overflow:auto;background:var(--board);border:6px solid var(--frame);border-radius:8px;box-shadow:0 8px 0 rgba(0,0,0,.4), inset 0 0 40px rgba(0,0,0,.25);padding:18px 18px 16px;display:grid;gap:12px;touch-action:pan-y;}
+.card h2{font-family:var(--f-display);font-size:14px;line-height:1.5;color:var(--yellow);margin:0;text-wrap:balance;}
+.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--chalk-dim);margin:0;}
+.card p{margin:0;line-height:1.5;font-size:15px;max-width:62ch;}
+.btns{display:grid;gap:8px;}
+.btn{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--board-2);color:var(--chalk);border:2px solid rgba(242,239,230,.25);border-radius:5px;padding:10px 12px;font-size:15px;}
+.btn:hover:not(:disabled){border-color:var(--chalk);}
+.btn small{color:var(--chalk-dim);font-size:12px;text-align:right;}
+.btn.primary{background:var(--yellow);color:var(--ink);border-color:var(--yellow);font-weight:700;}
+.btn.primary small{color:#5a4a1a;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+/* title */
+#title .card{text-align:center;justify-items:center;width:min(520px,100%);}
+.logo{font-family:var(--f-display);font-size:clamp(22px,7vw,40px);line-height:1.3;color:var(--chalk);text-shadow:3px 3px 0 var(--frame);margin:6px 0 0;}
+.logo span{color:var(--yellow);}
+.sub{font-size:14px;color:var(--chalk-dim);}
+.formula{font-family:var(--f-display);font-size:9px;color:var(--chalk-dim);opacity:.8;}
+#title .btns{width:min(300px,100%);}
+
+/* creator */
+#creator .card{width:min(760px,100%);}
+.cgrid{display:grid;grid-template-columns:200px 1fr;gap:16px;}
+@media (max-width:620px){.cgrid{grid-template-columns:1fr;}}
+.preview{display:grid;justify-items:center;gap:8px;align-content:start;}
+#pv{width:176px;height:200px;background:var(--board-2);border:3px solid var(--frame);border-radius:4px;image-rendering:pixelated;}
+.opts{display:grid;gap:9px;min-width:0;}
+.row{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:8px;font-size:13px;color:var(--chalk-dim);}
+.picker{display:flex;align-items:center;gap:6px;}
+.picker button{width:32px;height:30px;background:var(--board-2);color:var(--chalk);border:2px solid rgba(242,239,230,.3);border-radius:4px;font-size:16px;}
+.picker span{flex:1;text-align:center;color:var(--chalk);font-size:14px;}
+.sw{display:flex;gap:6px;flex-wrap:wrap;}
+.sw button{width:26px;height:26px;border-radius:4px;border:2px solid rgba(0,0,0,.4);}
+.sw button[aria-pressed="true"]{outline:3px solid var(--yellow);outline-offset:1px;}
+#nameIn{background:var(--board-2);color:var(--chalk);border:2px solid rgba(242,239,230,.3);border-radius:4px;padding:7px 9px;font:15px var(--f-body);width:100%;min-width:0;}
+.perks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.perk{background:var(--board-2);color:var(--chalk);border:2px solid rgba(242,239,230,.25);border-radius:5px;padding:8px;text-align:left;font-size:13px;display:grid;gap:3px;}
+.perk b{font-size:13px;color:var(--yellow);font-weight:500;}
+.perk small{color:var(--chalk-dim);font-size:11px;}
+.perk[aria-pressed="true"]{border-color:var(--yellow);background:#2f5a4c;}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12px;color:var(--chalk-dim);}
+.timer{height:6px;background:rgba(0,0,0,.35);border-radius:3px;overflow:hidden;}
+.timer i{display:block;height:100%;background:var(--yellow);width:100%;}
+.qtext{font-size:18px;line-height:1.45;color:var(--chalk);min-height:2.9em;}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+@media (max-width:480px){.answers{grid-template-columns:1fr;}}
+.ans{background:var(--board-2);color:var(--chalk);border:2px solid rgba(242,239,230,.3);border-radius:5px;padding:11px;font-size:16px;text-align:left;min-height:46px;}
+.ans.ok{border-color:var(--green);background:#2c5a3c;}
+.ans.no{border-color:var(--red);background:#5a3330;}
+.explain{border-left:3px solid var(--blue);padding:6px 10px;font-size:14px;line-height:1.45;color:var(--chalk);background:rgba(142,201,240,.08);}
+.teacher-face{display:flex;gap:12px;align-items:center;}
+.teacher-face canvas{width:96px;height:110px;background:var(--board-2);border:3px solid var(--frame);border-radius:4px;flex:none;}
+.quote{font-style:italic;color:var(--yellow);}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}.bar .fill{transition:none}}
+</style>
+
+<canvas id="game" aria-label="Ігрове поле"></canvas>
+
+<div id="hud" class="ui" hidden>
+  <div id="stats" class="panel">
+    <div class="who" id="who">Студент</div>
+    <div class="bar"><span>Енергія</span><div class="track"><div class="fill" id="bEnergy" style="background:var(--yellow)"></div></div><b id="vEnergy">0</b></div>
+    <div class="bar"><span>Здоров'я</span><div class="track"><div class="fill" id="bHealth" style="background:var(--red)"></div></div><b id="vHealth">0</b></div>
+    <div class="bar"><span>Нерви</span><div class="track"><div class="fill" id="bNerves" style="background:var(--blue)"></div></div><b id="vNerves">0</b></div>
+    <div class="nums"><span>Інт <b id="vInt">0</b></span><span>Харизма <b id="vCha">0</b></span><span><b id="vMoney">0</b> грн</span></div>
+  </div>
+  <div id="clockBox" class="panel">
+    <div id="clock">Пн · День 1 · 08:00</div>
+    <canvas id="mini" width="220" height="150" aria-label="Мінікарта, натисни щоб відкрити карту"></canvas>
+    <div class="hbtns"><button id="mapBtn" type="button">Карта</button><button id="menuBtn" type="button">Меню</button></div>
+  </div>
+</div>
+<div id="prompt" class="ui panel" hidden></div>
+<button id="actBtn" class="ui" type="button" hidden>Дія</button>
+<button id="pauseBtn" class="ui" type="button" hidden>Пауза</button>
+<div id="toasts" class="ui"></div>
+
+<div id="title" class="screen">
+  <div class="card">
+    <p class="formula">lim (сесія → ∞) нерви = 0</p>
+    <h1 class="logo">ПЕРЕЖИТИ<br><span>КПІ</span></h1>
+    <p class="sub">Аркада про перший курс: пари, дедлайни, їдальня і практик з матану.</p>
+    <div class="btns">
+      <button class="btn primary" id="newBtn" type="button">Нова гра <small>створити персонажа</small></button>
+      <button class="btn" id="contBtn" type="button" hidden>Продовжити <small id="contInfo"></small></button>
+    </div>
+    <p class="sub" style="font-size:12px">Комп: WASD / стрілки, E — дія. Телефон: джойстик зліва, кнопка справа.</p>
+  </div>
+</div>
+
+<div id="creator" class="screen" hidden>
+  <div class="card">
+    <p class="kicker">Вступна кампанія</p>
+    <h2>Створи свого студента</h2>
+    <div class="cgrid">
+      <div class="preview">
+        <canvas id="pv" width="176" height="200"></canvas>
+        <button class="btn" id="rndBtn" type="button" style="justify-content:center">Випадковий вигляд</button>
+      </div>
+      <div class="opts" id="opts">
+        <label class="row" for="nameIn">Ім'я <input id="nameIn" maxlength="18" placeholder="Як тебе звати?" autocomplete="off"></label>
+      </div>
+    </div>
+    <p class="kicker">Сильна сторона</p>
+    <div class="perks" id="perks"></div>
+    <div class="btns"><button class="btn primary" id="startBtn" type="button">Почати навчання <small>1 вересня, 08:00</small></button></div>
+  </div>
+</div>
+
+<div id="modal" class="screen" hidden><div class="card" id="modalCard" role="dialog" aria-modal="true"></div></div>
+
+<!-- ============ ДАНІ: питання (додавай свої сюди) ============
+Поля: id, subject (Матан | Лінійна алгебра | Дискретна математика | C++), topic, q, options, answer (індекс правильного, з 0), explain -->
+<script type="application/json" id="questions-data">
+[
+ {"id":"lim1","subject":"Матан","topic":"Границі","q":"lim (x→0) sin x / x = ?","options":["0","1","∞","не існує"],"answer":1,"explain":"Перша чудова границя: sin x ≈ x поблизу нуля, тому відношення прямує до 1."},
+ {"id":"lim2","subject":"Матан","topic":"Границі","q":"lim (x→∞) (1 + 1/x)^x = ?","options":["1","e","∞","0"],"answer":1,"explain":"Друга чудова границя дорівнює e ≈ 2,718. Невизначеність 1^∞ не дорівнює 1."},
+ {"id":"lim3","subject":"Матан","topic":"Границі","q":"lim (x→2) (x² − 4) / (x − 2) = ?","options":["0","2","4","∞"],"answer":2,"explain":"x² − 4 = (x − 2)(x + 2). Скорочуємо і отримуємо x + 2 → 4."},
+ {"id":"lim4","subject":"Матан","topic":"Границі","q":"lim (x→∞) (3x² + 1) / (x² − 5) = ?","options":["0","1","3","∞"],"answer":2,"explain":"Степені однакові, тож границя дорівнює відношенню старших коефіцієнтів: 3/1."},
+ {"id":"lim5","subject":"Матан","topic":"Границі","q":"lim (x→0) (1 − cos x) / x² = ?","options":["0","1/2","1","2"],"answer":1,"explain":"1 − cos x ≈ x²/2 при x → 0, тому відповідь 1/2."},
+ {"id":"lim6","subject":"Матан","topic":"Границі","q":"lim (x→∞) 1/x = ?","options":["0","1","∞","−∞"],"answer":0,"explain":"Знаменник необмежено зростає, дріб прямує до 0."},
+ {"id":"lim7","subject":"Матан","topic":"Границі","q":"lim (x→0) (eˣ − 1) / x = ?","options":["0","1","e","∞"],"answer":1,"explain":"Еквівалентність: eˣ − 1 ~ x при x → 0."},
+ {"id":"lim8","subject":"Матан","topic":"Границі","q":"lim (x→0) ln(1 + x) / x = ?","options":["0","1","e","1/e"],"answer":1,"explain":"Еквівалентність: ln(1 + x) ~ x при x → 0."},
+ {"id":"lim9","subject":"Матан","topic":"Границі","q":"lim (x→+∞) x / eˣ = ?","options":["0","1","∞","e"],"answer":0,"explain":"Експонента росте швидше за будь-який многочлен (або правило Лопіталя: 1/eˣ → 0)."},
+ {"id":"lim10","subject":"Матан","topic":"Границі","q":"lim (x→0) tg(3x) / x = ?","options":["1","3","1/3","0"],"answer":1,"explain":"tg(3x) ~ 3x при x → 0, тому 3x / x = 3."},
+ {"id":"lim11","subject":"Матан","topic":"Границі","q":"lim (x→0⁺) 1/x = ?","options":["0","1","+∞","−∞"],"answer":2,"explain":"Справа від нуля x додатний і малий, тому 1/x необмежено зростає."},
+ {"id":"lim12","subject":"Матан","topic":"Границі","q":"lim (x→+∞) (√(x² + x) − x) = ?","options":["0","1/2","1","∞"],"answer":1,"explain":"Домножуємо на спряжене: x / (√(x² + x) + x) → 1/2."},
+ {"id":"lim13","subject":"Матан","topic":"Границі","q":"lim (x→0) sin(5x) / sin(2x) = ?","options":["5/2","2/5","1","0"],"answer":0,"explain":"sin(5x) ~ 5x, sin(2x) ~ 2x, тож 5x / 2x = 5/2."},
+ {"id":"lim14","subject":"Матан","topic":"Границі","q":"lim (x→1) (x³ − 1) / (x − 1) = ?","options":["0","1","3","∞"],"answer":2,"explain":"x³ − 1 = (x − 1)(x² + x + 1), після скорочення маємо 1 + 1 + 1 = 3."},
+ {"id":"lim15","subject":"Матан","topic":"Границі","q":"lim (x→0) x · sin(1/x) = ?","options":["0","1","не існує","∞"],"answer":0,"explain":"sin(1/x) обмежений, а x → 0. Обмежене × нескінченно мале = 0."},
+ {"id":"lim16","subject":"Матан","topic":"Границі","q":"lim (n→∞) (1 + 2/n)^n = ?","options":["e","2e","e²","1"],"answer":2,"explain":"(1 + a/n)^n → eᵃ, тут a = 2."},
+ {"id":"lim17","subject":"Матан","topic":"Границі","q":"lim (x→0) (1 + x)^(1/x) = ?","options":["1","e","0","∞"],"answer":1,"explain":"Це та сама друга чудова границя, записана через x → 0."},
+ {"id":"lim18","subject":"Матан","topic":"Границі","q":"lim (x→∞) (2x + 1) / x³ = ?","options":["0","2","∞","1/3"],"answer":0,"explain":"Степінь знаменника більший, тому дріб прямує до 0."},
+ {"id":"der1","subject":"Матан","topic":"Похідні","q":"(x³)' = ?","options":["x²","3x²","3x","x⁴/4"],"answer":1,"explain":"(xⁿ)' = n·xⁿ⁻¹, тож (x³)' = 3x²."},
+ {"id":"der2","subject":"Матан","topic":"Похідні","q":"(sin x)' = ?","options":["cos x","−cos x","−sin x","tg x"],"answer":0,"explain":"Табличне: (sin x)' = cos x, а (cos x)' = −sin x."},
+ {"id":"der3","subject":"Матан","topic":"Похідні","q":"(ln x)' = ?","options":["1/x","ln x / x","x","eˣ"],"answer":0,"explain":"Табличне: (ln x)' = 1/x при x > 0."},
+ {"id":"der4","subject":"Матан","topic":"Похідні","q":"(x · eˣ)' = ?","options":["eˣ","x·eˣ","eˣ(x + 1)","x²eˣ"],"answer":2,"explain":"Похідна добутку: 1·eˣ + x·eˣ = eˣ(x + 1)."},
+ {"id":"der5","subject":"Матан","topic":"Похідні","q":"(cos 2x)' = ?","options":["sin 2x","−2 sin 2x","2 cos 2x","−sin 2x"],"answer":1,"explain":"Складена функція: −sin(2x) · (2x)' = −2 sin 2x."},
+ {"id":"der6","subject":"Матан","topic":"Похідні","q":"(√x)' = ?","options":["1/(2√x)","2√x","√x/2","1/√x"],"answer":0,"explain":"√x = x^(1/2), похідна (1/2)·x^(−1/2) = 1/(2√x)."},
+ {"id":"der7","subject":"Матан","topic":"Похідні","q":"(tg x)' = ?","options":["1/cos²x","1/sin²x","−1/cos²x","ctg x"],"answer":0,"explain":"Табличне: (tg x)' = 1/cos²x."},
+ {"id":"la1","subject":"Лінійна алгебра","topic":"Визначники","q":"det [[1, 2], [3, 4]] = ?","options":["−2","2","10","−10"],"answer":0,"explain":"Для 2×2: ad − bc = 1·4 − 2·3 = −2."},
+ {"id":"la2","subject":"Лінійна алгебра","topic":"Матриці","q":"Розмір добутку A(2×3) · B(3×4)?","options":["3×3","2×4","4×2","не існує"],"answer":1,"explain":"Внутрішні розміри (3) збігаються, результат має зовнішні: 2×4."},
+ {"id":"la3","subject":"Лінійна алгебра","topic":"Матриці","q":"(AB)ᵀ = ?","options":["AᵀBᵀ","BᵀAᵀ","BA","AB"],"answer":1,"explain":"При транспонуванні добутку порядок множників змінюється: (AB)ᵀ = BᵀAᵀ."},
+ {"id":"la4","subject":"Лінійна алгебра","topic":"Визначники","q":"Визначник матриці з двома однаковими рядками?","options":["1","0","−1","залежить від матриці"],"answer":1,"explain":"Рядки лінійно залежні, тому визначник завжди 0."},
+ {"id":"la5","subject":"Лінійна алгебра","topic":"Визначники","q":"A — матриця 3×3. det(2A) = ?","options":["2·det A","6·det A","8·det A","det A"],"answer":2,"explain":"Кожен з 3 рядків множиться на 2: 2³ = 8."},
+ {"id":"la6","subject":"Лінійна алгебра","topic":"Матриці","q":"Коли існує обернена матриця A⁻¹?","options":["завжди","det A ≠ 0","det A = 0","A симетрична"],"answer":1,"explain":"Квадратна матриця оборотна тоді й лише тоді, коли її визначник не нуль."},
+ {"id":"la7","subject":"Лінійна алгебра","topic":"Вектори","q":"(1, 2, 3) · (4, 5, 6) = ?","options":["32","21","(4, 10, 18)","0"],"answer":0,"explain":"Скалярний добуток: 1·4 + 2·5 + 3·6 = 4 + 10 + 18 = 32."},
+ {"id":"la8","subject":"Лінійна алгебра","topic":"Ранг","q":"Ранг одиничної матриці 3×3?","options":["0","1","3","9"],"answer":2,"explain":"Усі 3 рядки лінійно незалежні, тому ранг 3."},
+ {"id":"dm1","subject":"Дискретна математика","topic":"Множини","q":"|A| = 4. Скільки елементів у булеані P(A)?","options":["8","16","4","24"],"answer":1,"explain":"Кожен елемент або є в підмножині, або ні: 2⁴ = 16."},
+ {"id":"dm2","subject":"Дискретна математика","topic":"Комбінаторика","q":"C(5, 2) = ?","options":["10","20","5","25"],"answer":0,"explain":"C(5, 2) = 5! / (2!·3!) = 10."},
+ {"id":"dm3","subject":"Дискретна математика","topic":"Логіка","q":"¬(A ∧ B) ≡ ?","options":["¬A ∧ ¬B","¬A ∨ ¬B","A ∨ B","¬A → B"],"answer":1,"explain":"Закон де Моргана: заперечення кон'юнкції — диз'юнкція заперечень."},
+ {"id":"dm4","subject":"Дискретна математика","topic":"Логіка","q":"Коли імплікація p → q хибна?","options":["p = 0, q = 1","p = 1, q = 0","p = 0, q = 0","ніколи"],"answer":1,"explain":"Імплікація хибна лише коли з істини випливає хиба."},
+ {"id":"dm5","subject":"Дискретна математика","topic":"Комбінаторика","q":"5! = ?","options":["25","60","120","720"],"answer":2,"explain":"5! = 1·2·3·4·5 = 120."},
+ {"id":"dm6","subject":"Дискретна математика","topic":"Графи","q":"Скільки ребер у повному графі K₅?","options":["5","10","20","25"],"answer":1,"explain":"n(n − 1)/2 = 5·4/2 = 10."},
+ {"id":"dm7","subject":"Дискретна математика","topic":"Графи","q":"Сума степенів усіх вершин графа = ?","options":["|E|","2|E|","|V|","|V|·|E|"],"answer":1,"explain":"Лема про рукостискання: кожне ребро дає +1 двом вершинам."},
+ {"id":"dm8","subject":"Дискретна математика","topic":"Системи числення","q":"1011₂ = ? (у десятковій)","options":["11","13","9","1011"],"answer":0,"explain":"8 + 0 + 2 + 1 = 11."},
+ {"id":"cpp1","subject":"C++","topic":"Типи","q":"int x = 7 / 2;  x = ?","options":["3.5","3","4","помилка"],"answer":1,"explain":"Ділення цілих у C++ відкидає дробову частину: 7 / 2 = 3."},
+ {"id":"cpp2","subject":"C++","topic":"Оператори","q":"7 % 3 = ?","options":["2","1","0","2.33"],"answer":1,"explain":"% — остача від ділення: 7 = 2·3 + 1."},
+ {"id":"cpp3","subject":"C++","topic":"Типи","q":"sizeof(char) = ?","options":["1","2","4","залежить від ОС"],"answer":0,"explain":"Стандарт гарантує, що sizeof(char) дорівнює 1."},
+ {"id":"cpp4","subject":"C++","topic":"Масиви","q":"int a[5]; Індекс останнього елемента?","options":["5","4","6","−1"],"answer":1,"explain":"Індекси починаються з 0, тож останній 5 − 1 = 4."},
+ {"id":"cpp5","subject":"C++","topic":"Оператори","q":"cout << (5 > 3 && 2 > 4);  Що виведе?","options":["1","0","true","false"],"answer":1,"explain":"2 > 4 хибне, тож && дає false, а cout виводить його як 0."},
+ {"id":"cpp6","subject":"C++","topic":"Оператори","q":"int x = 5; int y = x++;  y = ?","options":["5","6","4","невизначено"],"answer":0,"explain":"Постфіксний x++ повертає старе значення (5), а потім збільшує x до 6."},
+ {"id":"cpp7","subject":"C++","topic":"Вказівники","q":"Як оголосити вказівник на int?","options":["int& p;","int* p;","ptr<int> p;","int p*;"],"answer":1,"explain":"int* p — вказівник; int& — це посилання, воно мусить бути одразу ініціалізоване."},
+ {"id":"cpp8","subject":"C++","topic":"Цикли","q":"Скільки разів виконається for (int i = 0; i < 3; i++)?","options":["2","3","4","безкінечно"],"answer":1,"explain":"i набуває значень 0, 1, 2 — три ітерації."}
+]
+</script>
+
+<!-- ============ ДАНІ: викладачі-боси ============
+name — справжнє ім'я (ще не задане), look — вигляд за фото. Зачіски: short, parted, balding, bald, buzz, curly, long, bob, ponytail, spiky.
+Бороди: none, stubble, mustache, goatee, full. Окуляри: none, round, square. Одяг: suit, shirt, sweater, hoodie, tshirt. -->
+<script type="application/json" id="teachers-data">
+[
+ {"id":"matan","name":"","role":"Практик з матану","subject":"Матан","topic":"Границі",
+  "look":{"skin":"#e9bf9b","hair":"parted","hairColor":"#5a4634","beard":"none","glasses":"square","outfit":"suit","outfitColor":"#3e4a5e","tieColor":"#7a2e2e","pants":"#2b2f3a","accessory":"none"},
+  "intro":"Ну що, границі всі вчили? Зараз перевіримо.",
+  "phase2":"Це ж очевидно! Еквівалентності треба знати напам'ять.",
+  "phase3":"Останній шанс. Епсилон-дельта, будь ласка.",
+  "win":"Добре. Бачу, що працювали. Залік.",
+  "lose":"Приходьте на перездачу. І конспект принесіть."}
+]
+</script>
+
+<!-- ============ ДАНІ: випадкові події (додавай свої) ============ -->
+<script type="application/json" id="events-data">
+[
+ {"id":"moved","title":"Пару перенесли","text":"У чаті групи: «Пару з лінала перенесли на 19:00. Не питайте чому».","choices":[
+   {"label":"Ну ок, переживу","effects":{"nerves":-5},"result":"Вечір зіпсовано, але ти тримаєшся."},
+   {"label":"Написати старості, що думаєш","effects":{"charisma":2,"nerves":-2},"result":"Староста поставила реакцію 😭. Ви тепер на одній хвилі."}]},
+ {"id":"deadline","title":"Дедлайн о 23:59","text":"Згадав, що лаба з C++ здається сьогодні до 23:59. Написано рівно нічого.","when":{"hourMin":11},"choices":[
+   {"label":"Сісти й зробити зараз","effects":{"energy":-20,"nerves":-5,"int":5},"hours":2,"result":"Здано о 23:58. Код працює, ніхто не знає як."},
+   {"label":"Попросити відстрочку","check":{"stat":"charisma","min":25},"success":{"effects":{"charisma":1},"result":"«Добре, до п'ятниці». Харизма працює."},"fail":{"effects":{"nerves":-15},"result":"«Дедлайн є дедлайн». Доведеться робити вночі."}}]},
+ {"id":"money","title":"Знахідка","text":"Біля корпусу на асфальті лежить 50 гривень. Навколо нікого.","choices":[
+   {"label":"Підняти","effects":{"money":50},"result":"Це знак. Сьогодні шаурма."}]},
+ {"id":"shawarma","title":"Шаурма-брейк","text":"Одногрупник кличе на шаурму біля метро «Політехнічний інститут».","choices":[
+   {"label":"Піти разом","effects":{"money":-90,"energy":20,"charisma":3},"hours":0.5,"result":"Ситно і душевно. Ви тепер друзі."},
+   {"label":"Відмовитися, економлю","effects":{"nerves":-2},"result":"Гаманець цілий, настрій трохи ні."}]},
+ {"id":"rain","title":"Злива","text":"Раптова злива, а парасолька залишилась у гуртожитку.","choices":[
+   {"label":"Бігти під дощем","effects":{"energy":-6,"nerves":-3},"result":"Мокрий, але вільний."},
+   {"label":"Перечекати під козирком","effects":{"charisma":1},"hours":0.5,"result":"Під козирком розговорився з четвертокурсником. Корисні поради."}]},
+ {"id":"headman","title":"Староста просить","text":"Староста просить допомогти скласти таблицю відвідуваності.","choices":[
+   {"label":"Допомогти","effects":{"charisma":4,"energy":-4},"hours":0.5,"result":"Тебе запам'ятали як надійну людину."},
+   {"label":"Зробити вигляд, що не бачиш","effects":{"charisma":-2},"result":"Тебе бачили."}]},
+ {"id":"pigeon","title":"Голуб-грабіжник","text":"Голуб вихопив булку прямо з рук.","choices":[
+   {"label":"Змиритися","effects":{"nerves":-4},"result":"Голуби КПІ непереможні."}]},
+ {"id":"answers","title":"Відповіді в чаті","text":"Хтось скинув у чат «відповіді» до завтрашнього квізу.","choices":[
+   {"label":"Подивитися","effects":{"nerves":4,"int":-1},"result":"Половина відповідей неправильні. Спокійніше, але не розумніше."},
+   {"label":"Розібратися самому","effects":{"int":3,"energy":-5},"hours":0.5,"result":"Тепер ти справді це знаєш."}]},
+ {"id":"cat","title":"Кіт біля корпусу","text":"Пухнастий кіт сидить на сходах і явно чекає уваги.","choices":[
+   {"label":"Погладити","effects":{"nerves":8},"result":"Мурчить. Світ знову має сенс."}]},
+ {"id":"wifi","title":"Wi-Fi упав","text":"Збираєшся здати тест у Moodle, а Wi-Fi зник саме зараз.","choices":[
+   {"label":"Роздати з телефону","effects":{"money":-20,"nerves":-2},"result":"Мобільний інтернет врятував, але з'їв гроші."},
+   {"label":"Бігти в бібліотеку","effects":{"energy":-8},"hours":0.5,"result":"Встиг за хвилину до закриття тесту."}]}
+]
+</script>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function shade(hex, amt) {
+  let n = parseInt(hex.slice(1), 16);
+  let r = clamp((n >> 16) + amt, 0, 255), g = clamp(((n >> 8) & 255) + amt, 0, 255), b = clamp((n & 255) + amt, 0, 255);
+  return "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+}
+function readJSON(id) { try { return JSON.parse(document.getElementById(id).textContent); } catch (e) { console.error("Помилка в даних " + id, e); return []; } }
+const QUESTIONS = readJSON("questions-data");
+const TEACHERS = readJSON("teachers-data");
+const EVENTS = readJSON("events-data");
+const teacherName = t => t.name && t.name.trim() ? t.name : t.role;
+
+/* ---------------- збереження ---------------- */
+const SAVE_KEY = "perezhyty-kpi-v1";
+function loadSave() { try { const s = localStorage.getItem(SAVE_KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+function writeSave() { if (!S) return; try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+
+/* ---------------- canvas ---------------- */
+const cv = $("#game"), ctx = cv.getContext("2d");
+let DPR = 1, CW = 0, CH = 0;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  CW = window.innerWidth; CH = window.innerHeight;
+  cv.width = Math.round(CW * DPR); cv.height = Math.round(CH * DPR);
+}
+window.addEventListener("resize", resize); resize();
+
+/* ---------------- малювання персонажа (пікселі кодом) ---------------- */
+// Спрайт 16×20 «пікселів» розміру s. cx — центр, by — рівень ніг.
+function drawPerson(c, cx, by, s, L, dir, phase, noShadow) {
+  const ox = cx - 8 * s, oy = by - 20 * s;
+  const R = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(ox + x * s, oy + y * s, w * s, h * s); };
+  const skin = L.skin, hc = L.hairColor, oc = L.outfitColor, pants = L.pants || "#2c3344";
+  const back = dir === "up";
+  const ex = dir === "left" ? -0.8 : dir === "right" ? 0.8 : 0;
+  if (!noShadow) { c.fillStyle = "rgba(0,0,0,.25)"; c.beginPath(); c.ellipse(cx, by, 6 * s, 1.8 * s, 0, 0, 7); c.fill(); }
+  const st = phase ? Math.sin(phase) : 0;
+  const l1 = st > 0.2 ? 1 : 0, l2 = st < -0.2 ? 1 : 0;
+  R(5, 15, 2.6, 4 - l1, pants); R(8.4, 15, 2.6, 4 - l2, pants);
+  R(5, 19 - l1, 2.6, 1, "#1a1a1a"); R(8.4, 19 - l2, 2.6, 1, "#1a1a1a");
+  // тулуб і руки
+  const sw = phase ? Math.sin(phase) * 0.6 : 0;
+  R(4, 9, 8, 6.5, oc);
+  R(2.6, 9.4 + sw, 1.5, 5, oc); R(11.9, 9.4 - sw, 1.5, 5, oc);
+  R(2.6, 14.3 + sw, 1.5, 1.1, skin); R(11.9, 14.3 - sw, 1.5, 1.1, skin);
+  const o = L.outfit;
+  if (o === "tshirt") { R(2.6, 11.6 + sw, 1.5, 2.8, skin); R(11.9, 11.6 - sw, 1.5, 2.8, skin); if (!back) R(6.5, 9, 3, 0.8, shade(oc, -30)); }
+  if (o === "hoodie") { if (!back) { R(5.4, 12.6, 5.2, 2, shade(oc, -22)); R(6.6, 9.4, 0.5, 2.2, "#eee"); R(8.9, 9.4, 0.5, 2.2, "#eee"); } else R(5, 9, 6, 2.6, shade(oc, -18)); R(4.4, 8.4, 7.2, 1, shade(oc, -18)); }
+  if (o === "shirt") { if (!back) { R(6.2, 9, 3.6, 1, "#f4f4f4"); R(7.8, 10.2, 0.4, 0.4, "#ddd"); R(7.8, 11.6, 0.4, 0.4, "#ddd"); R(7.8, 13, 0.4, 0.4, "#ddd"); } }
+  if (o === "suit") { if (!back) { R(6.8, 9, 2.4, 4, "#f4f4f4"); R(7.6, 9.4, 0.8, 3.8, L.tieColor || "#7a2e2e"); R(4, 13.2, 8, 0.5, shade(oc, -20)); } }
+  if (o === "sweater") { R(4, 11, 8, 0.7, shade(oc, -25)); R(4, 13, 8, 0.7, shade(oc, -25)); if (!back) R(6.2, 9, 3.6, 0.8, "#f4f4f4"); }
+  if (L.accessory === "backpack") { if (back) { R(4.4, 9.6, 7.2, 5.6, L.accColor || "#2f6f9a"); R(5.4, 12.2, 5.2, 1.6, shade(L.accColor || "#2f6f9a", -25)); } else { R(4.6, 9, 0.9, 5, "#2a2a2a"); R(10.5, 9, 0.9, 5, "#2a2a2a"); } }
+  // голова
+  R(4, 1.6, 8, 7.4, skin);
+  R(3.4, 4.4, 0.7, 2, shade(skin, -15)); R(11.9, 4.4, 0.7, 2, shade(skin, -15));
+  if (!back) {
+    R(5.5 + ex, 4.9, 1.2, 1.4, "#1b1b1b"); R(9.3 + ex, 4.9, 1.2, 1.4, "#1b1b1b");
+    R(5.7 + ex, 4.9, 0.45, 0.45, "#fff"); R(9.5 + ex, 4.9, 0.45, 0.45, "#fff");
+    R(7 + ex, 7.3, 2, 0.5, shade(skin, -55));
+    R(4.6 + ex, 6.4, 1, 0.6, "rgba(230,110,110,.35)"); R(10.4 + ex, 6.4, 1, 0.6, "rgba(230,110,110,.35)");
+  }
+  // волосся
+  const h = L.hair;
+  if (back) {
+    if (h === "bald") { R(4, 1.6, 8, 7.4, shade(skin, -6)); }
+    else if (h === "balding") { R(4, 4.5, 8, 4, hc); }
+    else if (h === "buzz") { R(4, 1.4, 8, 7, shade(hc, 10)); }
+    else {
+      R(3.8, 0.8, 8.4, 8.2, hc);
+      if (h === "long") { R(3.4, 4, 9.2, 8, hc); }
+      if (h === "bob") { R(3.4, 4, 9.2, 4.6, hc); }
+      if (h === "ponytail") { R(7, 8.6, 2, 4, hc); R(7, 8.2, 2, 0.6, "#c0392b"); }
+      if (h === "curly") { R(3, 0, 10, 8, hc); }
+      if (h === "spiky") { R(4.5, 0, 1.2, 1, hc); R(6.5, -0.4, 1.2, 1.4, hc); R(8.5, -0.4, 1.2, 1.4, hc); R(10.3, 0, 1.2, 1, hc); }
+    }
+  } else {
+    if (h === "short") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.6, hc); R(11.4, 2, 1, 2.6, hc); R(4.6 + ex, 2.8, 2.2, 0.6, hc); }
+    if (h === "spiky") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.4, hc); R(11.4, 2, 1, 2.4, hc); R(4.5, 0, 1.2, 1, hc); R(6.5, -0.4, 1.2, 1.4, hc); R(8.5, -0.4, 1.2, 1.4, hc); R(10.3, 0, 1.2, 1, hc); }
+    if (h === "long") { R(3.6, 0.6, 8.8, 2.6, hc); R(3, 2, 1.6, 9, hc); R(11.4, 2, 1.6, 9, hc); }
+    if (h === "bob") { R(3.6, 0.6, 8.8, 2.8, hc); R(3, 2, 1.6, 6, hc); R(11.4, 2, 1.6, 6, hc); }
+    if (h === "ponytail") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.6, hc); R(11.4, 2, 1, 2.6, hc); R(12.2, 2.6, 1.2, 1.2, "#c0392b"); R(12.6, 3.6, 1.6, 5.4, hc); }
+    if (h === "curly") { R(3, 0, 10, 3.2, hc); R(2.6, 1.5, 1.6, 4.4, hc); R(11.8, 1.5, 1.6, 4.4, hc); R(3.5, -0.6, 2, 1, hc); R(7, -0.8, 2, 1, hc); R(10.5, -0.6, 2, 1, hc); }
+    if (h === "parted") { R(4, 0.8, 8, 2, hc); R(3.6, 1.8, 1, 3.2, hc); R(11.4, 1.8, 1, 3.2, hc); R(6.2, 0.8, 0.45, 1.6, shade(skin, -10)); R(6.6, 2.6, 4.8, 0.5, hc); }
+    if (h === "buzz") { R(4, 1.2, 8, 1.3, shade(hc, 10)); R(3.8, 2, 0.6, 2, shade(hc, 10)); R(11.6, 2, 0.6, 2, shade(hc, 10)); }
+    if (h === "balding") { R(3.5, 3, 1.1, 3, hc); R(11.4, 3, 1.1, 3, hc); R(6, 1.9, 1.6, 0.7, "rgba(255,255,255,.35)"); }
+    if (h === "bald") { R(6, 1.9, 1.8, 0.7, "rgba(255,255,255,.4)"); }
+    // борода
+    const bc = L.beardColor || hc;
+    if (L.beard === "full") { R(4, 6.6, 8, 2.8, bc); R(3.6, 5, 0.9, 3, bc); R(11.5, 5, 0.9, 3, bc); R(7 + ex, 7.3, 2, 0.5, shade(skin, -55)); }
+    if (L.beard === "mustache") R(6.2 + ex, 6.7, 3.6, 0.7, bc);
+    if (L.beard === "goatee") { R(6.4 + ex, 6.7, 3.2, 0.6, bc); R(6.9 + ex, 7.9, 2.2, 1.2, bc); }
+    if (L.beard === "stubble") R(4.4, 6.8, 7.2, 2.2, "rgba(40,30,25,.22)");
+    // окуляри
+    if (L.glasses && L.glasses !== "none") {
+      c.strokeStyle = L.glassesColor || "#1e1e1e"; c.lineWidth = Math.max(1, s * 0.45);
+      if (L.glasses === "round") {
+        c.beginPath(); c.arc(ox + (6.1 + ex) * s, oy + 5.6 * s, 1.5 * s, 0, 7); c.stroke();
+        c.beginPath(); c.arc(ox + (9.9 + ex) * s, oy + 5.6 * s, 1.5 * s, 0, 7); c.stroke();
+      } else {
+        c.strokeRect(ox + (4.7 + ex) * s, oy + 4.3 * s, 2.8 * s, 2.4 * s);
+        c.strokeRect(ox + (8.5 + ex) * s, oy + 4.3 * s, 2.8 * s, 2.4 * s);
+      }
+      R(7.5 + ex, 5.1, 1, 0.4, L.glassesColor || "#1e1e1e");
+    }
+  }
+  if (L.accessory === "cap") { const a = L.accColor || "#c0392b"; R(3.6, 0, 8.8, 2.6, a); if (!back) R(4 + ex * 1.5, 2.3, 8.4, 0.9, shade(a, -30)); else R(6.5, 2.2, 3, 0.5, shade(a, -30)); }
+  if (L.accessory === "headphones") { R(3.3, 0.1, 9.4, 0.8, "#222"); R(2.8, 3.4, 1.4, 3.2, L.accColor || "#333"); R(11.8, 3.4, 1.4, 3.2, L.accColor || "#333"); }
+}
+
+/* ---------------- конструктор персонажа ---------------- */
+const SKINS = ["#f6d7c0", "#eec09a", "#d9a074", "#b97a50", "#8d5a3b", "#5e3b28"];
+const HAIRC = ["#1d1a19", "#4a3324", "#7a4b2a", "#c48a3f", "#e4c77a", "#b9b4ae", "#a8322d", "#3f6fb0", "#8e5bb5"];
+const CLOTHC = ["#2f6f9a", "#c0392b", "#2e8b57", "#e2a93b", "#6b4fa0", "#2c2c34", "#e8e4da", "#d46a8c"];
+const OPTS = {
+  hair: [["short", "Коротка"], ["spiky", "Їжачок"], ["long", "Довга"], ["bob", "Каре"], ["ponytail", "Хвіст"], ["curly", "Кучері"], ["buzz", "Під машинку"], ["bald", "Лиса"]],
+  outfit: [["hoodie", "Худі"], ["tshirt", "Футболка"], ["shirt", "Сорочка"], ["sweater", "Светр"]],
+  glasses: [["none", "Без окулярів"], ["round", "Круглі"], ["square", "Квадратні"]],
+  accessory: [["none", "Нічого"], ["backpack", "Рюкзак"], ["headphones", "Навушники"], ["cap", "Кепка"]],
+  beard: [["none", "Немає"], ["stubble", "Щетина"], ["mustache", "Вуса"], ["goatee", "Борідка"]]
+};
+const PERKS = [
+  { id: "nerd", name: "Ботан", desc: "+12 до Інтелекту на старті", stats: { int: 12 } },
+  { id: "social", name: "Душа компанії", desc: "+20 до Харизми на старті", stats: { charisma: 20 } },
+  { id: "calm", name: "Залізні нерви", desc: "Нерви падають на 25% повільніше", stats: {} },
+  { id: "rich", name: "Підприємець", desc: "+500 грн на старті", stats: { money: 500 } }
+];
+let draftLook = null, draftPerk = "nerd";
+function randomLook() {
+  return { skin: pick(SKINS), hair: pick(OPTS.hair)[0], hairColor: pick(HAIRC), outfit: pick(OPTS.outfit)[0], outfitColor: pick(CLOTHC),
+    glasses: Math.random() < 0.35 ? pick(["round", "square"]) : "none", accessory: pick(OPTS.accessory)[0], accColor: pick(CLOTHC),
+    beard: Math.random() < 0.2 ? pick(["stubble", "mustache", "goatee"]) : "none", pants: pick(["#2c3344", "#3a4a6b", "#4b3b2e", "#1f1f24"]) };
+}
+const pv = $("#pv"), pvc = pv.getContext("2d");
+function drawPreview() {
+  pvc.clearRect(0, 0, pv.width, pv.height);
+  pvc.fillStyle = "rgba(242,239,230,.06)"; for (let i = 0; i < 6; i++) pvc.fillRect(0, 30 + i * 30, pv.width, 1);
+  drawSprite(pvc, draftLook, "down", 0, 88, 190, 3.6, true);
+}
+function buildCreator() {
+  draftLook = randomLook();
+  const opts = $("#opts");
+  opts.querySelectorAll(".dyn").forEach(n => n.remove());
+  const addPicker = (key, label) => {
+    const row = document.createElement("div"); row.className = "row dyn";
+    row.innerHTML = `<span>${label}</span><div class="picker"><button type="button" aria-label="Попередній">‹</button><span></span><button type="button" aria-label="Наступний">›</button></div>`;
+    const [b1, sp, b2] = row.querySelector(".picker").children;
+    const upd = () => { sp.textContent = (OPTS[key].find(o => o[0] === draftLook[key]) || OPTS[key][0])[1]; drawPreview(); };
+    const step = d => { const i = OPTS[key].findIndex(o => o[0] === draftLook[key]); draftLook[key] = OPTS[key][(i + d + OPTS[key].length) % OPTS[key].length][0]; upd(); };
+    b1.onclick = () => step(-1); b2.onclick = () => step(1); row._upd = upd; upd(); opts.appendChild(row);
+  };
+  const addSw = (key, label, colors) => {
+    const row = document.createElement("div"); row.className = "row dyn";
+    row.innerHTML = `<span>${label}</span><div class="sw"></div>`;
+    const box = row.querySelector(".sw");
+    colors.forEach(col => { const b = document.createElement("button"); b.type = "button"; b.style.background = col; b.setAttribute("aria-label", label + " " + col);
+      b.onclick = () => { draftLook[key] = col; row._upd(); drawPreview(); }; box.appendChild(b); });
+    row._upd = () => box.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.style.background && rgbHex(b.style.background) === draftLook[key])));
+    row._upd(); opts.appendChild(row);
+  };
+  addSw("skin", "Шкіра", SKINS);
+  addPicker("hair", "Зачіска");
+  addSw("hairColor", "Колір волосся", HAIRC);
+  addPicker("beard", "Борода");
+  addPicker("outfit", "Одяг");
+  addSw("outfitColor", "Колір одягу", CLOTHC);
+  addPicker("glasses", "Окуляри");
+  addPicker("accessory", "Аксесуар");
+  const pk = $("#perks"); pk.innerHTML = "";
+  PERKS.forEach(p => { const b = document.createElement("button"); b.type = "button"; b.className = "perk"; b.innerHTML = `<b>${p.name}</b><small>${p.desc}</small>`;
+    b.setAttribute("aria-pressed", String(p.id === draftPerk));
+    b.onclick = () => { draftPerk = p.id; pk.querySelectorAll(".perk").forEach((x, i) => x.setAttribute("aria-pressed", String(PERKS[i].id === draftPerk))); };
+    pk.appendChild(b); });
+  drawPreview();
+}
+function rgbHex(rgb) { const m = rgb.match(/\d+/g); if (!m) return rgb; return "#" + m.slice(0, 3).map(n => (+n).toString(16).padStart(2, "0")).join(""); }
+$("#rndBtn").onclick = () => { draftLook = randomLook(); $("#opts").querySelectorAll(".dyn").forEach(r => r._upd && r._upd()); drawPreview(); };
+
+/* ---------------- світ: карта кампусу ---------------- */
+const WORLD = { w: 2200, h: 1500 };
+const BUILDINGS = [
+  { id: "main", name: "Головний корпус", x: 820, y: 110, w: 560, h: 270, wall: "#ece4d2", roof: "#8f2f2a", style: "classic", door: { x: 1100, y: 380 } },
+  { id: "k7", name: "Корпус 7", x: 260, y: 170, w: 340, h: 210, wall: "#dccaa8", roof: "#6d5a48", door: { x: 430, y: 380 } },
+  { id: "k18", name: "Корпус 18", x: 1600, y: 170, w: 340, h: 210, wall: "#cfd6dc", roof: "#4b5a6a", door: { x: 1770, y: 380 } },
+  { id: "lib", name: "НТБ · бібліотека", x: 880, y: 610, w: 440, h: 230, wall: "#d8dde3", roof: "#38566e", style: "library", door: { x: 1100, y: 840 } },
+  { id: "canteen", name: "Їдальня", x: 250, y: 650, w: 300, h: 180, wall: "#f0d9b5", roof: "#b2652e", door: { x: 400, y: 830 } },
+  { id: "copy", name: "Копіцентр", x: 590, y: 700, w: 150, h: 120, wall: "#e9e9e2", roof: "#3d7a5a", door: { x: 665, y: 820 } },
+  { id: "k35", name: "Корпус 35", x: 1180, y: 990, w: 320, h: 180, wall: "#d4cbbd", roof: "#5e5146", door: { x: 1340, y: 1170 } },
+  { id: "dorm", name: "Гуртожиток", x: 1690, y: 960, w: 300, h: 220, wall: "#e7d3c2", roof: "#7a4636", style: "dorm", door: { x: 1840, y: 1180 } }
+];
+const ZONES = [
+  { id: "park", name: "Парк КПІ", x: 120, y: 990, w: 660, h: 380, point: { x: 450, y: 1180 } },
+  { id: "stadium", name: "Стадіон", x: 1480, y: 580, w: 560, h: 290, point: { x: 1760, y: 725 } },
+  { id: "glade", name: "Поляна", x: 820, y: 1050, w: 210, h: 280, point: { x: 925, y: 1232 } }
+];
+const GLADE = { x: 925, y: 1190, rx: 100, ry: 150 };
+const PATHS = [
+  [140, 430, 1930, 70], [1070, 380, 60, 1050], [140, 880, 1930, 60], [400, 380, 60, 520], [1740, 380, 60, 520],
+  [1070, 1200, 940, 55], [1810, 870, 60, 340], [1310, 1160, 60, 60], [370, 820, 60, 70], [640, 810, 50, 80]
+];
+// дерева: детермінований генератор
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const LAMPS_POS = [[250,424],[620,424],[900,424],[1320,424],[1600,424],[1980,424],[250,952],[760,952],[1300,952],[1600,952],[2000,952],[1060,1290],[1150,640],[1150,1150]];
+const TREES = [];
+(function genTrees() {
+  const r = mulberry(1898);
+  const inGlade = (x, y, k) => ((x - GLADE.x) / (GLADE.rx * k)) ** 2 + ((y - GLADE.y) / (GLADE.ry * k)) ** 2 < 1;
+  const blocked = (x, y, pad) => BUILDINGS.some(b => x > b.x - pad && x < b.x + b.w + pad && y > b.y - pad && y < b.y + b.h + pad + 20) ||
+    PATHS.some(p => x > p[0] - 22 && x < p[0] + p[2] + 22 && y > p[1] - 22 && y < p[1] + p[3] + 30) ||
+    (x > 1470 && x < 2050 && y > 570 && y < 880) || y > 1390 || inGlade(x, y, 1.05) || LAMPS_POS.some(l => Math.hypot(l[0] - x, l[1] - y) < 30);
+  const add = (x, y, kind) => { if (blocked(x, y, 30) || TREES.some(t => Math.hypot(t.x - x, t.y - y) < 44)) return; TREES.push({ x, y, r: 16 + r() * 10, kind }); };
+  for (let a = 0; a < Math.PI * 2; a += 0.3) { const k = 1.2 + r() * 0.25; add(GLADE.x + Math.cos(a) * GLADE.rx * k, GLADE.y + Math.sin(a) * GLADE.ry * k, r() < 0.6 ? "pine" : "oak"); }
+  let tries = 0;
+  while (TREES.length < 150 && tries++ < 5000) {
+    const inPark = r() < 0.4;
+    const x = inPark ? 130 + r() * 640 : 60 + r() * 2080, y = inPark ? 1000 + r() * 360 : 60 + r() * 1330;
+    if (inPark && Math.hypot(x - 450, y - 1180) < 90) continue;
+    add(x, y, inPark ? (r() < 0.6 ? "chestnut" : "linden") : ["chestnut", "chestnut", "linden", "oak", "pine"][Math.floor(r() * 5)]);
+  }
+})();
+
+function solidAt(x, y, hw, hh) {
+  if (x - hw < 20 || x + hw > WORLD.w - 20 || y - hh < 30 || y + hh > WORLD.h - 90) return true;
+  for (const b of BUILDINGS) if (x + hw > b.x && x - hw < b.x + b.w && y + hh > b.y && y - hh < b.y + b.h) return true;
+  for (const t of TREES) if (Math.hypot(t.x - x, t.y + 6 - y) < 10 + hw * 0.5) return true;
+  if (Math.hypot(GLADE.x - x, GLADE.y - y) < 20) return true;
+  return false;
+}
+
+/* ---------------- стан гри ---------------- */
+let S = null;               // збережений стан
+let mode = "title";         // title | creator | world | boss
+let modalOpen = false;
+const P = { x: 1100, y: 470, dir: "down", phase: 0, moving: false };
+const cam = { x: 0, y: 0 };
+let npcs = [];
+const WEEK = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const weekday = d => (d - 1) % 7;
+const SHORT = { int: "Інт", energy: "Енергія", nerves: "Нерви", money: "грн", charisma: "Харизма", health: "Здоров'я" };
+
+function newGame(name, look, perkId) {
+  const perk = PERKS.find(p => p.id === perkId) || PERKS[0];
+  S = { v: 1, name: name || "Студент", look, perk: perk.id,
+    stats: { int: 10, energy: 85, nerves: 80, money: 600, charisma: 10, health: 100 }, hangover: false,
+    day: 1, hour: 8, x: 1100, y: 470, dir: "down",
+    bosses: {}, asked: {}, askN: 0, nextEvent: 22, lastEvent: null };
+  for (const k in perk.stats) S.stats[k] += perk.stats[k];
+}
+function hhmm(h) { const hh = Math.floor(h), mm = Math.floor((h - hh) * 60); return String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0"); }
+
+function updateHUD() {
+  if (!S) return;
+  const st = S.stats;
+  $("#who").textContent = S.name;
+  $("#bEnergy").style.width = st.energy + "%"; $("#vEnergy").textContent = Math.round(st.energy);
+  $("#bHealth").style.width = st.health + "%"; $("#vHealth").textContent = Math.round(st.health);
+  $("#bNerves").style.width = st.nerves + "%"; $("#vNerves").textContent = Math.round(st.nerves);
+  $("#vInt").textContent = Math.round(st.int); $("#vCha").textContent = Math.round(st.charisma); $("#vMoney").textContent = Math.round(st.money);
+  $("#clock").textContent = `${WEEK[weekday(S.day)]} · День ${S.day} · ${hhmm(S.hour)}`;
+}
+function toast(text, kind) {
+  const d = document.createElement("div"); d.className = "toast " + (kind || ""); d.textContent = text;
+  const box = $("#toasts"); box.appendChild(d); while (box.children.length > 3) box.firstChild.remove();
+  setTimeout(() => d.remove(), 2600);
+}
+function apply(eff, silent) {
+  const parts = []; if (!eff) return "";
+  for (const k in eff) {
+    let v = eff[k]; if (!v || !(k in S.stats)) continue;
+    if (k === "nerves" && v < 0 && S.perk === "calm") v *= 0.75;
+    const before = S.stats[k]; let nv = before + v;
+    if (k === "energy" || k === "nerves" || k === "charisma" || k === "health") nv = clamp(nv, 0, 100); else nv = Math.max(0, nv);
+    S.stats[k] = nv; const d = Math.round(nv) - Math.round(before);
+    if (d) parts.push((d > 0 ? "+" : "−") + Math.abs(d) + " " + SHORT[k]);
+  }
+  const txt = parts.join(" · ");
+  if (!silent && txt) toast(txt, parts.every(p => p[0] === "+") ? "good" : parts.every(p => p[0] === "−") ? "bad" : "");
+  updateHUD(); return txt;
+}
+
+/* ---------------- модальні вікна ---------------- */
+const modalEl = $("#modal"), modalCard = $("#modalCard");
+function openModal({ kicker, title, body, buttons }) {
+  modalCard.innerHTML = "";
+  if (kicker) { const k = document.createElement("p"); k.className = "kicker"; k.textContent = kicker; modalCard.appendChild(k); }
+  if (title) { const h = document.createElement("h2"); h.textContent = title; modalCard.appendChild(h); }
+  if (body) { if (typeof body === "string") { const d = document.createElement("div"); d.style.display = "grid"; d.style.gap = "10px"; d.innerHTML = body; modalCard.appendChild(d); } else modalCard.appendChild(body); }
+  if (buttons && buttons.length) {
+    const bx = document.createElement("div"); bx.className = "btns";
+    buttons.forEach(b => { const el = document.createElement("button"); el.type = "button"; el.className = "btn" + (b.primary ? " primary" : "");
+      el.innerHTML = `<span>${esc(b.label)}</span>${b.sub ? `<small>${esc(b.sub)}</small>` : ""}`; el.disabled = !!b.disabled;
+      el.onclick = () => b.onClick && b.onClick(); bx.appendChild(el); });
+    modalCard.appendChild(bx);
+  }
+  modalEl.hidden = false; modalOpen = true; keys.clear(); joy.active = false; $("#prompt").hidden = true;
+  const f = modalCard.querySelector("button:not(:disabled)"); if (f && !isTouch) f.focus({ preventScroll: true });
+}
+function closeModal() { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; afterAction(); }
+
+/* ---------------- час, день, вигорання ---------------- */
+function advance(h) { S.hour += h; }
+function newDay(startHour) {
+  S.day++; S.hour = startHour;
+  if (S.hangover) { S.hangover = false; S.stats.energy = clamp(S.stats.energy - 25, 0, 100); apply({ nerves: -5, health: -3 }, true); setTimeout(() => toast("Похмілля: −25 Енергія. Голова гуде.", "bad"), 400); }
+  else apply({ health: 6 }, true);
+  if (weekday(S.day) === 0) {
+    if (S.stats.int >= 30) { apply({ money: 2000 }, true); toast("Понеділок! Стипендія +2000 грн", "good"); }
+    else toast("Понеділок. Стипендії нема: потрібно 30+ Інт", "bad");
+  }
+}
+function toDorm() { P.x = 1840; P.y = 1215; P.dir = "down"; }
+function afterAction() {
+  if (!S || mode !== "world" || modalOpen) { writeSave(); return; }
+  if (S.stats.health <= 0) {
+    openModal({ kicker: "Здоров'я: 0", title: "Швидка забрала в лікарню", body: "<p>Організм сказав «досить». Добу ти провів під крапельницею, а ліки коштували чималих грошей.</p>",
+      buttons: [{ label: "Виписатися", primary: true, onClick: () => { newDay(14); S.stats.health = 45; S.stats.energy = 60; S.stats.money = Math.max(0, S.stats.money - 250); apply({ nerves: -10 }, true); S.hangover = false; toDorm(); updateHUD(); closeModal(); } }] });
+    return;
+  }
+  if (S.stats.nerves <= 0) {
+    openModal({ kicker: "Нерви: 0", title: "Вигорання", body: "<p>Ти більше не можеш. Наступну добу проводиш у ліжку з серіалами.</p>",
+      buttons: [{ label: "Відновитися", primary: true, onClick: () => { newDay(12); S.stats.nerves = 45; S.stats.energy = 70; toDorm(); updateHUD(); closeModal(); } }] });
+    return;
+  }
+  if (S.hour >= 24) {
+    openModal({ kicker: hhmm(S.hour % 24) + " · ніч", title: "Заснув над конспектом", body: "<p>Ти навіть не помітив, як вирубився. Прокидаєшся в гуртожитку, шия болить.</p>",
+      buttons: [{ label: "Новий день", primary: true, onClick: () => { newDay(8); S.stats.energy = clamp(S.stats.energy + 45, 0, 100); apply({ nerves: -10 }, true); toDorm(); updateHUD(); closeModal(); } }] });
+    return;
+  }
+  writeSave(); updateHUD();
+}
+
+/* ---------------- питання ---------------- */
+function pickQuestions(filter, n) {
+  const pool = shuffle(QUESTIONS.filter(filter));
+  pool.sort((a, b) => (S.asked[a.id] ?? -1) - (S.asked[b.id] ?? -1));
+  return pool.slice(0, n).map(q => { S.asked[q.id] = ++S.askN; return prepQ(q); });
+}
+function prepQ(q) {
+  const idx = shuffle(q.options.map((_, i) => i));
+  return { ...q, opts: idx.map(i => q.options[i]), correct: idx.indexOf(q.answer) };
+}
+
+function runQuiz({ kicker, title, filter, n, perCorrect, perWrong, seconds, onDone }) {
+  const qs = pickQuestions(filter, n);
+  if (!qs.length) { toast("Немає питань для цього предмета"); return; }
+  let i = 0, right = 0, timer = null;
+  const body = document.createElement("div"); body.style.display = "grid"; body.style.gap = "12px";
+  const finish = () => {
+    clearInterval(timer);
+    const gain = {}; for (const k in perCorrect) gain[k] = perCorrect[k] * right;
+    for (const k in perWrong) gain[k] = (gain[k] || 0) + perWrong[k] * (qs.length - right);
+    if (right === qs.length) gain.charisma = (gain.charisma || 0) + 2;
+    onDone && onDone(right);
+    const txt = apply(gain, true);
+    openModal({ kicker, title: right === qs.length ? "Ідеально!" : right ? "Непогано" : "Ну, буває",
+      body: `<p>Правильних відповідей: <b>${right} з ${qs.length}</b>.</p><p>${esc(txt || "Без змін")}${right === qs.length ? "<br>Викладач тебе запам'ятав (+2 Харизма)." : ""}</p>`,
+      buttons: [{ label: "Далі", primary: true, onClick: closeModal }] });
+  };
+  const show = () => {
+    const q = qs[i]; let left = seconds, answered = false;
+    body.innerHTML = `<div class="qhead"><span>${esc(q.subject)} · ${esc(q.topic)}</span><span>Питання ${i + 1} з ${qs.length}</span></div>
+      <div class="timer"><i></i></div><div class="qtext">${esc(q.q)}</div><div class="answers"></div><div class="fb"></div>`;
+    const bar = body.querySelector(".timer i"), box = body.querySelector(".answers"), fb = body.querySelector(".fb");
+    const btns = q.opts.map((o, k) => { const b = document.createElement("button"); b.type = "button"; b.className = "ans"; b.textContent = o; b.onclick = () => answer(k); box.appendChild(b); return b; });
+    const answer = k => {
+      if (answered) return; answered = true; clearInterval(timer);
+      btns.forEach(b => b.disabled = true); btns[q.correct].classList.add("ok");
+      const ok = k === q.correct; if (ok) right++; else if (k >= 0) btns[k].classList.add("no");
+      fb.innerHTML = ok ? `<p style="color:var(--green)">Правильно!</p>` : `<div class="explain"><b>${k < 0 ? "Час вийшов." : "Ні."} Правильно: ${esc(q.opts[q.correct])}</b><br>${esc(q.explain)}</div>`;
+      const nx = document.createElement("button"); nx.type = "button"; nx.className = "btn primary"; nx.style.marginTop = "10px";
+      nx.innerHTML = `<span>${i + 1 < qs.length ? "Наступне питання" : "Завершити"}</span>`;
+      nx.onclick = () => { i++; i < qs.length ? show() : finish(); }; fb.appendChild(nx); nx.focus({ preventScroll: true });
+    };
+    clearInterval(timer);
+    timer = setInterval(() => { left -= 0.1; bar.style.width = clamp(left / seconds * 100, 0, 100) + "%"; if (left <= 0) answer(-1); }, 100);
+  };
+  openModal({ kicker, title, body, buttons: [] }); show();
+}
+
+/* ---------------- дії в будівлях ---------------- */
+const isWeekday = () => weekday(S.day) < 5;
+function need(e, m) {
+  if (e && S.stats.energy < e) { toast("Замало енергії. Поїж або поспи.", "bad"); return false; }
+  if (m && S.stats.money < m) { toast("Не вистачає грошей", "bad"); return false; }
+  return true;
+}
+function lesson(subject, label) {
+  return { label: "Пара: " + label, sub: "−15 Енергія · 1,5 год",
+    disabled: !isWeekday() || S.hour < 8 || S.hour >= 18,
+    onClick: () => {
+      if (!need(15)) return;
+      if (S.hour >= 16.5 && Math.random() > S.stats.charisma / 60) { apply({ nerves: -5 }); advance(0.25); openModal({ title: "Запізнення", body: "<p>Ти зайшов на 20 хвилин пізніше. Викладач не пустив. Наступного разу приходь раніше або підкачай харизму.</p>", buttons: [{ label: "Зрозуміло", primary: true, onClick: closeModal }] }); return; }
+      apply({ energy: -15 }, true); advance(1.5);
+      runQuiz({ kicker: "Пара · " + label, title: "Короткий квіз на початку пари", filter: q => q.subject === subject, n: 4, perCorrect: { int: 3 }, perWrong: { nerves: -4 }, seconds: 20 });
+    } };
+}
+function getActions(id) {
+  const st = S.stats, closedNote = !isWeekday() ? "Сьогодні вихідний" : (S.hour < 8 || S.hour >= 18) ? "Пари 08:00–18:00" : "";
+  const T = TEACHERS[0];
+  switch (id) {
+    case "main": return { kicker: "Корпус 1", title: "Головний корпус", note: closedNote, list: [lesson("Матан", "Математичний аналіз"),
+      { label: "Кафедра вищої математики: " + teacherName(T), sub: S.bosses[T.id]?.won ? "Залік уже є" : "Бос", onClick: () => bossIntro(T) }] };
+    case "k7": return { kicker: "Корпус 7", title: "Лінійна алгебра", note: closedNote, list: [lesson("Лінійна алгебра", "Лінійна алгебра")] };
+    case "k18": return { kicker: "Корпус 18", title: "Програмування", note: closedNote, list: [lesson("C++", "Програмування (C++)")] };
+    case "k35": return { kicker: "Корпус 35", title: "Дискретна математика", note: closedNote, list: [lesson("Дискретна математика", "Дискретна математика")] };
+    case "lib": return { kicker: "Науково-технічна бібліотека", title: "НТБ", list: [
+      ...["Матан", "Лінійна алгебра", "Дискретна математика", "C++"].map(s => ({ label: "Готуватися: " + s, sub: "−10 Енергія · 1 год",
+        onClick: () => { if (!need(10)) return; apply({ energy: -10 }, true); advance(1); runQuiz({ kicker: "Бібліотека", title: "Самопідготовка: " + s, filter: q => q.subject === s, n: 3, perCorrect: { int: 2 }, perWrong: {}, seconds: 25 }); } })),
+      { label: "Посидіти в тиші читальної зали", sub: "+12 Нерви · 1 год", onClick: () => { apply({ nerves: 12 }); advance(1); closeModal(); } }] };
+    case "canteen": return { kicker: "Студентська їдальня", title: "Їдальня", note: S.hour >= 20 ? "Їдальня вже зачинена (до 20:00)" : "", list: [
+      { label: "Комплексний обід", sub: "85 грн · +35 Енергія", disabled: S.hour >= 20, onClick: () => { if (!need(0, 85)) return; eat(85, 35, 3); } },
+      { label: "Кава з булочкою", sub: "45 грн · +15 Енергія", disabled: S.hour >= 20, onClick: () => { if (!need(0, 45)) return; eat(45, 15, 5); } }] };
+    case "copy": return { kicker: "Копіцентр", title: "Друк і підробіток", list: [
+      { label: "Підробіток: друкувати чужі лаби", sub: "3 год · +260 грн · −20 Енергія", onClick: () => { if (!need(20)) return; apply({ money: 260, energy: -20, nerves: -8 }); advance(3); closeModal(); } },
+      { label: "Роздрукувати свою лабу", sub: "20 грн · +2 Харизма", onClick: () => { if (!need(0, 20)) return; apply({ money: -20, charisma: 2 }); advance(0.25); closeModal(); } }] };
+    case "dorm": return { kicker: "Гуртожиток", title: "Рідна кімната", list: [
+      { label: "Спати до ранку", sub: "Енергія 100 · +15 Нерви", primary: true, onClick: () => { closeModal(); newDay(8); S.stats.energy = 100; apply({ nerves: 15, health: 6 }, true); toast("Доброго ранку! Енергія 100", "good"); toDorm(); afterAction(); } },
+      { label: "Подрімати", sub: "2 год · +30 Енергія", onClick: () => { apply({ energy: 30 }); advance(2); closeModal(); } },
+      { label: "Чай із сусідами по поверху", sub: "2 год · 30 грн · +4 Харизма · +10 Нерви", onClick: () => { if (!need(5, 30)) return; apply({ money: -30, charisma: 4, nerves: 10, energy: -5 }); advance(2); closeModal(); } }] };
+    case "park": return { kicker: "Зелена зона", title: "Парк КПІ", list: [
+      { label: "Посидіти на лавці", sub: "1 год · +15 Нерви", onClick: () => { apply({ nerves: 15, energy: 3, health: 2 }); advance(1); closeModal(); } },
+      { label: "Погодувати білок горішками", sub: "15 грн · +8 Нерви", onClick: () => { if (!need(0, 15)) return; apply({ money: -15, nerves: 8 }); advance(0.5); closeModal(); } }] };
+    case "glade": return { kicker: "Між соснами за корпусом 35", title: "Поляна", note: gladeBusy() ? "Біля вогнища вже сидить компанія. Пахне димом і шашликом." : "Зараз тут тихо. Компанія збирається ввечері (з 15:00) і на вихідних.", list: [
+      { label: "Випити з компанією", sub: "60 грн · +25 Нерви · −15 Здоров'я", disabled: !gladeBusy(), onClick: () => { if (!need(0, 60)) return; apply({ money: -60, nerves: 25, health: -15, charisma: 3 }); S.hangover = true; advance(1.5); closeModal(); } },
+      { label: "Тусити до ночі", sub: "120 грн · +45 Нерви · −30 Здоров'я · −15 Енергія", disabled: !gladeBusy(), onClick: () => { if (!need(15, 120)) return; apply({ money: -120, nerves: 45, health: -30, energy: -15, charisma: 6, int: -2 }); S.hangover = true; advance(4); closeModal(); } },
+      { label: "Посидіти біля вогнища без алкоголю", sub: "1 год · +8 Нерви · +2 Харизма", onClick: () => { apply({ nerves: 8, charisma: gladeBusy() ? 2 : 0 }); advance(1); closeModal(); } }] };
+    case "stadium": return { kicker: "Спорткомплекс", title: "Стадіон", list: [
+      { label: "Пробіжка", sub: "1 год · −15 Енергія · +18 Нерви", onClick: () => { if (!need(15)) return; apply({ energy: -15, nerves: 18, charisma: 1, health: 6 }); advance(1); closeModal(); } },
+      { label: "Футбол з одногрупниками", sub: "1,5 год · −20 Енергія · +6 Харизма", onClick: () => { if (!need(20)) return; apply({ energy: -20, charisma: 6, nerves: 10, health: 4 }); advance(1.5); closeModal(); } }] };
+  }
+}
+function eat(cost, en, nv) {
+  const queue = Math.random() < 0.3;
+  apply({ money: -cost, energy: en, nerves: nv - (queue ? 4 : 0), health: cost > 60 ? 4 : 1 }); advance(queue ? 0.75 : 0.3);
+  if (queue) toast("Черга на 40 хвилин. Встиг, але нерви трохи пішли", "bad");
+  closeModal();
+}
+function openPlace(id) {
+  const a = getActions(id); if (!a) return;
+  const body = a.note ? `<p style="color:var(--chalk-dim)">${esc(a.note)}</p>` : "";
+  openModal({ kicker: a.kicker, title: a.title, body, buttons: [...a.list, { label: "Вийти", onClick: closeModal }] });
+}
+
+/* ---------------- випадкові події ---------------- */
+function triggerEvent() {
+  const ok = EVENTS.filter(e => e.id !== S.lastEvent && (!e.when || ((e.when.hourMin ?? 0) <= S.hour && S.hour <= (e.when.hourMax ?? 24))));
+  if (!ok.length) return;
+  const ev = pick(ok); S.lastEvent = ev.id;
+  openModal({ kicker: "Подія · " + hhmm(S.hour), title: ev.title, body: `<p>${esc(ev.text)}</p>`,
+    buttons: ev.choices.map(ch => ({ label: ch.label, sub: ch.check ? `потрібно ${SHORT[ch.check.stat]} ${ch.check.min}+` : "", onClick: () => {
+      let out = ch;
+      if (ch.check) out = S.stats[ch.check.stat] >= ch.check.min ? ch.success : ch.fail;
+      const txt = apply(out.effects, true); if (ch.hours) advance(ch.hours);
+      openModal({ kicker: ev.title, title: out.result, body: txt ? `<p>${esc(txt)}</p>` : "", buttons: [{ label: "Ок", primary: true, onClick: closeModal }] });
+    } })) });
+}
+
+/* ---------------- ввід ---------------- */
+const keys = new Set();
+let isTouch = false;
+const joy = { active: false, id: null, ox: 0, oy: 0, x: 0, y: 0 };
+window.addEventListener("keydown", e => {
+  if (e.target && e.target.tagName === "INPUT") return;
+  const k = e.code;
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(k)) e.preventDefault();
+  if (modalOpen) { if (k === "Escape" && mode === "world" && !modalCard.querySelector(".answers")) closeModal(); return; }
+  keys.add(k);
+  if ((k === "KeyE" || k === "Enter" || k === "Space") && mode === "world") doAction();
+  if (k === "KeyM" && mode === "world") openMap();
+  if (k === "Escape" && mode === "boss") bossPause();
+});
+window.addEventListener("keyup", e => keys.delete(e.code));
+window.addEventListener("blur", () => keys.clear());
+cv.addEventListener("pointerdown", e => {
+  if (e.pointerType !== "mouse") { if (!isTouch) { isTouch = true; document.body.classList.add("touch"); refreshTouchUI(); } }
+  if (modalOpen || (mode !== "world" && mode !== "boss")) return;
+  if (e.pointerType === "mouse" && mode === "world") return;
+  joy.active = true; joy.id = e.pointerId; joy.ox = joy.x = e.clientX; joy.oy = joy.y = e.clientY;
+  try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+});
+cv.addEventListener("pointermove", e => { if (joy.active && e.pointerId === joy.id) { joy.x = e.clientX; joy.y = e.clientY; } });
+const endJoy = e => { if (e.pointerId === joy.id) joy.active = false; };
+cv.addEventListener("pointerup", endJoy); cv.addEventListener("pointercancel", endJoy);
+window.addEventListener("touchstart", () => { if (!isTouch) { isTouch = true; document.body.classList.add("touch"); refreshTouchUI(); } }, { passive: true });
+function inputVec() {
+  let x = 0, y = 0;
+  if (keys.has("KeyA") || keys.has("ArrowLeft")) x -= 1;
+  if (keys.has("KeyD") || keys.has("ArrowRight")) x += 1;
+  if (keys.has("KeyW") || keys.has("ArrowUp")) y -= 1;
+  if (keys.has("KeyS") || keys.has("ArrowDown")) y += 1;
+  if (joy.active) { const dx = joy.x - joy.ox, dy = joy.y - joy.oy, l = Math.hypot(dx, dy); if (l > 6) { const m = Math.min(1, l / 55); x = dx / l * m; y = dy / l * m; } }
+  const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; }
+  return { x, y };
+}
+function refreshTouchUI() {
+  $("#actBtn").hidden = !(isTouch && mode === "world");
+  $("#pauseBtn").hidden = mode !== "boss";
+}
+
+/* ---------------- взаємодія в світі ---------------- */
+let near = null;
+function teacherPresent() { return S && isWeekday() && S.hour >= 8 && S.hour < 19 && !S.bosses[TEACHERS[0].id]?.won; }
+const TEACHER_POS = { x: 1190, y: 420 };
+function findNear() {
+  let best = null, bd = 1e9;
+  for (const b of BUILDINGS) { const d = Math.hypot(P.x - b.door.x, P.y - (b.door.y + 18)); if (d < 56 && d < bd) { bd = d; best = { type: "place", id: b.id, label: b.name }; } }
+  for (const z of ZONES) { const d = Math.hypot(P.x - z.point.x, P.y - z.point.y); if (d < 80 && d < bd) { bd = d; best = { type: "place", id: z.id, label: z.name }; } }
+  if (teacherPresent()) { const d = Math.hypot(P.x - TEACHER_POS.x, P.y - TEACHER_POS.y); if (d < 50 && d < bd) { bd = d; best = { type: "teacher", label: teacherName(TEACHERS[0]) }; } }
+  return best;
+}
+function doAction() {
+  if (!near || modalOpen) return;
+  if (near.type === "teacher") bossIntro(TEACHERS[0]); else openPlace(near.id);
+}
+$("#actBtn").addEventListener("click", doAction);
+$("#mapBtn").addEventListener("click", () => openMap());
+$("#mini").addEventListener("click", () => openMap());
+$("#menuBtn").addEventListener("click", () => {
+  if (modalOpen) return;
+  openModal({ kicker: S.name, title: "Меню", body: `<p>Гра зберігається автоматично після кожної дії.</p>`, buttons: [
+    { label: "Як грати", onClick: howTo },
+    { label: "Повернутися в гру", primary: true, onClick: closeModal },
+    { label: "Почати заново", sub: "прогрес зникне", onClick: () => openModal({ title: "Точно почати заново?", body: "<p>Поточний персонаж і прогрес буде видалено з цього браузера.</p>", buttons: [
+      { label: "Так, нова гра", onClick: () => { clearSave(); S = null; modalEl.hidden = true; modalOpen = false; showTitle(); } },
+      { label: "Ні, назад", primary: true, onClick: closeModal }] }) }] });
+});
+function howTo() {
+  openModal({ kicker: "Довідка", title: "Як грати", body: `
+    <p><b>Мета першого етапу:</b> отримати залік у практика з матану. Він стоїть біля Головного корпусу в будні з 8:00 до 19:00.</p>
+    <p><b>Пари</b> в корпусах дають Інтелект. Інтелект сильніше б'є по босу й дає підказки в бою (20+ прибирає одну хибну відповідь, 45+ підсвічує правильну).</p>
+    <p><b>Енергія</b> витрачається на ходьбу, пари й бої. Відновлюй сном у гуртожитку та їжею в їдальні.</p>
+    <p><b>Нерви</b> — твоє здоров'я в бою. 0 = вигорання. Парк, стадіон і поляна їх лікують.</p>
+    <p><b>Здоров'я</b> росте від сну, їжі та спорту. Поляна знімає стрес, але б'є по здоров'ю і дає похмілля зранку. Нижче 30 — швидше втомлюєшся, 0 — лікарня.</p>
+    <p><b>Карта</b>: мінікарта справа вгорі, повна — кнопка «Карта» або клавіша M.</p>
+    <p><b>Гроші</b>: стипендія щопонеділка, якщо Інт 30+. Ще можна підробити в копіцентрі.</p>
+    <p><b>Харизма</b> рятує від запізнень, допомагає в подіях і дає «автомат» при перемозі над босом.</p>
+    <p><b>Бій:</b> ухиляйся від формул і двійок, торкайся бульбашки з правильною відповіддю.</p>`,
+    buttons: [{ label: "Зрозуміло", primary: true, onClick: closeModal }] });
+}
+
+/* ---------------- NPC студенти ---------------- */
+function spawnNPCs() {
+  npcs = [];
+  for (let i = 0; i < 9; i++) {
+    const p = pick(PATHS); const n = { look: randomLook(), x: p[0] + rand(10, p[2] - 10), y: p[1] + rand(10, p[3] - 10), dir: "down", phase: 0, tx: 0, ty: 0, wait: rand(0, 3) };
+    if (solidAt(n.x, n.y, 8, 5)) continue; npcTarget(n); npcs.push(n);
+  }
+}
+function npcTarget(n) { const p = pick(PATHS); n.tx = p[0] + rand(10, p[2] - 10); n.ty = p[1] + rand(10, p[3] - 10); }
+function updateNPCs(dt) {
+  for (const n of npcs) {
+    if (n.wait > 0) { n.wait -= dt; n.phase = 0; continue; }
+    const dx = n.tx - n.x, dy = n.ty - n.y, d = Math.hypot(dx, dy);
+    if (d < 6) { n.wait = rand(1, 4); npcTarget(n); continue; }
+    const sp = 60 * dt, vx = dx / d * sp, vy = dy / d * sp;
+    let moved = false;
+    if (!solidAt(n.x + vx, n.y, 8, 5)) { n.x += vx; moved = true; }
+    if (!solidAt(n.x, n.y + vy, 8, 5)) { n.y += vy; moved = true; }
+    if (!moved) { npcTarget(n); n.wait = 0.5; }
+    n.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
+    n.phase += dt * 10;
+  }
+}
+
+/* ---------------- оновлення світу ---------------- */
+let saveTimer = 0;
+function updateWorld(dt) {
+  const v = inputVec();
+  const tired = S.stats.energy <= 0;
+  const sp = (tired ? 90 : 175) * dt;
+  P.moving = Math.abs(v.x) + Math.abs(v.y) > 0.05;
+  if (P.moving) {
+    const nx = P.x + v.x * sp, ny = P.y + v.y * sp;
+    if (!solidAt(nx, P.y, 9, 5)) P.x = nx;
+    if (!solidAt(P.x, ny, 9, 5)) P.y = ny;
+    P.dir = Math.abs(v.x) > Math.abs(v.y) ? (v.x > 0 ? "right" : "left") : (v.y > 0 ? "down" : "up");
+    P.phase += dt * 12;
+    S.stats.energy = Math.max(0, S.stats.energy - (S.stats.health < 30 ? 0.44 : 0.22) * dt);
+    if (Math.random() < dt * 9) addPart(P.x + rand(-6, 6), P.y - 2, rand(-10, 10), rand(-14, -4), 0.45, "rgba(214,196,150,.8)", 2);
+    S.nextEvent -= dt;
+    if (S.nextEvent <= 0) { S.nextEvent = rand(30, 55); triggerEvent(); }
+  } else P.phase = 0;
+  S.hour += dt * (2 / 60); // 1 ігрова хвилина = 0,5 с
+  if (S.hour >= 24) afterAction();
+  updateNPCs(dt); ambientFX(dt); updateParts(dt);
+  near = findNear();
+  const pr = $("#prompt");
+  if (near && !modalOpen) { pr.hidden = false; pr.innerHTML = isTouch ? esc(near.label) : `<kbd>E</kbd>${esc(near.label)}`; } else pr.hidden = true;
+  $("#actBtn").disabled = !near;
+  $("#actBtn").textContent = near ? (near.type === "teacher" ? "Говорити" : near.id === "glade" || near.id === "park" || near.id === "stadium" ? "Підійти" : "Увійти") : "Дія";
+  S.x = P.x; S.y = P.y; S.dir = P.dir;
+  saveTimer += dt; if (saveTimer > 8) { saveTimer = 0; writeSave(); }
+  updateHUD(); drawMini();
+}
+
+/* ---------------- рендер світу (піксель-арт) ---------------- */
+// Земля пререндериться один раз у текстуру з текселем 2×2 світові одиниці і масштабується без згладжування.
+const TX = 2;
+function worldZoom() { const t = Math.max(2, Math.round(Math.min(CW, CH) / 560 * TX * DPR)); return t / (TX * DPR); }
+function hash2(x, y, s) { let h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) + Math.imul(s | 0, 1442695041)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
+function vnoise(x, y, s) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const a = hash2(xi, yi, s), b = hash2(xi + 1, yi, s), c = hash2(xi, yi + 1, s), d = hash2(xi + 1, yi + 1, s);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+const hexRGB = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+function inRR(x, y, rx, ry, rw, rh, r) {
+  if (x < rx || y < ry || x > rx + rw || y > ry + rh) return false; r = Math.min(r, rw / 2, rh / 2);
+  const cx = clamp(x, rx + r, rx + rw - r), cy = clamp(y, ry + r, ry + rh - r); return (x - cx) ** 2 + (y - cy) ** 2 <= r * r;
+}
+const inPath = (x, y) => PATHS.some(p => x >= p[0] && x < p[0] + p[2] && y >= p[1] && y < p[1] + p[3]);
+const GRASS_P = ["#4b8532", "#56953a", "#5fa141", "#69ab48"].map(hexRGB);
+const PARK_P = ["#3f7529", "#488230", "#518e36", "#5b9a3d"].map(hexRGB);
+const FLOWERS = [[240, 240, 232], [245, 215, 110], [230, 110, 120], [170, 150, 230]];
+const sh3 = (c, v) => [c[0] + v, c[1] + v, c[2] + v];
+function cobble(tx, ty, base, mortar) {
+  const row = Math.floor(ty / 4), off = (row & 1) * 3;
+  if (ty % 4 === 0 || (tx + off) % 6 === 0) return mortar;
+  return sh3(base, (hash2(Math.floor((tx + off) / 6), row, 3) * 26 | 0) - 13 + (ty % 4 === 1 ? 9 : 0));
+}
+function groundColor(tx, ty) {
+  const x = tx * TX + 1, y = ty * TX + 1, r = hash2(tx, ty, 1);
+  if (y >= 1410) { if (y >= 1452 && y < 1458 && (x % 70) < 36) return [233, 227, 208]; return sh3([69, 72, 77], (r * 14 | 0) - 7); }
+  if (y >= 1400) return tx % 4 === 0 ? [118, 122, 128] : [156, 160, 166];
+  const sd = ZONES[1];
+  if (inRR(x, y, sd.x, sd.y, sd.w, sd.h, 140)) {
+    const inField = inRR(x, y, sd.x + 40, sd.y + 36, sd.w - 80, sd.h - 72, 100);
+    const lane = inRR(x, y, sd.x + 20, sd.y + 18, sd.w - 40, sd.h - 36, 120) !== inRR(x, y, sd.x + 23, sd.y + 21, sd.w - 46, sd.h - 42, 117);
+    if (!inField) return lane ? [236, 230, 220] : sh3([181, 83, 60], (r * 16 | 0) - 8);
+    const cx = sd.x + sd.w / 2, cy = sd.y + sd.h / 2;
+    if (Math.abs(x - cx) < 2 || Math.abs(Math.hypot(x - cx, y - cy) - 34) < 1.6) return [236, 236, 226];
+    return sh3(Math.floor((x - sd.x) / 40) % 2 ? [86, 160, 69] : [98, 172, 78], (r * 8 | 0) - 4);
+  }
+  if (inPath(x, y)) {
+    if (!inPath(x - 3, y) || !inPath(x + 3, y) || !inPath(x, y - 3) || !inPath(x, y + 3)) return [138, 126, 98];
+    return cobble(tx, ty, [205, 193, 160], [156, 144, 114]);
+  }
+  const fd = Math.hypot(x - 450, y - 1180);
+  if (fd < 62) {
+    if (fd < 9) return [214, 236, 248];
+    if (fd < 27) return Math.sin(fd * 0.9 + vnoise(tx / 3, ty / 3, 5) * 3) > 0.6 ? [120, 176, 220] : [78, 142, 196];
+    if (fd < 32) return (tx + ty) % 3 === 0 ? [150, 142, 128] : [192, 184, 168];
+    return cobble(tx, ty, [198, 184, 148], [150, 138, 110]);
+  }
+  const gd = ((x - GLADE.x) / GLADE.rx) ** 2 + ((y - GLADE.y) / GLADE.ry) ** 2;
+  if (gd < 1) {
+    const fpd = Math.hypot(x - GLADE.x, y - GLADE.y);
+    if (fpd < 9) return r < 0.5 ? [52, 44, 38] : [74, 62, 52];
+    if (fpd < 15) return ((tx + ty) & 1) ? [104, 104, 108] : [142, 142, 146];
+    if (vnoise(tx / 5, ty / 5, 7) + (1 - gd) * 0.75 > 0.98) return sh3([136, 104, 68], (r * 18 | 0) - 9);
+    if (r > 0.993) return [70, 120, 70]; // скляна пляшка в траві
+  }
+  const park = ZONES[0], inPk = inRR(x, y, park.x, park.y, park.w, park.h, 18);
+  if (inPk && !inRR(x, y, park.x + 12, park.y + 12, park.w - 24, park.h - 24, 10)) return sh3(hash2(tx >> 1, ty >> 1, 8) < 0.3 ? [40, 82, 32] : [54, 100, 40], (r * 16 | 0) - 8);
+  const pal = inPk ? PARK_P : GRASS_P;
+  const n = vnoise(tx / 11, ty / 11, 2) * 0.7 + vnoise(tx / 3, ty / 3, 6) * 0.3;
+  if (r > (inPk ? 0.992 : 0.9965)) return FLOWERS[Math.floor(hash2(tx, ty, 11) * 4)];
+  if (r < 0.05) return pal[0];
+  if (r > 0.965) return sh3(pal[3], 16);
+  return pal[clamp(Math.floor(n * 4.3), 0, 3)];
+}
+
+let BG = null;
+const WINDOWS = [];
+function buildBG() {
+  const W = WORLD.w / TX, H = WORLD.h / TX;
+  BG = document.createElement("canvas"); BG.width = W; BG.height = H;
+  const g = BG.getContext("2d"), im = g.createImageData(W, H), d = im.data;
+  for (let ty = 0; ty < H; ty++) for (let tx = 0; tx < W; tx++) { const c = groundColor(tx, ty), i = (ty * W + tx) * 4; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; }
+  g.putImageData(im, 0, 0);
+  g.save(); g.scale(1 / TX, 1 / TX);
+  const F = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.max(2, Math.round(w / 2) * 2), Math.max(2, Math.round(h / 2) * 2)); };
+  // лавки в парку
+  for (const [bx, by] of [[380, 1112], [490, 1112], [380, 1240], [490, 1240]]) { F(bx - 24, by - 2, 48, 10, "#2a1a0e"); F(bx - 22, by, 44, 6, "#8a5a32"); F(bx - 22, by, 44, 2, "#a8743f"); F(bx - 20, by + 6, 4, 8, "#3b2614"); F(bx + 16, by + 6, 4, 8, "#3b2614"); }
+  WINDOWS.length = 0;
+  for (const b of BUILDINGS) drawBuildingPx(F, g, b);
+  g.restore();
+}
+function drawBuildingPx(F, g, b) {
+  const rnd = mulberry(b.x * 7 + b.y);
+  const fh = b.style === "dorm" ? b.h - 46 : b.style === "classic" ? 84 : 70;
+  const fy = b.y + b.h - fh, roofH = b.h - fh;
+  g.fillStyle = "rgba(0,0,0,.3)"; g.fillRect(b.x + 10, b.y + 12, b.w, b.h);
+  // дах: черепиця
+  F(b.x, b.y, b.w, roofH, b.roof);
+  for (let y = b.y + 10, i = 0; y < fy; y += 8, i++) {
+    F(b.x, y, b.w, 2, shade(b.roof, -26));
+    for (let x = b.x + (i % 2) * 8; x < b.x + b.w; x += 16) { F(x, y - 6, 2, 6, shade(b.roof, -14)); F(x + 2, y - 6, 8, 2, shade(b.roof, 16)); }
+  }
+  F(b.x, b.y, b.w, 4, shade(b.roof, 34)); F(b.x, b.y + 4, b.w, 2, shade(b.roof, -34));
+  if (b.style !== "classic" && b.style !== "library" && roofH > 60) {
+    for (let k = 0; k < 2; k++) { const vx = b.x + 30 + rnd() * (b.w - 90), vy = b.y + 16 + rnd() * (roofH - 50); F(vx, vy, 26, 20, "#2a2622"); F(vx + 2, vy + 2, 22, 16, "#8d9096"); F(vx + 4, vy + 4, 18, 2, "#b5b8bd"); F(vx + 4, vy + 10, 18, 2, "#6c6f74"); }
+  }
+  if (b.style === "library") {
+    F(b.x + 38, b.y + 22, b.w - 76, roofH - 40, "#22323d");
+    F(b.x + 40, b.y + 24, b.w - 80, roofH - 44, "#7fa9c6");
+    for (let x = b.x + 40; x < b.x + b.w - 40; x += 20) F(x, b.y + 24, 2, roofH - 44, "#d8e6ef");
+    for (let y = b.y + 24; y < fy - 20; y += 24) F(b.x + 40, y, b.w - 80, 2, "#d8e6ef");
+    for (let k = 0; k < 6; k++) F(b.x + 60 + k * 50, b.y + 30, 6, roofH - 60, "rgba(255,255,255,.25)");
+  }
+  if (b.style === "classic") {
+    for (let dy = -14; dy <= 14; dy += 2) for (let dx = -14; dx <= 14; dx += 2) { const dd = Math.hypot(dx, dy); if (dd <= 14) F(b.door.x + dx, b.y + 40 + dy, 2, 2, dd > 12 ? "#2a1d10" : dd > 10 ? "#c99a3a" : "#f1e2b0"); }
+    F(b.door.x - 1, b.y + 30, 2, 10, "#2a1d10"); F(b.door.x, b.y + 39, 8, 2, "#2a1d10");
+  }
+  // фасад: цегла або штукатурка
+  F(b.x, fy, b.w, fh, b.wall);
+  if (b.style !== "classic") {
+    for (let y = fy + 6, i = 0; y < b.y + b.h; y += 6, i++) {
+      F(b.x, y, b.w, 2, shade(b.wall, -16));
+      for (let x = b.x + (i % 2) * 6; x < b.x + b.w; x += 12) F(x, y - 4, 2, 4, shade(b.wall, -11));
+    }
+  } else { for (let y = fy + 20; y < b.y + b.h; y += 20) F(b.x, y, b.w, 2, shade(b.wall, -10)); }
+  F(b.x, fy, b.w, 6, shade(b.wall, 22)); F(b.x, fy + 6, b.w, 2, shade(b.wall, -46));
+  F(b.x, b.y + b.h - 6, b.w, 6, shade(b.wall, -38));
+  // вікна
+  const floors = Math.max(1, Math.floor((fh - 16) / 38));
+  for (let r = 0; r < floors; r++) {
+    const wy = fy + 14 + r * 38;
+    for (let x = b.x + 16; x < b.x + b.w - 30; x += 34) {
+      if (r === floors - 1 && Math.abs(x + 9 - b.door.x) < 40) continue;
+      if (b.style === "classic" && Math.abs(x + 9 - b.door.x) < 110) continue;
+      F(x - 2, wy - 2, 22, 28, "#efe9dc"); F(x, wy, 18, 24, "#3f6f94"); F(x, wy, 18, 4, "#2f5674");
+      F(x + 2, wy + 8, 2, 6, "#a9d1ea"); F(x + 4, wy + 6, 2, 4, "#a9d1ea");
+      F(x + 8, wy, 2, 24, "#efe9dc"); F(x, wy + 10, 18, 2, "#efe9dc");
+      F(x - 4, wy + 24, 26, 4, shade(b.wall, -50));
+      if (b.style === "dorm") F(x - 4, wy + 28, 26, 2, "#4a4a50");
+      WINDOWS.push({ x, y: wy, w: 18, h: 24, lit: rnd() < 0.55 });
+    }
+  }
+  if (b.style === "classic") {
+    for (let k = 0; k < 24; k++) F(b.door.x - 124 + k * 5, fy - 14 - k * 2, 248 - k * 10, 2, k % 4 === 0 ? "#cdc4b1" : "#ebe4d3");
+    for (let i = -3; i <= 3; i++) {
+      const cx = b.door.x + i * 30;
+      F(cx - 6, fy - 8, 12, fh + 2, "#f6f1e5"); F(cx - 6, fy - 8, 2, fh + 2, "#ffffff"); F(cx + 4, fy - 8, 2, fh + 2, "#c9c1ae");
+      F(cx - 8, fy - 12, 16, 4, "#ddd6c5"); F(cx - 8, b.y + b.h - 8, 16, 6, "#c9c1ae");
+    }
+  }
+  // двері
+  F(b.door.x - 26, b.y + b.h - 46, 52, 6, shade(b.roof, 10)); F(b.door.x - 26, b.y + b.h - 40, 52, 2, shade(b.roof, -30));
+  F(b.door.x - 20, b.y + b.h - 38, 40, 38, "#2e1d10");
+  F(b.door.x - 16, b.y + b.h - 34, 14, 34, "#7a4f2c"); F(b.door.x + 2, b.y + b.h - 34, 14, 34, "#7a4f2c");
+  F(b.door.x - 12, b.y + b.h - 34, 2, 34, "#64401f"); F(b.door.x + 8, b.y + b.h - 34, 2, 34, "#64401f");
+  F(b.door.x - 16, b.y + b.h - 34, 14, 2, "#93653b"); F(b.door.x + 2, b.y + b.h - 34, 14, 2, "#93653b");
+  F(b.door.x - 5, b.y + b.h - 18, 2, 2, "#e8c460"); F(b.door.x + 3, b.y + b.h - 18, 2, 2, "#e8c460");
+  F(b.door.x - 28, b.y + b.h, 56, 4, "#b9b1a0"); F(b.door.x - 24, b.y + b.h + 4, 48, 4, "#9d9483");
+  // контур
+  F(b.x - 2, b.y - 2, b.w + 4, 2, "#1d1510"); F(b.x - 2, b.y + b.h, b.w + 4, 2, "#1d1510"); F(b.x - 2, b.y, 2, b.h, "#1d1510"); F(b.x + b.w, b.y, 2, b.h, "#1d1510");
+}
+
+/* спрайти людей з контуром (кеш) */
+const SPR = new WeakMap();
+function makePersonSprite(look, dir, frame) {
+  const c = document.createElement("canvas"); c.width = 40; c.height = 52; const g = c.getContext("2d");
+  drawPerson(g, 20, 46, 2, look, dir, [0, Math.PI / 2, Math.PI * 1.5][frame], true);
+  const im = g.getImageData(0, 0, 40, 52), d = im.data, out = new Uint8ClampedArray(d);
+  for (let i = 3; i < d.length; i += 4) out[i] = d[i] > 110 ? 255 : 0;
+  const a = i => out[i * 4 + 3] === 255;
+  const res = new Uint8ClampedArray(out);
+  for (let y = 0; y < 52; y++) for (let x = 0; x < 40; x++) {
+    const i = y * 40 + x; if (a(i)) continue;
+    if ((x > 0 && a(i - 1)) || (x < 39 && a(i + 1)) || (y > 0 && a(i - 40)) || (y < 51 && a(i + 40))) { res[i * 4] = 26; res[i * 4 + 1] = 20; res[i * 4 + 2] = 18; res[i * 4 + 3] = 255; }
+  }
+  g.putImageData(new ImageData(res, 40, 52), 0, 0); return c;
+}
+function personSprite(look, dir, frame) {
+  let m = SPR.get(look); if (!m) { m = new Map(); SPR.set(look, m); }
+  const k = dir + frame; let s = m.get(k); if (!s) { s = makePersonSprite(look, dir, frame); m.set(k, s); } return s;
+}
+function drawSprite(c, look, dir, phase, x, y, k, noCache) {
+  const st = phase ? Math.sin(phase) : 0, frame = st > 0.2 ? 1 : st < -0.2 ? 2 : 0;
+  c.fillStyle = "rgba(0,0,0,.28)"; c.beginPath(); c.ellipse(x, y, 12 * k, 3.6 * k, 0, 0, 7); c.fill();
+  const spr = noCache ? makePersonSprite(look, dir, frame) : personSprite(look, dir, frame);
+  c.imageSmoothingEnabled = false; c.drawImage(spr, x - 20 * k, y - 46 * k, 40 * k, 52 * k);
+}
+
+/* дерева: процедурний піксель-арт */
+const TREE_PAL = {
+  chestnut: ["#1f4527", "#2b6030", "#3a7c38", "#53a046", "#6cbb52"],
+  linden: ["#29561f", "#377429", "#4b9334", "#66b043", "#86c95a"],
+  oak: ["#22471d", "#2f6226", "#417e31", "#5a9c3f", "#79b952"],
+  pine: ["#143726", "#1c4b33", "#266042", "#337a52", "#469466"]
+};
+function makeTree(t, seed) {
+  const r = mulberry(seed), R = Math.round(t.r / TX * 1.2), pal = TREE_PAL[t.kind].map(hexRGB);
+  const W = R * 2 + 6, H = R * 2 + 16, cx = W / 2 | 0, base = H - 2;
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const g = c.getContext("2d");
+  const im = g.createImageData(W, H), d = im.data;
+  const put = (x, y, col) => { if (x < 0 || y < 0 || x >= W || y >= H) return; const i = (y * W + x) * 4; d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = 255; };
+  const bark = [[95, 62, 34], [74, 47, 24], [124, 86, 50]];
+  for (let y = base - 14; y <= base; y++) for (let x = cx - 2; x <= cx + 1; x++) put(x, y, x === cx - 2 ? bark[2] : x === cx + 1 ? bark[1] : r() < 0.2 ? bark[1] : bark[0]);
+  put(cx - 3, base, bark[1]); put(cx + 2, base, bark[1]); put(cx - 3, base - 1, bark[0]); put(cx + 2, base - 1, bark[1]);
+  const ccy = R + 2;
+  const blobs = t.kind === "pine" ? null : [[cx, ccy, R], [cx - R * 0.55, ccy + 3, R * 0.62], [cx + R * 0.55, ccy + 3, R * 0.62], [cx, ccy - R * 0.35, R * 0.72]];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let inside = false;
+    if (blobs) inside = blobs.some(([bx, by, br]) => Math.hypot(x + 0.5 - bx, y + 0.5 - by) < br * (0.88 + vnoise(x / 2.5, y / 2.5, seed) * 0.24));
+    else { const top = 1, bot = R * 2 + 3; if (y >= top && y <= bot) { const tier = ((y - top) % Math.max(4, R * 0.55)) / Math.max(4, R * 0.55); const hw = (y - top) / (bot - top) * R * 0.95 * (0.55 + tier * 0.45) + 1; inside = Math.abs(x + 0.5 - cx) < hw; } }
+    if (!inside) continue;
+    const lv = ((cx - x) * 0.6 + (ccy - y)) / (R * 1.6) + 0.45 + (vnoise(x / 2, y / 2, seed + 9) - 0.5) * 0.5;
+    let k = clamp(Math.floor(lv * 4.2), 0, 4); if (((x + y) & 1) && lv * 4.2 - k < 0.25 && k > 0) k--;
+    put(x, y, pal[k]);
+    if (t.kind === "chestnut" && y < ccy && r() < 0.035) put(x, y, [246, 240, 228]);
+  }
+  const out = new Uint8ClampedArray(d);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4; if (d[i + 3]) continue;
+    const n = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < H && d[(yy * W + xx) * 4 + 3];
+    if (n(x - 1, y) || n(x + 1, y) || n(x, y - 1) || n(x, y + 1)) { out[i] = 18; out[i + 1] = 30; out[i + 2] = 16; out[i + 3] = 255; }
+  }
+  g.putImageData(new ImageData(out, W, H), 0, 0);
+  return { c, W, H };
+}
+function drawTree(t) {
+  if (!t.spr) t.spr = makeTree(t, Math.floor(t.x * 13 + t.y));
+  const s = t.spr;
+  ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(t.x + 4, t.y + 6, t.r * 0.95, t.r * 0.32, 0, 0, 7); ctx.fill();
+  ctx.drawImage(s.c, t.x - s.W, t.y + 8 - s.H * TX, s.W * TX, s.H * TX);
+}
+
+/* ліхтарі, вогнище, частинки */
+const LAMPS = LAMPS_POS.map(([x, y]) => ({ x, y }));
+function drawLamp(l, night) {
+  const F = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  F(l.x - 6, l.y - 4, 12, 6, "#1d1f24"); F(l.x - 2, l.y - 46, 4, 44, "#2d3036"); F(l.x - 2, l.y - 46, 2, 44, "#4a4e56");
+  F(l.x - 8, l.y - 58, 16, 4, "#1d1f24"); F(l.x - 6, l.y - 54, 12, 8, night ? "#ffe7a0" : "#c9cfc4"); F(l.x - 6, l.y - 54, 12, 2, "#1d1f24");
+}
+const PARTS = [];
+function addPart(x, y, vx, vy, life, col, sz, grav) { if (PARTS.length < 350) PARTS.push({ x, y, vx, vy, life, max: life, col, sz: sz || 2, grav: grav || 0 }); }
+function updateParts(dt) {
+  for (const p of PARTS) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += p.grav * dt; p.life -= dt; }
+  for (let i = PARTS.length - 1; i >= 0; i--) if (PARTS[i].life <= 0) PARTS.splice(i, 1);
+}
+let fxT = 0;
+function ambientFX(dt, now) {
+  fxT += dt;
+  if (Math.random() < dt * 14) addPart(GLADE.x + rand(-6, 6), GLADE.y - 8, rand(-8, 8), rand(-50, -26), rand(0.5, 1.1), pick(["#ffd04a", "#ff8a2a", "#ffef9a"]), 2, -10);
+  if (Math.random() < dt * 4) addPart(GLADE.x + rand(-4, 4), GLADE.y - 22, rand(-6, 6), rand(-22, -14), rand(1.5, 2.6), "rgba(120,120,120,.35)", 4);
+  if (Math.random() < dt * 10) addPart(450 + rand(-4, 4), 1178, rand(-20, 20), rand(-60, -40), 0.7, "#d6ecf8", 2, 120);
+  if (Math.random() < dt * 1.2) { const vis = TREES.filter(t => t.x > cam.x && t.x < cam.x + CW && t.y > cam.y && t.y < cam.y + CH); if (vis.length) { const t = pick(vis); addPart(t.x + rand(-t.r, t.r), t.y - t.r * 1.5, rand(6, 20), rand(12, 22), 3, pick(["#c8a23a", "#9c6b2a", "#6aa34a"]), 2); } }
+}
+function drawCampfire(now) {
+  const x = GLADE.x, y = GLADE.y, F = (a, b, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x + a, y + b, w, h); };
+  F(-14, -2, 28, 6, "#4a2e18"); F(-12, -6, 24, 4, "#6b4426"); F(-14, -2, 28, 2, "#7d522f");
+  const t = now / 90;
+  for (let i = -3; i <= 3; i++) {
+    const h = 10 + Math.abs(Math.sin(t + i * 1.7)) * 14 - Math.abs(i) * 2;
+    F(i * 3 - 1, -6 - h, 4, h, "#c8321a"); F(i * 3, -6 - h * 0.8, 2, h * 0.8, "#ff6a1f");
+    if (Math.abs(i) < 2) F(i * 3, -6 - h * 0.55, 2, h * 0.55, "#ffb43c");
+  }
+  F(-2, -14, 4, 8, "#ffef9a");
+}
+const GLADE_FOLKS = [];
+function gladeCrowd() {
+  if (GLADE_FOLKS.length) return GLADE_FOLKS;
+  const r = mulberry(77);
+  [[-46, -22, "right"], [46, -22, "left"], [-40, 36, "right"], [40, 36, "left"], [0, -52, "down"]].forEach(([dx, dy, dir], i) => {
+    const look = { skin: SKINS[Math.floor(r() * SKINS.length)], hair: OPTS.hair[Math.floor(r() * 7)][0], hairColor: HAIRC[Math.floor(r() * HAIRC.length)], outfit: OPTS.outfit[Math.floor(r() * 4)][0], outfitColor: CLOTHC[Math.floor(r() * CLOTHC.length)], glasses: "none", accessory: i % 2 ? "cap" : "none", accColor: CLOTHC[i], beard: i === 2 ? "stubble" : "none", pants: "#2c3344" };
+    GLADE_FOLKS.push({ x: GLADE.x + dx, y: GLADE.y + dy, dir, look, i });
+  });
+  return GLADE_FOLKS;
+}
+function gladeBusy() { return S && (S.hour >= 15 || weekday(S.day) >= 5); }
+function drawFolk(f, now) {
+  const bob = Math.sin(now / 400 + f.i) > 0.85 ? -2 : 0;
+  drawSprite(ctx, f.look, f.dir, 0, f.x, f.y + bob, 1);
+  // колода, на якій сидять, і пляшка в руці
+  ctx.fillStyle = "#5a3a20"; ctx.fillRect(f.x - 16, f.y - 8, 32, 10); ctx.fillStyle = "#7a5230"; ctx.fillRect(f.x - 16, f.y - 8, 32, 3); ctx.fillStyle = "#2a1a0e"; ctx.fillRect(f.x - 18, f.y - 8, 2, 10); ctx.fillRect(f.x + 16, f.y - 8, 2, 10);
+  const hx = f.dir === "left" ? f.x - 14 : f.x + 12;
+  ctx.fillStyle = "#2f6b3a"; ctx.fillRect(hx, f.y - 26 + bob, 4, 9); ctx.fillStyle = "#9fd3a8"; ctx.fillRect(hx + 1, f.y - 25 + bob, 1, 4); ctx.fillStyle = "#c9a35a"; ctx.fillRect(hx + 1, f.y - 29 + bob, 2, 3);
+}
+
+function sign(text, x, y) {
+  ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const w = Math.ceil(ctx.measureText(text).width / 2) * 2 + 12;
+  ctx.fillStyle = "#1a120b"; ctx.fillRect(x - w / 2 - 2, y - 9, w + 4, 18);
+  ctx.fillStyle = "#6b4426"; ctx.fillRect(x - w / 2, y - 7, w, 14);
+  ctx.fillStyle = "#83562f"; ctx.fillRect(x - w / 2, y - 7, w, 2);
+  ctx.fillStyle = "#2a1a0e"; ctx.fillText(text, x + 1, y + 1);
+  ctx.fillStyle = "#f6edd8"; ctx.fillText(text, x, y);
+  ctx.textBaseline = "alphabetic";
+}
+function roundRect(x, y, w, h, r) { ctx.beginPath(); r = Math.min(r, w / 2, h / 2); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+function darkness(h) { h = h % 24; if (h < 6) return 0.78; if (h < 8) return 0.78 * (8 - h) / 2; if (h < 17) return 0; if (h < 20.5) return 0.6 * (h - 17) / 3.5; return 0.6 + 0.18 * (h - 20.5) / 3.5; }
+
+function drawWorld(focusX, focusY, actors, now) {
+  if (!BG) buildBG();
+  const Z = worldZoom(), hour = S ? S.hour : 12, night = darkness(hour) > 0.2;
+  cam.x = clamp(focusX - CW / (2 * Z), 0, Math.max(0, WORLD.w - CW / Z));
+  cam.y = clamp(focusY - CH / (2 * Z), 0, Math.max(0, WORLD.h - CH / Z));
+  cam.x = Math.round(cam.x * Z * DPR) / (Z * DPR); cam.y = Math.round(cam.y * Z * DPR) / (Z * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.fillStyle = "#14211c"; ctx.fillRect(0, 0, CW, CH);
+  ctx.setTransform(DPR * Z, 0, 0, DPR * Z, -cam.x * DPR * Z, -cam.y * DPR * Z); ctx.imageSmoothingEnabled = false;
+  const vw = CW / Z, vh = CH / Z;
+  const sx = Math.max(0, Math.floor(cam.x / TX)), sy = Math.max(0, Math.floor(cam.y / TX));
+  const sw = Math.min(BG.width - sx, Math.ceil(vw / TX) + 2), sh = Math.min(BG.height - sy, Math.ceil(vh / TX) + 2);
+  ctx.drawImage(BG, sx, sy, sw, sh, sx * TX, sy * TX, sw * TX, sh * TX);
+  // тіні хмар
+  ctx.fillStyle = "rgba(10,20,30,.07)";
+  for (let i = 0; i < 4; i++) { const cx = ((now / 1000) * 12 + i * 700) % (WORLD.w + 600) - 300, cy = 200 + i * 340; ctx.beginPath(); ctx.ellipse(cx, cy, 220, 90, 0, 0, 7); ctx.ellipse(cx + 150, cy + 30, 160, 70, 0, 0, 7); ctx.fill(); }
+  const vis = (x, y, m) => x > cam.x - m && x < cam.x + vw + m && y > cam.y - m && y < cam.y + vh + m * 2;
+  const list = [];
+  for (const t of TREES) if (vis(t.x, t.y, 80)) list.push({ y: t.y, d: () => drawTree(t) });
+  for (const l of LAMPS) if (vis(l.x, l.y, 60)) list.push({ y: l.y, d: () => drawLamp(l, night) });
+  if (vis(GLADE.x, GLADE.y, 200)) {
+    list.push({ y: GLADE.y + 2, d: () => drawCampfire(now) });
+    if (!S || gladeBusy()) for (const f of gladeCrowd()) list.push({ y: f.y, d: () => drawFolk(f, now) });
+  }
+  for (const a of actors) if (vis(a.x, a.y, 60)) list.push({ y: a.y, d: () => drawSprite(ctx, a.look, a.dir, a.phase, a.x, a.y, (a.s || 2) / 2) });
+  list.sort((a, b) => a.y - b.y); for (const it of list) it.d();
+  for (const p of PARTS) { ctx.globalAlpha = clamp(p.life / p.max * 1.5, 0, 1); ctx.fillStyle = p.col; ctx.fillRect(Math.round(p.x / 2) * 2, Math.round(p.y / 2) * 2, p.sz, p.sz); }
+  ctx.globalAlpha = 1;
+  for (const b of BUILDINGS) sign(b.name, b.door.x, b.y + b.h - (b.style === "dorm" ? b.h - 46 : b.style === "classic" ? 84 : 70) - 16 - (b.style === "classic" ? 34 : 0));
+  sign(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 26);
+  sign(ZONES[1].name, ZONES[1].x + ZONES[1].w / 2, ZONES[1].y - 12);
+  sign("Поляна", GLADE.x, GLADE.y - GLADE.ry + 10);
+  ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = "center"; ctx.fillStyle = "rgba(240,236,220,.75)"; ctx.fillText("БЕРЕСТЕЙСЬКИЙ ПРОСПЕКТ", 1100, 1490);
+  if (S) drawLighting(Z, now, hour);
+}
+const lightC = document.createElement("canvas"), lg = lightC.getContext("2d");
+function drawLighting(Z, now, hour) {
+  const dk = darkness(hour); if (dk <= 0.01) return;
+  const sc = 0.5, w = Math.ceil(CW * sc), h = Math.ceil(CH * sc);
+  if (lightC.width !== w || lightC.height !== h) { lightC.width = w; lightC.height = h; }
+  lg.globalCompositeOperation = "source-over"; lg.clearRect(0, 0, w, h);
+  lg.fillStyle = hour >= 17 && hour < 20.5 ? `rgba(46,24,64,${dk})` : `rgba(8,12,36,${dk})`; lg.fillRect(0, 0, w, h);
+  lg.globalCompositeOperation = "destination-out";
+  const L = (wx, wy, rad, str) => {
+    const px = (wx - cam.x) * Z * sc, py = (wy - cam.y) * Z * sc, pr = rad * Z * sc;
+    if (px < -pr || py < -pr || px > w + pr || py > h + pr) return;
+    const gr = lg.createRadialGradient(px, py, 0, px, py, pr); gr.addColorStop(0, `rgba(0,0,0,${str})`); gr.addColorStop(1, "rgba(0,0,0,0)");
+    lg.fillStyle = gr; lg.beginPath(); lg.arc(px, py, pr, 0, 7); lg.fill();
+  };
+  for (const l of LAMPS) L(l.x, l.y - 40, 85, 0.9);
+  L(GLADE.x, GLADE.y - 10, 130 + Math.sin(now / 90) * 7 + Math.sin(now / 37) * 4, 0.95);
+  for (const wd of WINDOWS) if (wd.lit) L(wd.x + 9, wd.y + 34, 30, 0.5);
+  L(P.x, P.y - 20, 55, 0.35);
+  lg.globalCompositeOperation = "source-over";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.imageSmoothingEnabled = true; ctx.drawImage(lightC, 0, 0, CW, CH);
+  ctx.setTransform(DPR * Z, 0, 0, DPR * Z, -cam.x * DPR * Z, -cam.y * DPR * Z); ctx.imageSmoothingEnabled = false;
+  ctx.globalCompositeOperation = "lighter";
+  const glow = (x, y, r, col) => { const gr = ctx.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); };
+  glow(GLADE.x, GLADE.y - 12, 110, `rgba(255,120,40,${0.28 * dk})`);
+  for (const l of LAMPS) glow(l.x, l.y - 50, 50, `rgba(255,200,110,${0.25 * dk})`);
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = `rgba(255,214,120,${Math.min(0.9, dk * 1.4)})`;
+  for (const wd of WINDOWS) if (wd.lit) { ctx.fillRect(wd.x, wd.y, 8, 10); ctx.fillRect(wd.x + 10, wd.y, 8, 10); ctx.fillRect(wd.x, wd.y + 12, 8, 12); ctx.fillRect(wd.x + 10, wd.y + 12, 8, 12); }
+  for (const l of LAMPS) { ctx.fillStyle = "#fff3c4"; ctx.fillRect(l.x - 6, l.y - 52, 12, 6); }
+}
+
+/* мінікарта і повна карта */
+const mini = $("#mini"), mctx = mini.getContext("2d");
+function drawMini() {
+  if (!BG) return;
+  mctx.imageSmoothingEnabled = true; mctx.drawImage(BG, 0, 0, mini.width, mini.height);
+  const k = mini.width / WORLD.w;
+  const Z = worldZoom(); mctx.strokeStyle = "rgba(255,255,255,.8)"; mctx.lineWidth = 1; mctx.strokeRect(cam.x * k, cam.y * k, CW / Z * k, CH / Z * k);
+  if (teacherPresent()) { mctx.fillStyle = "#f5d76e"; mctx.fillRect(TEACHER_POS.x * k - 2, TEACHER_POS.y * k - 2, 4, 4); }
+  mctx.fillStyle = "#ff7a3a"; mctx.fillRect(GLADE.x * k - 2, GLADE.y * k - 2, 4, 4);
+  mctx.fillStyle = "#fff"; mctx.fillRect(P.x * k - 3, P.y * k - 3, 6, 6); mctx.fillStyle = "#e0453a"; mctx.fillRect(P.x * k - 2, P.y * k - 2, 4, 4);
+}
+function openMap() {
+  if (modalOpen || mode !== "world") return;
+  if (!BG) buildBG();
+  const box = document.createElement("div"); box.style.display = "grid"; box.style.gap = "8px";
+  const c = document.createElement("canvas"); c.width = 1100; c.height = 750; c.style.width = "100%"; c.style.height = "auto"; c.style.border = "3px solid var(--frame)"; c.style.borderRadius = "4px"; c.style.imageRendering = "pixelated";
+  const g = c.getContext("2d"); g.imageSmoothingEnabled = false; g.drawImage(BG, 0, 0);
+  const k = 0.5;
+  g.font = "700 18px Rubik, sans-serif"; g.textAlign = "center";
+  const lab = (t, x, y, col) => { g.lineWidth = 4; g.strokeStyle = "rgba(20,15,10,.85)"; g.strokeText(t, x * k, y * k); g.fillStyle = col || "#fff"; g.fillText(t, x * k, y * k); };
+  for (const b of BUILDINGS) lab(b.name, b.x + b.w / 2, b.y + b.h / 2);
+  lab(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 60); lab(ZONES[1].name, ZONES[1].x + ZONES[1].w / 2, ZONES[1].y + ZONES[1].h / 2 + 8);
+  lab("Поляна", GLADE.x, GLADE.y - 40, "#ffb27a");
+  if (teacherPresent()) lab("! " + teacherName(TEACHERS[0]), TEACHER_POS.x + 60, TEACHER_POS.y + 30, "#f5d76e");
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(P.x * k, P.y * k, 9, 0, 7); g.fill(); g.fillStyle = "#e0453a"; g.beginPath(); g.arc(P.x * k, P.y * k, 6, 0, 7); g.fill();
+  lab("Ти", P.x, P.y - 30, "#ffd0c8");
+  box.appendChild(c);
+  const p = document.createElement("p"); p.style.fontSize = "13px"; p.style.color = "var(--chalk-dim)"; p.textContent = "Червона точка — ти. Жовтий знак оклику — викладач, помаранчева — поляна. На комп'ютері карта відкривається клавішею M.";
+  box.appendChild(p);
+  openModal({ kicker: `${WEEK[weekday(S.day)]} · ${hhmm(S.hour)}`, title: "Карта кампусу", body: box, buttons: [{ label: "Закрити", primary: true, onClick: closeModal }] });
+}
+
+function drawJoy() {
+  if (!joy.active) return;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = "rgba(242,239,230,.12)"; ctx.strokeStyle = "rgba(242,239,230,.4)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(joy.ox, joy.oy, 55, 0, 7); ctx.fill(); ctx.stroke();
+  const dx = joy.x - joy.ox, dy = joy.y - joy.oy, l = Math.hypot(dx, dy), m = Math.min(l, 55);
+  const kx = l ? joy.ox + dx / l * m : joy.ox, ky = l ? joy.oy + dy / l * m : joy.oy;
+  ctx.fillStyle = "rgba(245,215,110,.75)"; ctx.beginPath(); ctx.arc(kx, ky, 22, 0, 7); ctx.fill();
+}
+
+/* ---------------- БІЙ З БОСОМ ---------------- */
+const AW = 420, AH = 720, FT = 176;
+let B = null;
+const CHALK_BG = []; { const r = mulberry(7); const f = ["∫ f(x) dx", "lim", "ε > 0", "δ(ε)", "∑ 1/n²", "e^{iπ}+1=0", "dy/dx", "sin²x+cos²x=1", "∀ε ∃δ", "x→0", "n!", "√2"]; for (let i = 0; i < 22; i++) CHALK_BG.push([r() * AW, FT + 20 + r() * (AH - FT - 40), f[Math.floor(r() * f.length)], r() * 0.6 - 0.3]); }
+
+function bossIntro(t) {
+  const won = S.bosses[t.id]?.won;
+  const box = document.createElement("div"); box.style.display = "grid"; box.style.gap = "10px";
+  const face = document.createElement("div"); face.className = "teacher-face";
+  const fc = document.createElement("canvas"); fc.width = 96; fc.height = 110; face.appendChild(fc);
+  const info = document.createElement("div"); info.style.display = "grid"; info.style.gap = "4px";
+  info.innerHTML = `<b style="font-size:17px">${esc(teacherName(t))}</b><span style="color:var(--chalk-dim);font-size:13px">${esc(t.role)}</span><span class="quote">«${esc(won ? t.win : t.intro)}»</span>`;
+  face.appendChild(info); box.appendChild(face);
+  const c2 = fc.getContext("2d"); c2.fillStyle = "#264a3f"; c2.fillRect(0, 0, 96, 110); drawSprite(c2, t.look, "down", 0, 48, 104, 2.4);
+  const st = S.stats;
+  const blockers = [];
+  if (st.energy < 20) blockers.push("Енергія менше 20");
+  if (st.nerves < 25) blockers.push("Нерви менше 25");
+  if (!isWeekday() || S.hour < 8 || S.hour >= 19) blockers.push("Викладач приймає в будні 08:00–19:00");
+  const p = document.createElement("div"); p.style.display = "grid"; p.style.gap = "6px";
+  p.innerHTML = won ? `<p>Залік з матану вже в заліковці. Далі буде модульна контрольна!</p>` :
+    `<p>Бій: ухиляйся від формул, двійок і «незарахів». Торкайся бульбашки з правильною відповіддю, щоб завдати удару. Твоє здоров'я в бою — це Нерви (${Math.round(st.nerves)}).</p>
+     <p style="color:var(--chalk-dim);font-size:13px">Удар по босу: ${bossDmg()} · ${st.int >= 45 ? "підсвітка правильної відповіді" : st.int >= 20 ? "одна хибна відповідь прибрана" : "підказок немає (потрібно 20+ Інт)"}${st.charisma >= 40 ? " · викладач у гарному настрої (−10% здоров'я)" : ""}</p>
+     ${blockers.length ? `<p style="color:var(--red)">${esc(blockers.join(". "))}.</p>` : ""}`;
+  box.appendChild(p);
+  openModal({ kicker: "Кафедра вищої математики", title: won ? "Залік отримано" : "Захист практики", body: box,
+    buttons: won ? [{ label: "Дякую!", primary: true, onClick: closeModal }] : [
+      { label: "Почати бій", sub: "−25 Енергія · 1,5 год", primary: true, disabled: blockers.length > 0, onClick: () => { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; startBoss(t); } },
+      { label: "Ще не готовий", onClick: closeModal }] });
+}
+function bossDmg() { return Math.min(32, 16 + Math.floor(S.stats.int / 10) * 2); }
+function startBoss(t) {
+  const maxhp = S.stats.charisma >= 40 ? 90 : 100;
+  B = { t, hp: maxhp, maxhp, px: AW / 2, py: AH - 90, dir: "up", phase: 0, nerves: S.stats.nerves, bullets: [], bubbles: [], fx: [],
+    ph: 1, q: null, qLeft: 0, nextQ: 2.5, inv: 2, speech: t.intro, speechT: 3.2, t1: 1.5, t2: 2.5, t3: 0, t4: 0, t5: 3, spin: 0, shake: 0, over: false, endT: 0, msg: null, msgT: 0, time: 0 };
+  mode = "boss"; refreshTouchUI(); $("#hud").hidden = true; $("#prompt").hidden = true;
+}
+function fire(x, y, a, sp, kind) {
+  const K = { two: ["2", "#e87a6a", 9], ring: [pick(["∞", "∂", "Σ", "dx", "0/0"]), "#8ec9f0", 10], spiral: [pick(["ε", "δ"]), "#f5d76e", 8], rain: ["lim", "#c9a6f0", 11], big: ["НЕЗАРАХ", "#e05a4a", 15] }[kind];
+  B.bullets.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t: K[0], c: K[1], r: K[2], big: kind === "big" });
+}
+function bossQuestion() {
+  const t = B.t;
+  const [q] = pickQuestions(x => x.subject === t.subject && x.topic === t.topic, 1);
+  B.q = q; B.qLeft = 13;
+  let opts = q.opts.map((o, i) => ({ text: o, correct: i === q.correct }));
+  if (S.stats.int >= 20) { const wrong = opts.filter(o => !o.correct); const drop = pick(wrong); opts = opts.filter(o => o !== drop); }
+  B.bubbles = [];
+  for (const o of opts) {
+    ctx.font = "700 14px Rubik, sans-serif"; const r = clamp(ctx.measureText(o.text).width / 2 + 14, 24, 60);
+    let x, y, tries = 0;
+    do { x = rand(r + 10, AW - r - 10); y = rand(FT + r + 20, AH - r - 30); tries++; }
+    while (tries < 80 && (Math.hypot(x - B.px, y - B.py) < 110 || B.bubbles.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 24)));
+    const a = rand(0, 6.28);
+    B.bubbles.push({ ...o, x, y, vx: Math.cos(a) * 22, vy: Math.sin(a) * 22, r });
+  }
+}
+function bossHitPlayer(dmg, why) {
+  if (S.perk === "calm") dmg *= 0.75;
+  B.nerves = Math.max(0, B.nerves - dmg); B.shake = 0.25;
+  B.fx.push({ x: B.px, y: B.py - 40, t: "−" + Math.round(dmg) + " нервів", c: "#e87a6a", life: 1 });
+  if (why) { B.msg = why; B.msgT = 4; }
+}
+function answerBubble(bb) {
+  const q = B.q;
+  if (bb.correct) {
+    const d = bossDmg(); B.hp = Math.max(0, B.hp - d);
+    B.fx.push({ x: AW / 2, y: 110, t: "−" + d, c: "#9fdc8a", life: 1.2 });
+    B.bullets = B.bullets.filter(b => Math.hypot(b.x - B.px, b.y - B.py) > 140);
+    B.msg = "Правильно! " + q.opts[q.correct]; B.msgT = 1.6; B.nextQ = 1.8;
+  } else {
+    bossHitPlayer(12, "Ні. Правильно: " + q.opts[q.correct] + ". " + q.explain); B.nextQ = 4.5;
+  }
+  B.q = null; B.bubbles = [];
+}
+function updateBoss(dt) {
+  if (B.over) { B.endT -= dt; updateFx(dt); if (B.endT <= 0 && !modalOpen) bossEnd(); return; }
+  B.time += dt;
+  const v = inputVec(), sp = 210 * dt;
+  B.px = clamp(B.px + v.x * sp, 14, AW - 14); B.py = clamp(B.py + v.y * sp, FT + 24, AH - 12);
+  B.phase = Math.abs(v.x) + Math.abs(v.y) > 0.05 ? B.phase + dt * 12 : 0;
+  B.dir = Math.abs(v.x) > Math.abs(v.y) + 0.1 ? (v.x > 0 ? "right" : "left") : "up";
+  if (B.inv > 0) B.inv -= dt; if (B.shake > 0) B.shake -= dt; if (B.speechT > 0) B.speechT -= dt; if (B.msgT > 0) B.msgT -= dt;
+  const r = B.hp / B.maxhp, newPh = r > 0.66 ? 1 : r > 0.33 ? 2 : 3;
+  if (newPh !== B.ph) { B.ph = newPh; B.speech = newPh === 2 ? B.t.phase2 : B.t.phase3; B.speechT = 3; }
+  // атаки
+  const ox = AW / 2, oy = 92, ph = B.ph;
+  if (B.speechT <= 0 || B.time > 3) {
+    B.t1 -= dt; B.t2 -= dt; B.t3 -= dt; B.t4 -= dt; B.t5 -= dt;
+    if (B.t1 <= 0) { B.t1 = [0, 1.4, 1.2, 1.0][ph]; const a = Math.atan2(B.py - oy, B.px - ox), n = ph === 1 ? 3 : 5; for (let i = 0; i < n; i++) fire(ox, oy, a + (i - (n - 1) / 2) * 0.2, 125 + ph * 10, "two"); }
+    if (ph < 3 && B.t2 <= 0) { B.t2 = ph === 1 ? 2.6 : 2.2; const n = ph === 1 ? 12 : 14, off = Math.random() * 6.28; for (let i = 0; i < n; i++) fire(ox, oy, off + i / n * 6.283, 85, "ring"); }
+    if (ph >= 2 && B.t3 <= 0) { B.t3 = ph === 2 ? 0.14 : 0.11; B.spin += 0.43; fire(ox, oy, B.spin, 100, "spiral"); if (ph === 3) fire(ox, oy, -B.spin + Math.PI, 100, "spiral"); }
+    if (ph === 3 && B.t4 <= 0) { B.t4 = 0.55; B.bullets.push({ x: rand(20, AW - 20), y: FT, vx: 0, vy: 115, t: "lim", c: "#c9a6f0", r: 11 }); }
+    if (ph === 3 && B.t5 <= 0) { B.t5 = 2.8; fire(ox, oy, Math.atan2(B.py - oy, B.px - ox), 80, "big"); }
+  }
+  for (const b of B.bullets) { b.x += b.vx * dt; b.y += b.vy * dt; }
+  B.bullets = B.bullets.filter(b => b.x > -40 && b.x < AW + 40 && b.y > -40 && b.y < AH + 40);
+  // зіткнення з кулями (хітбокс — серце на грудях)
+  const hx = B.px, hy = B.py - 14;
+  if (B.inv <= 0) for (const b of B.bullets) if (Math.hypot(b.x - hx, b.y - hy) < b.r + 4) { bossHitPlayer(b.big ? 14 : 7); B.inv = 1.1; b.dead = true; break; }
+  B.bullets = B.bullets.filter(b => !b.dead);
+  // питання
+  if (!B.q) { B.nextQ -= dt; if (B.nextQ <= 0) bossQuestion(); }
+  else {
+    B.qLeft -= dt;
+    for (const bb of B.bubbles) {
+      bb.x += bb.vx * dt; bb.y += bb.vy * dt;
+      if (bb.x < bb.r || bb.x > AW - bb.r) bb.vx *= -1; if (bb.y < FT + bb.r || bb.y > AH - bb.r) bb.vy *= -1;
+      bb.x = clamp(bb.x, bb.r, AW - bb.r); bb.y = clamp(bb.y, FT + bb.r, AH - bb.r);
+    }
+    const hit = B.bubbles.find(bb => Math.hypot(bb.x - B.px, bb.y - (B.py - 14)) < bb.r + 8);
+    if (hit) answerBubble(hit);
+    else if (B.qLeft <= 0) { const q = B.q; bossHitPlayer(5, "Час вийшов. Правильно: " + q.opts[q.correct] + ". " + q.explain); B.q = null; B.bubbles = []; B.nextQ = 4; }
+  }
+  updateFx(dt);
+  if (B.hp <= 0) { B.over = "win"; B.endT = 1.2; B.bullets = []; B.bubbles = []; B.speech = B.t.win; B.speechT = 3; }
+  else if (B.nerves <= 0) { B.over = "lose"; B.endT = 1.2; B.bubbles = []; B.speech = B.t.lose; B.speechT = 3; }
+}
+function updateFx(dt) { for (const f of B.fx) { f.life -= dt; f.y -= 30 * dt; } B.fx = B.fx.filter(f => f.life > 0); }
+function bossEnd() {
+  const t = B.t, win = B.over === "win";
+  S.bosses[t.id] = S.bosses[t.id] || { won: false, tries: 0 }; S.bosses[t.id].tries++;
+  S.stats.nerves = win ? Math.max(5, B.nerves) : 15;
+  apply({ energy: -25 }, true); advance(1.5);
+  let txt = "";
+  const auto = win && S.stats.charisma >= 30;
+  if (win) { S.bosses[t.id].won = true; txt = apply({ int: 15, charisma: 8, money: auto ? 300 : 0 }, true); }
+  mode = "world"; B = null; $("#hud").hidden = false; refreshTouchUI(); updateHUD();
+  openModal({ kicker: win ? "Перемога" : "Поразка", title: win ? (auto ? "Залік автоматом!" : "Залік!") : "Незарах. Перездача",
+    body: win ? `<p class="quote">«${esc(t.win)}»</p><p>${esc(txt)}${auto ? "<br>Харизма 30+: викладач поставив «автомат» і порадив тебе старості як приклад (+300 грн премії від профбюро)." : ""}</p><p>Перший етап пройдено! Далі буде модульна контрольна.</p>`
+      : `<p class="quote">«${esc(t.lose)}»</p><p>Нерви впали до нуля. Відпочинь, підтягни Інтелект на парах і в бібліотеці та приходь знову.</p>`,
+    buttons: [{ label: "Повернутися на кампус", primary: true, onClick: closeModal }] });
+}
+function bossPause() {
+  if (modalOpen || !B || B.over) return;
+  openModal({ kicker: "Пауза", title: "Бій на паузі", body: `<p>${esc(teacherName(B.t))} терпляче чекає.</p>`, buttons: [
+    { label: "Продовжити", primary: true, onClick: () => { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; } },
+    { label: "Втекти з пари", sub: "рахується як поразка", onClick: () => { modalEl.hidden = true; modalOpen = false; B.nerves = 0; B.over = "lose"; B.endT = 0.01; } }] });
+}
+$("#pauseBtn").addEventListener("click", bossPause);
+
+function wrapText(text, x, y, maxW, lh, maxLines) {
+  const words = String(text).split(" "); let line = "", lines = [];
+  for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+  if (line) lines.push(line); if (maxLines && lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] += "…"; }
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lh)); return lines.length;
+}
+function drawBoss() {
+  const s = Math.min(CW / AW, CH / AH), ox = (CW - AW * s) / 2, oy = (CH - AH * s) / 2;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.fillStyle = "#14211c"; ctx.fillRect(0, 0, CW, CH);
+  const sh = B.shake > 0 ? rand(-3, 3) : 0;
+  ctx.setTransform(DPR * s, 0, 0, DPR * s, DPR * (ox + sh), DPR * oy); ctx.imageSmoothingEnabled = false;
+  // дошка
+  ctx.fillStyle = "#8a5a2b"; ctx.fillRect(-6, -6, AW + 12, AH + 12);
+  ctx.fillStyle = "#1f3a32"; ctx.fillRect(0, 0, AW, AH);
+  ctx.fillStyle = "rgba(242,239,230,.07)"; ctx.font = "16px Rubik, sans-serif"; ctx.textAlign = "center";
+  for (const c of CHALK_BG) { ctx.save(); ctx.translate(c[0], c[1]); ctx.rotate(c[3]); ctx.fillText(c[2], 0, 0); ctx.restore(); }
+  ctx.fillStyle = "#264a3f"; ctx.fillRect(0, 0, AW, FT);
+  ctx.fillStyle = "#8a5a2b"; ctx.fillRect(0, FT - 3, AW, 3);
+  // бос
+  const bob = Math.sin(B.time * 2) * 2;
+  drawSprite(ctx, B.t.look, "down", 0, AW / 2, Math.round(92 + bob), 1.8);
+  ctx.textAlign = "left"; ctx.fillStyle = "#f5d76e"; ctx.font = "700 13px Rubik, sans-serif"; ctx.fillText(teacherName(B.t), 12, 20);
+  ctx.fillStyle = "#b9c4bb"; ctx.font = "11px Rubik, sans-serif"; ctx.fillText(B.t.name && B.t.name.trim() ? B.t.role : "Математичний аналіз", 12, 35);
+  // HP боса
+  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(12, 100, AW - 24, 9);
+  ctx.fillStyle = "#e87a6a"; ctx.fillRect(12, 100, (AW - 24) * B.hp / B.maxhp, 9);
+  ctx.fillStyle = "#f2efe6"; ctx.font = "10px Rubik, sans-serif"; ctx.textAlign = "right"; ctx.fillText("фаза " + B.ph + " · " + Math.ceil(B.hp) + "/" + B.maxhp, AW - 12, 96);
+  // бульбашки відповідей
+  for (const bb of B.bubbles) {
+    const glow = bb.correct && S.stats.int >= 45;
+    ctx.fillStyle = glow ? "rgba(159,220,138,.25)" : "rgba(245,215,110,.14)"; ctx.beginPath(); ctx.arc(bb.x, bb.y, bb.r, 0, 7); ctx.fill();
+    ctx.strokeStyle = glow ? "#9fdc8a" : "#f5d76e"; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = "#f2efe6"; ctx.font = "700 14px Rubik, sans-serif"; ctx.textBaseline = "middle"; ctx.fillText(bb.text, bb.x, bb.y); ctx.textBaseline = "alphabetic";
+  }
+  // гравець
+  if (!(B.inv > 0 && Math.floor(B.time * 12) % 2 === 0 && B.time > 0.1) || B.over) drawSprite(ctx, S.look, B.dir, B.phase, B.px, B.py, 0.9);
+  ctx.fillStyle = "#e87a6a"; ctx.beginPath(); ctx.arc(B.px, B.py - 14, 3.2, 0, 7); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
+  // кулі
+  ctx.textBaseline = "middle";
+  for (const b of B.bullets) {
+    if (b.big) { ctx.fillStyle = b.c; roundRect(b.x - 36, b.y - 11, 72, 22, 6); ctx.fill(); ctx.fillStyle = "#fff"; ctx.font = "700 10px Rubik, sans-serif"; ctx.fillText(b.t, b.x, b.y + 1); continue; }
+    ctx.fillStyle = b.c; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill();
+    ctx.fillStyle = "#14211c"; ctx.font = `700 ${b.t.length > 2 ? 8 : 11}px Rubik, sans-serif`; ctx.fillText(b.t, b.x, b.y + 1);
+  }
+  ctx.textBaseline = "alphabetic";
+  // панель питання / повідомлення
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(38,74,63,.92)"; ctx.fillRect(0, 114, AW, FT - 117);
+  if (B.q) {
+    ctx.fillStyle = "#f2efe6"; ctx.font = "700 16px Rubik, sans-serif"; wrapText(B.q.q, AW / 2, 134, AW - 30, 19, 2);
+    ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.fillRect(12, 162, AW - 24, 4); ctx.fillStyle = "#f5d76e"; ctx.fillRect(12, 162, (AW - 24) * clamp(B.qLeft / 13, 0, 1), 4);
+  } else if (B.msgT > 0 && B.msg) {
+    ctx.fillStyle = B.msg.startsWith("Правильно") ? "#9fdc8a" : "#f2efe6"; ctx.font = "13px Rubik, sans-serif"; wrapText(B.msg, AW / 2, 128, AW - 30, 16, 3);
+  } else { ctx.fillStyle = "#b9c4bb"; ctx.font = "13px Rubik, sans-serif"; ctx.fillText("Ухиляйся. Наступне питання вже скоро…", AW / 2, 140); }
+  for (const f of B.fx) { ctx.globalAlpha = clamp(f.life, 0, 1); ctx.fillStyle = f.c; ctx.font = "700 16px Rubik, sans-serif"; ctx.fillText(f.t, f.x, f.y); ctx.globalAlpha = 1; }
+  // репліка боса
+  if (B.speechT > 0 && B.speech) {
+    ctx.font = "italic 13px Rubik, sans-serif"; const w = Math.min(AW - 40, ctx.measureText(B.speech).width + 20);
+    ctx.fillStyle = "#f2efe6"; roundRect(AW / 2 - w / 2, FT + 10, w, 44, 8); ctx.fill();
+    ctx.fillStyle = "#14211c"; wrapText(B.speech, AW / 2, FT + 28, w - 16, 15, 2);
+  }
+  // нерви гравця
+  ctx.fillStyle = "rgba(0,0,0,.4)"; ctx.fillRect(12, AH - 18, 150, 8); ctx.fillStyle = "#8ec9f0"; ctx.fillRect(12, AH - 18, 150 * B.nerves / 100, 8);
+  ctx.textAlign = "left"; ctx.fillStyle = "#f2efe6"; ctx.font = "10px Rubik, sans-serif"; ctx.fillText("Нерви " + Math.round(B.nerves), 168, AH - 10);
+  if (B.over) { ctx.fillStyle = "rgba(20,33,28,.5)"; ctx.fillRect(0, FT, AW, AH - FT); ctx.textAlign = "center"; ctx.fillStyle = B.over === "win" ? "#9fdc8a" : "#e87a6a"; ctx.font = "20px 'Press Start 2P', monospace"; ctx.fillText(B.over === "win" ? "ЗАЛІК!" : "НЕЗАРАХ", AW / 2, AH / 2); }
+  drawJoy();
+}
+
+/* ---------------- екрани ---------------- */
+let demoT = 0;
+function showTitle() {
+  mode = "title"; $("#title").hidden = false; $("#creator").hidden = true; $("#hud").hidden = true; $("#prompt").hidden = true; refreshTouchUI();
+  const sv = loadSave();
+  if (sv && sv.look) { $("#contBtn").hidden = false; $("#contInfo").textContent = `${sv.name} · день ${sv.day}`; } else $("#contBtn").hidden = true;
+}
+function enterWorld() {
+  mode = "world"; $("#title").hidden = true; $("#creator").hidden = true; $("#hud").hidden = false;
+  P.x = S.x; P.y = S.y; P.dir = S.dir || "down";
+  if (solidAt(P.x, P.y, 9, 5)) { P.x = 1100; P.y = 470; }
+  spawnNPCs(); refreshTouchUI(); updateHUD();
+}
+$("#newBtn").onclick = () => { mode = "creator"; $("#title").hidden = true; $("#creator").hidden = false; buildCreator(); };
+$("#contBtn").onclick = () => { const sv = loadSave(); if (!sv) return showTitle(); S = sv; S.asked = S.asked || {}; S.bosses = S.bosses || {}; if (S.stats.health == null) S.stats.health = 100; enterWorld(); };
+$("#startBtn").onclick = () => {
+  const name = $("#nameIn").value.trim().slice(0, 18) || "Студент";
+  newGame(name, { ...draftLook }, draftPerk); enterWorld(); writeSave();
+  openModal({ kicker: "1 вересня · Понеділок", title: `Вітаємо в КПІ, ${name}!`, body: `
+    <p>Попереду перший семестр. Найближча ціль — отримати залік у <b>${esc(teacherName(TEACHERS[0]))}</b>. Викладач чекає біля Головного корпусу.</p>
+    <p>Спершу походи на пари, щоб підняти Інтелект, і не забувай їсти та спати. Довідка є в «Меню».</p>`,
+    buttons: [{ label: "Вперед!", primary: true, onClick: closeModal }] });
+};
+
+/* ---------------- головний цикл ---------------- */
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (mode === "boss" && B) { if (!modalOpen) updateBoss(dt); if (B) drawBoss(); }
+  else if (mode === "world" && S) {
+    if (!modalOpen) updateWorld(dt);
+    const actors = npcs.map(n => ({ x: n.x, y: n.y, look: n.look, dir: n.dir, phase: n.phase }));
+    if (teacherPresent()) actors.push({ x: TEACHER_POS.x, y: TEACHER_POS.y, look: TEACHERS[0].look, dir: "down", phase: 0, s: 2.2 });
+    actors.push({ x: P.x, y: P.y, look: S.look, dir: P.dir, phase: P.phase });
+    drawWorld(P.x, P.y - 20, actors, now);
+    if (teacherPresent()) { const Z = worldZoom(); ctx.setTransform(DPR * Z, 0, 0, DPR * Z, -cam.x * DPR * Z, -cam.y * DPR * Z); const by = Math.round(TEACHER_POS.y - 62 + Math.sin(now / 250) * 3); ctx.fillStyle = "#1a120b"; ctx.fillRect(TEACHER_POS.x - 4, by - 2, 8, 18); ctx.fillStyle = "#f5d76e"; ctx.fillRect(TEACHER_POS.x - 2, by, 4, 9); ctx.fillRect(TEACHER_POS.x - 2, by + 11, 4, 3); }
+    drawJoy();
+  } else {
+    demoT += dt * 30;
+    const x = 600 + (demoT % 1400), y = 500 + Math.sin(demoT / 300) * 200;
+    drawWorld(x, y, npcs.map(n => ({ x: n.x, y: n.y, look: n.look, dir: n.dir, phase: n.phase })), now);
+    updateNPCs(dt); ambientFX(dt); updateParts(dt);
+  }
+  requestAnimationFrame(loop);
+}
+spawnNPCs(); showTitle(); requestAnimationFrame(loop);
+// для тестів
+window.__kpi = { get S() { return S; }, get B() { return B; }, get mode() { return mode; }, startBoss: () => startBoss(TEACHERS[0]) };
+})();
+</script>
