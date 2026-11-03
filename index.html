@@ -133,7 +133,7 @@ body.touch #prompt{bottom:calc(env(safe-area-inset-bottom,0px) + 128px);}
   </div>
   <div id="clockBox" class="panel">
     <div id="clock">Пн · День 1 · 08:00</div>
-    <canvas id="mini" width="220" height="150" aria-label="Мінікарта, натисни щоб відкрити карту"></canvas>
+    <canvas id="mini" width="220" height="157" aria-label="Мінікарта, натисни щоб відкрити карту"></canvas>
     <div class="hbtns"><button id="mapBtn" type="button">Карта</button><button id="menuBtn" type="button">Меню</button></div>
   </div>
 </div>
@@ -228,23 +228,87 @@ body.touch #prompt{bottom:calc(env(safe-area-inset-bottom,0px) + 128px);}
  {"id":"cpp5","subject":"C++","topic":"Оператори","q":"cout << (5 > 3 && 2 > 4);  Що виведе?","options":["1","0","true","false"],"answer":1,"explain":"2 > 4 хибне, тож && дає false, а cout виводить його як 0."},
  {"id":"cpp6","subject":"C++","topic":"Оператори","q":"int x = 5; int y = x++;  y = ?","options":["5","6","4","невизначено"],"answer":0,"explain":"Постфіксний x++ повертає старе значення (5), а потім збільшує x до 6."},
  {"id":"cpp7","subject":"C++","topic":"Вказівники","q":"Як оголосити вказівник на int?","options":["int& p;","int* p;","ptr<int> p;","int p*;"],"answer":1,"explain":"int* p — вказівник; int& — це посилання, воно мусить бути одразу ініціалізоване."},
- {"id":"cpp8","subject":"C++","topic":"Цикли","q":"Скільки разів виконається for (int i = 0; i < 3; i++)?","options":["2","3","4","безкінечно"],"answer":1,"explain":"i набуває значень 0, 1, 2 — три ітерації."}
+ {"id":"cpp8","subject":"C++","topic":"Цикли","q":"Скільки разів виконається for (int i = 0; i < 3; i++)?","options":["2","3","4","безкінечно"],"answer":1,"explain":"i набуває значень 0, 1, 2 — три ітерації."},
+ {"id":"la9","subject":"Лінійна алгебра","topic":"Матриці","q":"Слід матриці [[2, 1], [0, 5]] = ?","options":["7","10","2","5"],"answer":0,"explain":"Слід — сума елементів головної діагоналі: 2 + 5 = 7."},
+ {"id":"la10","subject":"Лінійна алгебра","topic":"Визначники","q":"det(Aᵀ) = ?","options":["det A","−det A","1 / det A","0"],"answer":0,"explain":"Транспонування не змінює визначник."},
+ {"id":"la11","subject":"Лінійна алгебра","topic":"Вектори","q":"Скалярний добуток ортогональних векторів = ?","options":["0","1","−1","|a|·|b|"],"answer":0,"explain":"cos 90° = 0, тож a · b = 0."},
+ {"id":"la12","subject":"Лінійна алгебра","topic":"Визначники","q":"det(A · B) = ?","options":["det A · det B","det A + det B","det(A + B)","det A / det B"],"answer":0,"explain":"Визначник добутку дорівнює добутку визначників."},
+ {"id":"la13","subject":"Лінійна алгебра","topic":"Системи","q":"n рівнянь, n невідомих, det ≠ 0. Скільки розв'язків?","options":["рівно один","жодного","безліч","два"],"answer":0,"explain":"За теоремою Крамера розв'язок існує і єдиний."},
+ {"id":"la14","subject":"Лінійна алгебра","topic":"Вектори","q":"Довжина вектора (3, 4) = ?","options":["5","7","25","1"],"answer":0,"explain":"√(3² + 4²) = √25 = 5."},
+ {"id":"dm9","subject":"Дискретна математика","topic":"Множини","q":"A = {1, 2, 3}, B = {2, 3, 4}. |A ∩ B| = ?","options":["2","1","3","4"],"answer":0,"explain":"Спільні елементи: 2 і 3."},
+ {"id":"dm10","subject":"Дискретна математика","topic":"Комбінаторика","q":"Скільки перестановок літер у слові «КПІ»?","options":["6","3","9","27"],"answer":0,"explain":"3 різні літери: 3! = 6."},
+ {"id":"dm11","subject":"Дискретна математика","topic":"Комбінаторика","q":"Скільки існує 3-бітних двійкових рядків?","options":["8","6","9","3"],"answer":0,"explain":"Кожен біт має 2 варіанти: 2³ = 8."},
+ {"id":"dm12","subject":"Дискретна математика","topic":"Логіка","q":"p ∨ ¬p = ?","options":["завжди 1","завжди 0","p","¬p"],"answer":0,"explain":"Закон виключеного третього: це тавтологія."},
+ {"id":"dm13","subject":"Дискретна математика","topic":"Графи","q":"Скільки ребер у дереві з 10 вершинами?","options":["9","10","11","45"],"answer":0,"explain":"У дереві |E| = |V| − 1."},
+ {"id":"dm14","subject":"Дискретна математика","topic":"Комбінаторика","q":"Розміщення A(5, 2) = ?","options":["20","10","25","60"],"answer":0,"explain":"A(n, k) = n! / (n − k)! = 5 · 4 = 20."},
+ {"id":"cpp9","subject":"C++","topic":"Типи","q":"Який тип зберігає true / false?","options":["bool","int","char","boolean"],"answer":0,"explain":"У C++ логічний тип називається bool."},
+ {"id":"cpp10","subject":"C++","topic":"Типи","q":"Чому дорівнює 10 / 4.0?","options":["2.5","2","3","2.0"],"answer":0,"explain":"Один операнд дійсний, тому ділення теж дійсне."},
+ {"id":"cpp11","subject":"C++","topic":"Оператори","q":"Оператор перевірки на рівність:","options":["==","=","!=","==="],"answer":0,"explain":"= — це присвоєння, а оператора === у C++ немає."},
+ {"id":"cpp12","subject":"C++","topic":"Цикли","q":"Що робить break у циклі?","options":["виходить з циклу","пропускає ітерацію","перезапускає цикл","нічого"],"answer":0,"explain":"break завершує цикл, а continue переходить до наступної ітерації."},
+ {"id":"cpp13","subject":"C++","topic":"STL","q":"std::vector<int> v(3);  v.size() = ?","options":["3","0","1","невизначено"],"answer":0,"explain":"Конструктор v(3) створює 3 елементи зі значенням 0."},
+ {"id":"cpp14","subject":"C++","topic":"Основи","q":"Яка функція є точкою входу програми?","options":["main","start","init","program"],"answer":0,"explain":"Виконання програми на C++ починається з main()."},
+ {"id":"ph1","subject":"Фізика","topic":"Механіка","q":"Одиниця сили в СІ?","options":["Н","Дж","Вт","Па"],"answer":0,"explain":"Ньютон: 1 Н = 1 кг·м/с²."},
+ {"id":"ph2","subject":"Фізика","topic":"Кінематика","q":"72 км/год — це скільки м/с?","options":["20","72","7,2","36"],"answer":0,"explain":"Ділимо на 3,6: 72 / 3,6 = 20 м/с."},
+ {"id":"ph3","subject":"Фізика","topic":"Динаміка","q":"Другий закон Ньютона:","options":["F = ma","F = mv","E = mc²","p = mv"],"answer":0,"explain":"Сила дорівнює масі, помноженій на прискорення."},
+ {"id":"ph4","subject":"Фізика","topic":"Кінематика","q":"Тіло падає з нуля 2 с (g = 10 м/с²). Швидкість?","options":["20 м/с","10 м/с","40 м/с","5 м/с"],"answer":0,"explain":"v = g·t = 10 · 2 = 20 м/с."},
+ {"id":"ph5","subject":"Фізика","topic":"Енергія","q":"Кінетична енергія тіла:","options":["mv²/2","mgh","mv","F·s"],"answer":0,"explain":"E = mv²/2, а mgh — це потенціальна енергія."},
+ {"id":"ph6","subject":"Фізика","topic":"Імпульс","q":"Імпульс тіла p = ?","options":["mv","ma","mv²","F·t²"],"answer":0,"explain":"Імпульс — добуток маси на швидкість."}
 ]
 </script>
 
-<!-- ============ ДАНІ: викладачі-боси ============
-name — справжнє ім'я (ще не задане), look — вигляд за фото. Зачіски: short, parted, balding, bald, buzz, curly, long, bob, ponytail, spiky.
-Бороди: none, stubble, mustache, goatee, full. Окуляри: none, round, square. Одяг: suit, shirt, sweater, hoodie, tshirt. -->
+<!-- ============ ДАНІ: викладачі 1 курсу ННІПСА (з розкладу schedule.kpi.ua, осінь 2026) ============
+teachers: справжні ПІБ. look — поки умовний вигляд (фото ще не перенесені): зміни зачіску, колір, окуляри, бороду, щойно буде фото.
+Зачіски: short, spiky, parted, balding, bald, buzz, curly, long, bob, ponytail. Бороди: none, stubble, mustache, goatee, full.
+Окуляри: none, round, square. Одяг: suit, shirt, sweater, hoodie, tshirt.
+streams: хто веде предмет у потоці (КН-6x, КІ-6x, КА-6x). lec — лектор, boss — з ким бій на модульній. -->
 <script type="application/json" id="teachers-data">
-[
- {"id":"matan","name":"","role":"Практик з матану","subject":"Матан","topic":"Границі",
-  "look":{"skin":"#e9bf9b","hair":"parted","hairColor":"#5a4634","beard":"none","glasses":"square","outfit":"suit","outfitColor":"#3e4a5e","tieColor":"#7a2e2e","pants":"#2b2f3a","accessory":"none"},
-  "intro":"Ну що, границі всі вчили? Зараз перевіримо.",
-  "phase2":"Це ж очевидно! Еквівалентності треба знати напам'ять.",
-  "phase3":"Останній шанс. Епсилон-дельта, будь ласка.",
-  "win":"Добре. Бачу, що працювали. Залік.",
-  "lose":"Приходьте на перездачу. І конспект принесіть."}
-]
+{
+ "teachers": [
+  {"id":"bokhonov","name":"Бохонов Юрій Євгенович","look":{"skin":"#ecc19c","hair":"short","hairColor":"#4a3a2c","beard":"none","glasses":"square","outfit":"suit","outfitColor":"#3e4a5e","tieColor":"#7a2e2e","pants":"#2b2f3a"}},
+  {"id":"podkolzin","name":"Подколзін Гліб Борисович","look":{"skin":"#efc8a6","hair":"parted","hairColor":"#3a2e26","beard":"stubble","glasses":"none","outfit":"shirt","outfitColor":"#5b7fa8","pants":"#2b2f3a"}},
+  {"id":"denysievskyi","name":"Денисьєвський Микола Олексійович","look":{"skin":"#eabd98","hair":"balding","hairColor":"#8d877f","beard":"mustache","glasses":"round","outfit":"suit","outfitColor":"#4b4b52","tieColor":"#2f4f7a","pants":"#2b2b30"}},
+  {"id":"minarchenko","name":"Мінарченко Олександр Миколайович","look":{"skin":"#f0c9a6","hair":"short","hairColor":"#5a4634","beard":"none","glasses":"none","outfit":"sweater","outfitColor":"#6b4f3a","pants":"#2c3344"}},
+  {"id":"maltsev","name":"Мальцев Антон Юрійович","look":{"skin":"#f2cfae","hair":"spiky","hairColor":"#2a2420","beard":"goatee","glasses":"none","outfit":"hoodie","outfitColor":"#2c2c34","pants":"#2c3344"}},
+  {"id":"statkevych","name":"Статкевич Віталій Михайлович","look":{"skin":"#ecc19c","hair":"buzz","hairColor":"#3d3530","beard":"none","glasses":"square","outfit":"shirt","outfitColor":"#e8e4da","pants":"#2c3344"}},
+  {"id":"stus","name":"Стусь Олександр Вікторович","look":{"skin":"#eec5a2","hair":"parted","hairColor":"#6b5a4a","beard":"full","beardColor":"#6b5a4a","glasses":"none","outfit":"sweater","outfitColor":"#2f5a4c","pants":"#2b2f3a"}},
+  {"id":"spektorskyi","name":"Спекторський Ігор Якович","look":{"skin":"#e8bb94","hair":"balding","hairColor":"#a9a49c","beard":"full","beardColor":"#b8b3ab","glasses":"round","outfit":"suit","outfitColor":"#5a4a3a","tieColor":"#c9a35a","pants":"#2b2b30"}},
+  {"id":"romanov","name":"Романов Валерій Володимирович","look":{"skin":"#eabd98","hair":"short","hairColor":"#b0aaa2","beard":"none","glasses":"square","outfit":"suit","outfitColor":"#30343f","tieColor":"#4d6a86","pants":"#25272e"}},
+  {"id":"beznosyk","name":"Безносик Олександр Юрійович","look":{"skin":"#f0c9a6","hair":"short","hairColor":"#4a3324","beard":"stubble","glasses":"none","outfit":"tshirt","outfitColor":"#2f6f9a","pants":"#2c3344"}},
+  {"id":"kornachevskyi","name":"Корначевський Ярослав Ілліч","look":{"skin":"#f2cfae","hair":"curly","hairColor":"#3b2a20","beard":"none","glasses":"round","outfit":"hoodie","outfitColor":"#6b4fa0","pants":"#2c3344"}},
+  {"id":"prosiankina","name":"Просянкіна-Жарова Тетяна Іванівна","look":{"skin":"#f2cfae","hair":"bob","hairColor":"#7a4b2a","beard":"none","glasses":"square","outfit":"shirt","outfitColor":"#8a3a4a","pants":"#2b2f3a"}},
+  {"id":"nazarchuk","name":"Назарчук Ірина Василівна","look":{"skin":"#f0c9a6","hair":"long","hairColor":"#c48a3f","beard":"none","glasses":"none","outfit":"sweater","outfitColor":"#d46a8c","pants":"#2b2f3a"}},
+  {"id":"mishchenko","name":"Міщенко Михайло Дмитрович","look":{"skin":"#eec5a2","hair":"spiky","hairColor":"#4a3324","beard":"none","glasses":"none","outfit":"hoodie","outfitColor":"#2e8b57","pants":"#2c3344"}},
+  {"id":"selin","name":"Селін Юрій Миколайович","look":{"skin":"#eabd98","hair":"short","hairColor":"#2a2420","beard":"goatee","glasses":"square","outfit":"shirt","outfitColor":"#4d6a86","pants":"#2c3344"}},
+  {"id":"kalyta","name":"Калита Віктор Михайлович","look":{"skin":"#e9bf9b","hair":"balding","hairColor":"#8d877f","beard":"none","glasses":"square","outfit":"suit","outfitColor":"#4a5240","tieColor":"#7a2e2e","pants":"#2b2b30"}},
+  {"id":"dovzhenko","name":"Довженко Олександр Петрович","look":{"skin":"#ecc19c","hair":"short","hairColor":"#5a4634","beard":"mustache","glasses":"none","outfit":"shirt","outfitColor":"#9aa8b5","pants":"#2c3344"}},
+  {"id":"dukhanina","name":"Духаніна Наталія Мар'янівна","look":{"skin":"#f4d3b4","hair":"ponytail","hairColor":"#3a2a20","beard":"none","glasses":"none","outfit":"shirt","outfitColor":"#2e8b57","pants":"#2b2f3a"}},
+  {"id":"boiko","name":"Бойко Ганна Анатоліївна","look":{"skin":"#f2cfae","hair":"long","hairColor":"#e4c77a","beard":"none","glasses":"round","outfit":"sweater","outfitColor":"#e2a93b","pants":"#2b2f3a"}},
+  {"id":"mikhnieva","name":"Міхнєва Юлія Романівна","look":{"skin":"#f2cfae","hair":"bob","hairColor":"#1d1a19","beard":"none","glasses":"none","outfit":"shirt","outfitColor":"#6b4fa0","pants":"#2b2f3a"}}
+ ],
+ "streams": {
+  "КН": {"label":"Комп'ютерні науки",
+   "Матан":{"title":"Математичний аналіз","lec":"bokhonov","boss":"bokhonov"},
+   "Лінійна алгебра":{"title":"Алгебра та аналітична геометрія","lec":"minarchenko","boss":"minarchenko"},
+   "Дискретна математика":{"title":"Дискретна математика","lec":"statkevych","boss":"statkevych"},
+   "C++":{"title":"Алгоритмізація та програмування","lec":"romanov","boss":"beznosyk"},
+   "Фізика":{"title":"Фізика","lec":"kalyta"},
+   "Англійська":{"title":"Англійська мова","lec":"dukhanina"}},
+  "КІ": {"label":"Комп'ютерна інженерія",
+   "Матан":{"title":"Математичний аналіз","lec":"podkolzin","boss":"podkolzin"},
+   "Лінійна алгебра":{"title":"Алгебра та аналітична геометрія","lec":"minarchenko","boss":"minarchenko"},
+   "Дискретна математика":{"title":"Дискретна математика","lec":"stus","boss":"stus"},
+   "C++":{"title":"Алгоритмізація та програмування","lec":"romanov","boss":"prosiankina"},
+   "Фізика":{"title":"Фізика (лабораторні)","lec":"dovzhenko"},
+   "Англійська":{"title":"Англійська мова","lec":"boiko"}},
+  "КА": {"label":"Системний аналіз",
+   "Матан":{"title":"Математичний аналіз","lec":"denysievskyi","boss":"denysievskyi"},
+   "Лінійна алгебра":{"title":"Алгебра і геометрія","lec":"maltsev","boss":"podkolzin"},
+   "Дискретна математика":{"title":"Дискретна математика","lec":"spektorskyi","boss":"spektorskyi"},
+   "C++":{"title":"Програмування та алгоритмічні мови","lec":"nazarchuk","boss":"nazarchuk"},
+   "Фізика":null,
+   "Англійська":{"title":"Англійська мова","lec":"mikhnieva"}}
+ }
+}
 </script>
 
 <!-- ============ ДАНІ: випадкові події (додавай свої) ============ -->
@@ -290,18 +354,31 @@ const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 function shade(hex, amt) {
-  let n = parseInt(hex.slice(1), 16);
-  let r = clamp((n >> 16) + amt, 0, 255), g = clamp(((n >> 8) & 255) + amt, 0, 255), b = clamp((n & 255) + amt, 0, 255);
+  const n = parseInt(hex.slice(1), 16);
+  const r = clamp((n >> 16) + amt, 0, 255), g = clamp(((n >> 8) & 255) + amt, 0, 255), b = clamp((n & 255) + amt, 0, 255);
   return "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
 }
-function readJSON(id) { try { return JSON.parse(document.getElementById(id).textContent); } catch (e) { console.error("Помилка в даних " + id, e); return []; } }
-const QUESTIONS = readJSON("questions-data");
-const TEACHERS = readJSON("teachers-data");
-const EVENTS = readJSON("events-data");
-const teacherName = t => t.name && t.name.trim() ? t.name : t.role;
+function readJSON(id, fb) { try { return JSON.parse(document.getElementById(id).textContent); } catch (e) { console.error("Помилка в даних " + id, e); return fb; } }
+const QUESTIONS = readJSON("questions-data", []);
+const TDATA = readJSON("teachers-data", { teachers: [], streams: {} });
+const EVENTS = readJSON("events-data", []);
+const TEACHERS = TDATA.teachers, STREAMS = TDATA.streams;
+const teacherById = id => TEACHERS.find(t => t.id === id);
+const shortName = t => { const p = t.name.split(" "); return p.length >= 3 ? `${p[0]} ${p[1][0]}. ${p[2][0]}.` : t.name; };
+const BOSS_SUBJECTS = ["Матан", "Лінійна алгебра", "Дискретна математика", "C++"];
+const BOSS_CFG = {
+  "Матан": { filter: q => q.subject === "Матан" && q.topic === "Границі", ring: ["∞", "∂", "Σ", "dx", "0/0"], spiral: ["ε", "δ"], rain: "lim", big: "НЕЗАРАХ",
+    intro: "Ну що, границі всі вчили? Зараз перевіримо.", p2: "Еквівалентності треба знати напам'ять.", p3: "Епсилон-дельта, будь ласка.", win: "Добре, бачу, що працювали. Зараховано.", lose: "Приходьте на перескладання з конспектом." },
+  "Лінійна алгебра": { filter: q => q.subject === "Лінійна алгебра", ring: ["det", "A⁻¹", "λ", "rk", "Aᵀ"], spiral: ["i", "j"], rain: "[ ]", big: "НЕЗАРАХ",
+    intro: "Відкриваємо зошити. Визначник третього порядку — це розминка.", p2: "Ранг матриці сам себе не порахує.", p3: "Транспонуйте мислення!", win: "Гарна робота. Зараховано.", lose: "Повторіть властивості визначників і приходьте ще." },
+  "Дискретна математика": { filter: q => q.subject === "Дискретна математика", ring: ["∧", "∨", "¬", "⊕", "∀", "∃"], spiral: ["0", "1"], rain: "n!", big: "НЕЗАРАХ",
+    intro: "Таблиці істинності напоготові?", p2: "Де Морган би вами пишався. Можливо.", p3: "Скільки ребер у вашому графі тривоги?", win: "Логічно. Зараховано.", lose: "Хибне твердження. Перескладання." },
+  "C++": { filter: q => q.subject === "C++", ring: [";", "{}", "&", "*", "++"], spiral: ["0", "1"], rain: "NULL", big: "SEGFAULT",
+    intro: "Компілюється? Зараз перевіримо.", p2: "Хто забув крапку з комою — мінус бал.", p3: "Segmentation fault, як у житті.", win: "Код чистий, лабу зараховано.", lose: "Дебажте і приходьте на захист ще раз." }
+};
 
 /* ---------------- збереження ---------------- */
-const SAVE_KEY = "perezhyty-kpi-v1";
+const SAVE_KEY = "perezhyty-kpi-v2";
 function loadSave() { try { const s = localStorage.getItem(SAVE_KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
 function writeSave() { if (!S) return; try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
 function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
@@ -309,105 +386,122 @@ function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
 /* ---------------- canvas ---------------- */
 const cv = $("#game"), ctx = cv.getContext("2d");
 let DPR = 1, CW = 0, CH = 0;
-function resize() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
-  CW = window.innerWidth; CH = window.innerHeight;
-  cv.width = Math.round(CW * DPR); cv.height = Math.round(CH * DPR);
-}
+function resize() { DPR = Math.min(window.devicePixelRatio || 1, 2); CW = window.innerWidth; CH = window.innerHeight; cv.width = Math.round(CW * DPR); cv.height = Math.round(CH * DPR); }
 window.addEventListener("resize", resize); resize();
 
-/* ---------------- малювання персонажа (пікселі кодом) ---------------- */
-// Спрайт 16×20 «пікселів» розміру s. cx — центр, by — рівень ніг.
-function drawPerson(c, cx, by, s, L, dir, phase, noShadow) {
-  const ox = cx - 8 * s, oy = by - 20 * s;
+/* ---------------- чібі-персонаж (сітка 18×21, велика голова) ---------------- */
+function drawPerson(c, cx, by, s, L, dir, frame) {
+  const ox = Math.round(cx - 9 * s), oy = Math.round(by - 21 * s);
   const R = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(ox + x * s, oy + y * s, w * s, h * s); };
   const skin = L.skin, hc = L.hairColor, oc = L.outfitColor, pants = L.pants || "#2c3344";
-  const back = dir === "up";
-  const ex = dir === "left" ? -0.8 : dir === "right" ? 0.8 : 0;
-  if (!noShadow) { c.fillStyle = "rgba(0,0,0,.25)"; c.beginPath(); c.ellipse(cx, by, 6 * s, 1.8 * s, 0, 0, 7); c.fill(); }
-  const st = phase ? Math.sin(phase) : 0;
-  const l1 = st > 0.2 ? 1 : 0, l2 = st < -0.2 ? 1 : 0;
-  R(5, 15, 2.6, 4 - l1, pants); R(8.4, 15, 2.6, 4 - l2, pants);
-  R(5, 19 - l1, 2.6, 1, "#1a1a1a"); R(8.4, 19 - l2, 2.6, 1, "#1a1a1a");
+  const hl = shade(hc, 38), hd = shade(hc, -28), sd = shade(skin, -22);
+  const back = dir === "up", ex = dir === "left" ? -1 : dir === "right" ? 1 : 0;
+  // ноги
+  const l1 = frame === 1 ? 1 : 0, l2 = frame === 2 ? 1 : 0;
+  R(6, 18, 2, 3 - l1, pants); R(10, 18, 2, 3 - l2, pants);
+  R(6, 20 - l1, 2, 1, "#1c1a1a"); R(10, 20 - l2, 2, 1, "#1c1a1a");
   // тулуб і руки
-  const sw = phase ? Math.sin(phase) * 0.6 : 0;
-  R(4, 9, 8, 6.5, oc);
-  R(2.6, 9.4 + sw, 1.5, 5, oc); R(11.9, 9.4 - sw, 1.5, 5, oc);
-  R(2.6, 14.3 + sw, 1.5, 1.1, skin); R(11.9, 14.3 - sw, 1.5, 1.1, skin);
+  const a1 = frame === 1 ? -1 : frame === 2 ? 1 : 0;
+  R(5, 12, 8, 5, oc); R(5, 17, 8, 1, pants); R(12, 12, 1, 5, shade(oc, -22));
+  R(4, 12 + a1, 1, 4, oc); R(13, 12 - a1, 1, 4, shade(oc, -22));
+  R(4, 16 + a1, 1, 1, skin); R(13, 16 - a1, 1, 1, sd);
   const o = L.outfit;
-  if (o === "tshirt") { R(2.6, 11.6 + sw, 1.5, 2.8, skin); R(11.9, 11.6 - sw, 1.5, 2.8, skin); if (!back) R(6.5, 9, 3, 0.8, shade(oc, -30)); }
-  if (o === "hoodie") { if (!back) { R(5.4, 12.6, 5.2, 2, shade(oc, -22)); R(6.6, 9.4, 0.5, 2.2, "#eee"); R(8.9, 9.4, 0.5, 2.2, "#eee"); } else R(5, 9, 6, 2.6, shade(oc, -18)); R(4.4, 8.4, 7.2, 1, shade(oc, -18)); }
-  if (o === "shirt") { if (!back) { R(6.2, 9, 3.6, 1, "#f4f4f4"); R(7.8, 10.2, 0.4, 0.4, "#ddd"); R(7.8, 11.6, 0.4, 0.4, "#ddd"); R(7.8, 13, 0.4, 0.4, "#ddd"); } }
-  if (o === "suit") { if (!back) { R(6.8, 9, 2.4, 4, "#f4f4f4"); R(7.6, 9.4, 0.8, 3.8, L.tieColor || "#7a2e2e"); R(4, 13.2, 8, 0.5, shade(oc, -20)); } }
-  if (o === "sweater") { R(4, 11, 8, 0.7, shade(oc, -25)); R(4, 13, 8, 0.7, shade(oc, -25)); if (!back) R(6.2, 9, 3.6, 0.8, "#f4f4f4"); }
-  if (L.accessory === "backpack") { if (back) { R(4.4, 9.6, 7.2, 5.6, L.accColor || "#2f6f9a"); R(5.4, 12.2, 5.2, 1.6, shade(L.accColor || "#2f6f9a", -25)); } else { R(4.6, 9, 0.9, 5, "#2a2a2a"); R(10.5, 9, 0.9, 5, "#2a2a2a"); } }
-  // голова
-  R(4, 1.6, 8, 7.4, skin);
-  R(3.4, 4.4, 0.7, 2, shade(skin, -15)); R(11.9, 4.4, 0.7, 2, shade(skin, -15));
   if (!back) {
-    R(5.5 + ex, 4.9, 1.2, 1.4, "#1b1b1b"); R(9.3 + ex, 4.9, 1.2, 1.4, "#1b1b1b");
-    R(5.7 + ex, 4.9, 0.45, 0.45, "#fff"); R(9.5 + ex, 4.9, 0.45, 0.45, "#fff");
-    R(7 + ex, 7.3, 2, 0.5, shade(skin, -55));
-    R(4.6 + ex, 6.4, 1, 0.6, "rgba(230,110,110,.35)"); R(10.4 + ex, 6.4, 1, 0.6, "rgba(230,110,110,.35)");
+    if (o === "tshirt") { R(4, 14 + a1, 1, 2, skin); R(13, 14 - a1, 1, 2, sd); R(7, 12, 4, 1, shade(oc, -30)); }
+    if (o === "hoodie") { R(6, 12, 6, 1, shade(oc, -26)); R(7, 13, 1, 2, "#eeeeee"); R(10, 13, 1, 2, "#eeeeee"); R(6, 15, 6, 2, shade(oc, -16)); }
+    if (o === "shirt") { R(7, 12, 1, 1, "#f4f4f4"); R(10, 12, 1, 1, "#f4f4f4"); R(8, 12, 2, 5, shade(oc, -12)); R(8, 13, 1, 1, "#f4f4f4"); R(8, 15, 1, 1, "#f4f4f4"); }
+    if (o === "suit") { R(7, 12, 4, 1, "#f4f4f4"); R(8, 13, 2, 1, "#f4f4f4"); R(8, 13, 2, 3, L.tieColor || "#a8322d"); R(8, 13, 1, 3, shade(L.tieColor || "#a8322d", 25)); }
+    if (o === "sweater") { R(7, 12, 4, 1, "#f4f4f4"); R(5, 14, 8, 1, shade(oc, -26)); }
+    if (L.accessory === "backpack") { R(5, 12, 1, 4, "#2a2a2a"); R(12, 12, 1, 4, "#2a2a2a"); }
+  } else {
+    if (o === "hoodie") R(6, 12, 6, 2, shade(oc, -20));
+    if (L.accessory === "backpack") { const bc = L.accColor || "#2f6f9a"; R(5, 12, 8, 5, bc); R(6, 14, 6, 2, shade(bc, -25)); R(5, 12, 8, 1, shade(bc, 25)); }
   }
-  // волосся
+  // голова
+  R(3, 1, 12, 11, skin); R(14, 2, 1, 10, sd); R(3, 11, 12, 1, sd);
+  if (!back) {
+    R(6 + ex, 6, 1, 2, "#141010"); R(11 + ex, 6, 1, 2, "#141010");
+    if (dir === "down") { R(5, 9, 1, 1, "rgba(230,110,110,.35)"); R(12, 9, 1, 1, "rgba(230,110,110,.35)"); }
+  }
   const h = L.hair;
   if (back) {
-    if (h === "bald") { R(4, 1.6, 8, 7.4, shade(skin, -6)); }
-    else if (h === "balding") { R(4, 4.5, 8, 4, hc); }
-    else if (h === "buzz") { R(4, 1.4, 8, 7, shade(hc, 10)); }
+    if (h === "bald") R(5, 2, 2, 1, "rgba(255,255,255,.45)");
+    else if (h === "balding") { R(3, 5, 12, 6, hc); R(5, 2, 2, 1, "rgba(255,255,255,.45)"); }
+    else if (h === "buzz") R(3, 1, 12, 9, shade(hc, 14));
     else {
-      R(3.8, 0.8, 8.4, 8.2, hc);
-      if (h === "long") { R(3.4, 4, 9.2, 8, hc); }
-      if (h === "bob") { R(3.4, 4, 9.2, 4.6, hc); }
-      if (h === "ponytail") { R(7, 8.6, 2, 4, hc); R(7, 8.2, 2, 0.6, "#c0392b"); }
-      if (h === "curly") { R(3, 0, 10, 8, hc); }
-      if (h === "spiky") { R(4.5, 0, 1.2, 1, hc); R(6.5, -0.4, 1.2, 1.4, hc); R(8.5, -0.4, 1.2, 1.4, hc); R(10.3, 0, 1.2, 1, hc); }
+      R(3, 1, 12, 10, hc); R(4, 1, 3, 1, hl); R(13, 2, 2, 9, hd);
+      if (h === "long") { R(2, 3, 14, 11, hc); R(14, 3, 2, 11, hd); }
+      if (h === "bob") { R(2, 3, 14, 8, hc); R(14, 3, 2, 8, hd); }
+      if (h === "ponytail") { R(8, 10, 2, 5, hc); R(8, 10, 2, 1, "#c0392b"); }
+      if (h === "curly") { R(2, 0, 14, 11, hc); R(4, 0, 2, 1, hl); R(9, 0, 2, 1, hl); }
+      if (h === "spiky") { R(5, 0, 2, 1, hc); R(8, 0, 2, 1, hc); R(11, 0, 2, 1, hc); }
     }
   } else {
-    if (h === "short") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.6, hc); R(11.4, 2, 1, 2.6, hc); R(4.6 + ex, 2.8, 2.2, 0.6, hc); }
-    if (h === "spiky") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.4, hc); R(11.4, 2, 1, 2.4, hc); R(4.5, 0, 1.2, 1, hc); R(6.5, -0.4, 1.2, 1.4, hc); R(8.5, -0.4, 1.2, 1.4, hc); R(10.3, 0, 1.2, 1, hc); }
-    if (h === "long") { R(3.6, 0.6, 8.8, 2.6, hc); R(3, 2, 1.6, 9, hc); R(11.4, 2, 1.6, 9, hc); }
-    if (h === "bob") { R(3.6, 0.6, 8.8, 2.8, hc); R(3, 2, 1.6, 6, hc); R(11.4, 2, 1.6, 6, hc); }
-    if (h === "ponytail") { R(4, 0.8, 8, 2.2, hc); R(3.6, 2, 1, 2.6, hc); R(11.4, 2, 1, 2.6, hc); R(12.2, 2.6, 1.2, 1.2, "#c0392b"); R(12.6, 3.6, 1.6, 5.4, hc); }
-    if (h === "curly") { R(3, 0, 10, 3.2, hc); R(2.6, 1.5, 1.6, 4.4, hc); R(11.8, 1.5, 1.6, 4.4, hc); R(3.5, -0.6, 2, 1, hc); R(7, -0.8, 2, 1, hc); R(10.5, -0.6, 2, 1, hc); }
-    if (h === "parted") { R(4, 0.8, 8, 2, hc); R(3.6, 1.8, 1, 3.2, hc); R(11.4, 1.8, 1, 3.2, hc); R(6.2, 0.8, 0.45, 1.6, shade(skin, -10)); R(6.6, 2.6, 4.8, 0.5, hc); }
-    if (h === "buzz") { R(4, 1.2, 8, 1.3, shade(hc, 10)); R(3.8, 2, 0.6, 2, shade(hc, 10)); R(11.6, 2, 0.6, 2, shade(hc, 10)); }
-    if (h === "balding") { R(3.5, 3, 1.1, 3, hc); R(11.4, 3, 1.1, 3, hc); R(6, 1.9, 1.6, 0.7, "rgba(255,255,255,.35)"); }
-    if (h === "bald") { R(6, 1.9, 1.8, 0.7, "rgba(255,255,255,.4)"); }
-    // борода
+    if (h === "short") { R(3, 1, 12, 3, hc); R(3, 4, 2, 2, hc); R(13, 4, 2, 2, hd); R(5, 4, 4, 1, hc); R(6, 1, 3, 1, hl); R(10, 2, 2, 1, hl); }
+    if (h === "spiky") { R(3, 1, 12, 4, hc); R(3, 5, 2, 2, hc); R(13, 5, 2, 1, hd); R(5, 5, 3, 1, hc); R(4, 0, 2, 1, hc); R(7, 0, 2, 1, hc); R(10, 0, 2, 1, hc); R(13, 0, 1, 1, hc); R(5, 1, 2, 1, hl); R(9, 2, 2, 1, hl); R(12, 3, 2, 1, hd); }
+    if (h === "long") { R(3, 1, 12, 4, hc); R(2, 3, 2, 11, hc); R(14, 3, 2, 11, hd); R(4, 5, 4, 1, hc); R(5, 1, 4, 1, hl); }
+    if (h === "bob") { R(3, 1, 12, 4, hc); R(2, 3, 2, 8, hc); R(14, 3, 2, 8, hd); R(4, 5, 9, 1, hc); R(5, 1, 4, 1, hl); }
+    if (h === "ponytail") { R(3, 1, 12, 3, hc); R(3, 4, 2, 2, hc); R(13, 4, 2, 2, hd); R(5, 4, 3, 1, hc); R(15, 4, 2, 7, hc); R(15, 4, 2, 1, "#c0392b"); R(6, 1, 3, 1, hl); }
+    if (h === "curly") { R(2, 0, 14, 5, hc); R(2, 5, 2, 4, hc); R(14, 5, 2, 4, hd); R(4, 5, 2, 1, hc); R(8, 5, 2, 1, hc); R(4, 1, 1, 1, hl); R(7, 0, 1, 1, hl); R(10, 1, 1, 1, hl); R(13, 2, 1, 1, hl); }
+    if (h === "parted") { R(3, 1, 12, 3, hc); R(3, 4, 2, 3, hc); R(13, 4, 2, 3, hd); R(8, 4, 5, 1, hc); R(7, 1, 1, 2, hd); R(4, 1, 2, 1, hl); R(9, 1, 3, 1, hl); }
+    if (h === "buzz") { R(3, 1, 12, 2, shade(hc, 14)); R(3, 3, 1, 2, shade(hc, 14)); R(14, 3, 1, 2, shade(hc, 14)); }
+    if (h === "balding") { R(3, 4, 2, 4, hc); R(13, 4, 2, 4, hd); R(6, 2, 2, 1, "rgba(255,255,255,.5)"); R(9, 2, 1, 1, "rgba(255,255,255,.5)"); }
+    if (h === "bald") { R(6, 2, 2, 1, "rgba(255,255,255,.5)"); R(9, 2, 1, 1, "rgba(255,255,255,.5)"); }
     const bc = L.beardColor || hc;
-    if (L.beard === "full") { R(4, 6.6, 8, 2.8, bc); R(3.6, 5, 0.9, 3, bc); R(11.5, 5, 0.9, 3, bc); R(7 + ex, 7.3, 2, 0.5, shade(skin, -55)); }
-    if (L.beard === "mustache") R(6.2 + ex, 6.7, 3.6, 0.7, bc);
-    if (L.beard === "goatee") { R(6.4 + ex, 6.7, 3.2, 0.6, bc); R(6.9 + ex, 7.9, 2.2, 1.2, bc); }
-    if (L.beard === "stubble") R(4.4, 6.8, 7.2, 2.2, "rgba(40,30,25,.22)");
-    // окуляри
+    if (L.beard === "full") { R(3, 8, 12, 4, bc); R(3, 6, 2, 2, bc); R(13, 6, 2, 2, shade(bc, -25)); R(5, 8, 1, 1, shade(bc, 25)); R(8, 9, 2, 1, shade(bc, -30)); }
+    if (L.beard === "mustache") R(7 + ex, 9, 4, 1, bc);
+    if (L.beard === "goatee") { R(7 + ex, 9, 4, 1, bc); R(8 + ex, 10, 2, 2, bc); }
+    if (L.beard === "stubble") R(4, 9, 10, 2, "rgba(60,45,35,.28)");
     if (L.glasses && L.glasses !== "none") {
-      c.strokeStyle = L.glassesColor || "#1e1e1e"; c.lineWidth = Math.max(1, s * 0.45);
-      if (L.glasses === "round") {
-        c.beginPath(); c.arc(ox + (6.1 + ex) * s, oy + 5.6 * s, 1.5 * s, 0, 7); c.stroke();
-        c.beginPath(); c.arc(ox + (9.9 + ex) * s, oy + 5.6 * s, 1.5 * s, 0, 7); c.stroke();
-      } else {
-        c.strokeRect(ox + (4.7 + ex) * s, oy + 4.3 * s, 2.8 * s, 2.4 * s);
-        c.strokeRect(ox + (8.5 + ex) * s, oy + 4.3 * s, 2.8 * s, 2.4 * s);
+      const fc = L.glassesColor || "#1e1e1e", rnd = L.glasses === "round";
+      for (const gx of [5 + ex, 10 + ex]) {
+        R(gx + (rnd ? 1 : 0), 5, rnd ? 1 : 3, 1, fc); R(gx + (rnd ? 1 : 0), 8, rnd ? 1 : 3, 1, fc);
+        R(gx, 5 + (rnd ? 1 : 0), 1, rnd ? 2 : 4, fc); R(gx + 2, 5 + (rnd ? 1 : 0), 1, rnd ? 2 : 4, fc);
       }
-      R(7.5 + ex, 5.1, 1, 0.4, L.glassesColor || "#1e1e1e");
+      R(8 + ex, 6, 2, 1, fc);
     }
   }
-  if (L.accessory === "cap") { const a = L.accColor || "#c0392b"; R(3.6, 0, 8.8, 2.6, a); if (!back) R(4 + ex * 1.5, 2.3, 8.4, 0.9, shade(a, -30)); else R(6.5, 2.2, 3, 0.5, shade(a, -30)); }
-  if (L.accessory === "headphones") { R(3.3, 0.1, 9.4, 0.8, "#222"); R(2.8, 3.4, 1.4, 3.2, L.accColor || "#333"); R(11.8, 3.4, 1.4, 3.2, L.accColor || "#333"); }
+  if (L.accessory === "cap") { const a = L.accColor || "#c0392b"; R(3, 0, 12, 3, a); R(4, 0, 4, 1, shade(a, 30)); if (!back) R(3 + (ex > 0 ? 1 : 0) - (ex < 0 ? 1 : 0), 3, 12, 1, shade(a, -35)); }
+  if (L.accessory === "headphones") { R(3, 0, 12, 1, "#222"); R(2, 5, 2, 3, L.accColor || "#333"); R(14, 5, 2, 3, L.accColor || "#333"); }
+}
+// кеш спрайтів: 1 піксель спрайта = 1 піксель полотна, далі чорний контур
+const SPR = new WeakMap();
+function makePersonSprite(look, dir, frame) {
+  const W = 22, H = 25, c = document.createElement("canvas"); c.width = W; c.height = H; const g = c.getContext("2d");
+  drawPerson(g, 11, 23, 1, look, dir, frame);
+  const im = g.getImageData(0, 0, W, H), d = im.data;
+  for (let i = 3; i < d.length; i += 4) d[i] = d[i] > 60 ? 255 : 0;
+  const res = new Uint8ClampedArray(d), a = i => d[i * 4 + 3] === 255;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x; if (a(i)) continue;
+    if ((x > 0 && a(i - 1)) || (x < W - 1 && a(i + 1)) || (y > 0 && a(i - W)) || (y < H - 1 && a(i + W))) { res[i * 4] = 20; res[i * 4 + 1] = 16; res[i * 4 + 2] = 16; res[i * 4 + 3] = 255; }
+  }
+  g.putImageData(new ImageData(res, W, H), 0, 0); return c;
+}
+function personSprite(look, dir, frame) {
+  let m = SPR.get(look); if (!m) { m = new Map(); SPR.set(look, m); }
+  const k = dir + frame; let s = m.get(k); if (!s) { s = makePersonSprite(look, dir, frame); m.set(k, s); } return s;
+}
+function frameOf(phase) { if (!phase) return 0; const st = Math.sin(phase); return st > 0.3 ? 1 : st < -0.3 ? 2 : 0; }
+// k = 1: один піксель спрайта = 2 світові одиниці
+function drawSprite(c, look, dir, phase, x, y, k, noCache) {
+  const u = 2 * k, f = frameOf(phase);
+  c.fillStyle = "rgba(0,0,0,.25)"; c.fillRect(Math.round(x - 6 * u), Math.round(y - u * 0.5), Math.round(12 * u), Math.round(u * 1.5));
+  const spr = noCache ? makePersonSprite(look, dir, f) : personSprite(look, dir, f);
+  c.imageSmoothingEnabled = false; c.drawImage(spr, Math.round(x - 11 * u), Math.round(y - 23 * u), 22 * u, 25 * u);
 }
 
 /* ---------------- конструктор персонажа ---------------- */
-const SKINS = ["#f6d7c0", "#eec09a", "#d9a074", "#b97a50", "#8d5a3b", "#5e3b28"];
-const HAIRC = ["#1d1a19", "#4a3324", "#7a4b2a", "#c48a3f", "#e4c77a", "#b9b4ae", "#a8322d", "#3f6fb0", "#8e5bb5"];
-const CLOTHC = ["#2f6f9a", "#c0392b", "#2e8b57", "#e2a93b", "#6b4fa0", "#2c2c34", "#e8e4da", "#d46a8c"];
+const SKINS = ["#f6d7c0", "#f2cfae", "#e2a97e", "#b97a50", "#8d5a3b", "#5e3b28"];
+const HAIRC = ["#1d1a19", "#4a3324", "#7a4b2a", "#c86a2a", "#e4c77a", "#b9b4ae", "#a8322d", "#3f6fb0", "#5b3b7a"];
+const CLOTHC = ["#3f6e9a", "#c0392b", "#2e8b57", "#e2a93b", "#6b4fa0", "#2c2c34", "#dfe6ee", "#d46a8c"];
 const OPTS = {
-  hair: [["short", "Коротка"], ["spiky", "Їжачок"], ["long", "Довга"], ["bob", "Каре"], ["ponytail", "Хвіст"], ["curly", "Кучері"], ["buzz", "Під машинку"], ["bald", "Лиса"]],
-  outfit: [["hoodie", "Худі"], ["tshirt", "Футболка"], ["shirt", "Сорочка"], ["sweater", "Светр"]],
+  hair: [["short", "Коротка"], ["spiky", "Їжачок"], ["parted", "З проділом"], ["long", "Довга"], ["bob", "Каре"], ["ponytail", "Хвіст"], ["curly", "Кучері"], ["buzz", "Під машинку"], ["bald", "Лиса"]],
+  outfit: [["hoodie", "Худі"], ["tshirt", "Футболка"], ["shirt", "Сорочка"], ["sweater", "Светр"], ["suit", "Піджак"]],
   glasses: [["none", "Без окулярів"], ["round", "Круглі"], ["square", "Квадратні"]],
   accessory: [["none", "Нічого"], ["backpack", "Рюкзак"], ["headphones", "Навушники"], ["cap", "Кепка"]],
-  beard: [["none", "Немає"], ["stubble", "Щетина"], ["mustache", "Вуса"], ["goatee", "Борідка"]]
+  beard: [["none", "Немає"], ["stubble", "Щетина"], ["mustache", "Вуса"], ["goatee", "Борідка"], ["full", "Борода"]],
+  group: ["КН-61", "КН-62", "КН-63", "КІ-61", "КІ-62", "КІ-63", "КА-61", "КА-62", "КА-63", "КА-64", "КА-65"].map(g => [g, g + " · " + STREAMS[g.slice(0, 2)]?.label])
 };
 const PERKS = [
   { id: "nerd", name: "Ботан", desc: "+12 до Інтелекту на старті", stats: { int: 12 } },
@@ -417,18 +511,19 @@ const PERKS = [
 ];
 let draftLook = null, draftPerk = "nerd";
 function randomLook() {
-  return { skin: pick(SKINS), hair: pick(OPTS.hair)[0], hairColor: pick(HAIRC), outfit: pick(OPTS.outfit)[0], outfitColor: pick(CLOTHC),
-    glasses: Math.random() < 0.35 ? pick(["round", "square"]) : "none", accessory: pick(OPTS.accessory)[0], accColor: pick(CLOTHC),
-    beard: Math.random() < 0.2 ? pick(["stubble", "mustache", "goatee"]) : "none", pants: pick(["#2c3344", "#3a4a6b", "#4b3b2e", "#1f1f24"]) };
+  return { skin: pick(SKINS), hair: pick(OPTS.hair)[0], hairColor: pick(HAIRC), outfit: pick(OPTS.outfit.slice(0, 4))[0], outfitColor: pick(CLOTHC),
+    glasses: Math.random() < 0.3 ? pick(["round", "square"]) : "none", accessory: pick(OPTS.accessory)[0], accColor: pick(CLOTHC),
+    beard: Math.random() < 0.15 ? pick(["stubble", "mustache", "goatee"]) : "none", pants: pick(["#2c3344", "#3a4a6b", "#4b3b2e", "#1f1f24"]), tieColor: "#a8322d" };
 }
 const pv = $("#pv"), pvc = pv.getContext("2d");
 function drawPreview() {
   pvc.clearRect(0, 0, pv.width, pv.height);
   pvc.fillStyle = "rgba(242,239,230,.06)"; for (let i = 0; i < 6; i++) pvc.fillRect(0, 30 + i * 30, pv.width, 1);
-  drawSprite(pvc, draftLook, "down", 0, 88, 190, 3.6, true);
+  drawSprite(pvc, draftLook, "down", 0, 88, 182, 3.4, true);
 }
 function buildCreator() {
-  draftLook = randomLook();
+  const keepGroup = draftLook?.group;
+  draftLook = randomLook(); draftLook.group = keepGroup || "КН-61";
   const opts = $("#opts");
   opts.querySelectorAll(".dyn").forEach(n => n.remove());
   const addPicker = (key, label) => {
@@ -443,11 +538,12 @@ function buildCreator() {
     const row = document.createElement("div"); row.className = "row dyn";
     row.innerHTML = `<span>${label}</span><div class="sw"></div>`;
     const box = row.querySelector(".sw");
-    colors.forEach(col => { const b = document.createElement("button"); b.type = "button"; b.style.background = col; b.setAttribute("aria-label", label + " " + col);
+    colors.forEach(col => { const b = document.createElement("button"); b.type = "button"; b.style.background = col; b.dataset.c = col; b.setAttribute("aria-label", label + " " + col);
       b.onclick = () => { draftLook[key] = col; row._upd(); drawPreview(); }; box.appendChild(b); });
-    row._upd = () => box.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.style.background && rgbHex(b.style.background) === draftLook[key])));
+    row._upd = () => box.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === draftLook[key])));
     row._upd(); opts.appendChild(row);
   };
+  addPicker("group", "Група");
   addSw("skin", "Шкіра", SKINS);
   addPicker("hair", "Зачіска");
   addSw("hairColor", "Колір волосся", HAIRC);
@@ -463,85 +559,125 @@ function buildCreator() {
     pk.appendChild(b); });
   drawPreview();
 }
-function rgbHex(rgb) { const m = rgb.match(/\d+/g); if (!m) return rgb; return "#" + m.slice(0, 3).map(n => (+n).toString(16).padStart(2, "0")).join(""); }
-$("#rndBtn").onclick = () => { draftLook = randomLook(); $("#opts").querySelectorAll(".dyn").forEach(r => r._upd && r._upd()); drawPreview(); };
+$("#rndBtn").onclick = () => { const g = draftLook.group; draftLook = randomLook(); draftLook.group = g; $("#opts").querySelectorAll(".dyn").forEach(r => r._upd && r._upd()); drawPreview(); };
 
-/* ---------------- світ: карта кампусу ---------------- */
-const WORLD = { w: 2200, h: 1500 };
+/* ---------------- світ: кампус КПІ (за розташуванням корпусів) ---------------- */
+// Північ угорі. Південь — Берестейський проспект, схід — вул. Політехнічна, північ — вул. Борщагівська.
+const WORLD = { w: 2800, h: 2000 };
+const ROAD_S = 1900, ROAD_E = [2330, 2410], ROAD_N = 70;
 const BUILDINGS = [
-  { id: "main", name: "Головний корпус", x: 820, y: 110, w: 560, h: 270, wall: "#ece4d2", roof: "#8f2f2a", style: "classic", door: { x: 1100, y: 380 } },
-  { id: "k7", name: "Корпус 7", x: 260, y: 170, w: 340, h: 210, wall: "#dccaa8", roof: "#6d5a48", door: { x: 430, y: 380 } },
-  { id: "k18", name: "Корпус 18", x: 1600, y: 170, w: 340, h: 210, wall: "#cfd6dc", roof: "#4b5a6a", door: { x: 1770, y: 380 } },
-  { id: "lib", name: "НТБ · бібліотека", x: 880, y: 610, w: 440, h: 230, wall: "#d8dde3", roof: "#38566e", style: "library", door: { x: 1100, y: 840 } },
-  { id: "canteen", name: "Їдальня", x: 250, y: 650, w: 300, h: 180, wall: "#f0d9b5", roof: "#b2652e", door: { x: 400, y: 830 } },
-  { id: "copy", name: "Копіцентр", x: 590, y: 700, w: 150, h: 120, wall: "#e9e9e2", roof: "#3d7a5a", door: { x: 665, y: 820 } },
-  { id: "k35", name: "Корпус 35", x: 1180, y: 990, w: 320, h: 180, wall: "#d4cbbd", roof: "#5e5146", door: { x: 1340, y: 1170 } },
-  { id: "dorm", name: "Гуртожиток", x: 1690, y: 960, w: 300, h: 220, wall: "#e7d3c2", roof: "#7a4636", style: "dorm", door: { x: 1840, y: 1180 } }
+  { id: "main", name: "Корпус 1 · Головний", door: { x: 1500, y: 1300 }, parts: [
+    { x: 1270, y: 990, w: 460, h: 290, fh: 96, roof: "hip", rc: "#8f2f2a", wc: "#ece4d2", win: "arch" },
+    { x: 1050, y: 950, w: 230, h: 350, fh: 96, roof: "hip", rc: "#8f2f2a", wc: "#ece4d2", win: "arch" },
+    { x: 1720, y: 950, w: 230, h: 350, fh: 96, roof: "hip", rc: "#8f2f2a", wc: "#ece4d2", win: "arch" },
+    { x: 1390, y: 1010, w: 220, h: 290, fh: 110, roof: "gableV", rc: "#9a3530", wc: "#f3ecdc", classic: true }] },
+  { id: "k7", name: "Корпус 7 · ЦКМ", door: { x: 1150, y: 760 }, parts: [
+    { x: 880, y: 380, w: 170, h: 200, fh: 70, roof: "hip", rc: "#6e4a3c", wc: "#d9d1c3" },
+    { x: 880, y: 560, w: 350, h: 200, fh: 78, roof: "flat", rc: "#80848b", wc: "#d9d1c3" }] },
+  { id: "lib", name: "НТБ · бібліотека", door: { x: 2030, y: 770 }, parts: [
+    { x: 1870, y: 430, w: 330, h: 340, fh: 84, roof: "glass", rc: "#38566e", wc: "#d8dde3" }] },
+  { id: "canteen", name: "Їдальня", door: { x: 1500, y: 420 }, parts: [
+    { x: 1300, y: 220, w: 400, h: 200, fh: 72, roof: "gableH", rc: "#b5502f", wc: "#f0d9b5" },
+    { x: 1440, y: 330, w: 120, h: 90, fh: 60, roof: "gableV", rc: "#c25e36", wc: "#f4e2c4" }] },
+  { id: "k35", name: "Корпус 35 · ІПСА", door: { x: 610, y: 800 }, parts: [
+    { x: 300, y: 540, w: 210, h: 260, fh: 110, roof: "flat", rc: "#5d6670", wc: "#cfd6dc" },
+    { x: 360, y: 500, w: 90, h: 120, fh: 150, roof: "hip", rc: "#4b5560", wc: "#c4ccd3" },
+    { x: 500, y: 620, w: 260, h: 180, fh: 84, roof: "flat", rc: "#646d77", wc: "#cfd6dc" }] },
+  { id: "copy", name: "Копіцентр", door: { x: 860, y: 790 }, parts: [
+    { x: 800, y: 680, w: 120, h: 110, fh: 50, roof: "gableV", rc: "#3d7a5a", wc: "#e9e9e2" }] },
+  { id: "k12", name: "Корпус 12", door: { x: 500, y: 1260 }, parts: [
+    { x: 300, y: 1040, w: 400, h: 220, fh: 78, roof: "gableH", rc: "#7a4636", wc: "#dcc6a8" }] },
+  { id: "k18", name: "Корпус 18", decor: true, door: { x: 400, y: 400 }, parts: [
+    { x: 250, y: 140, w: 300, h: 260, fh: 110, roof: "hip", rc: "#7d3a32", wc: "#d3cbbd" },
+    { x: 350, y: 300, w: 100, h: 100, fh: 64, roof: "gableV", rc: "#8a4036", wc: "#ddd4c6" }] },
+  { id: "k19", name: "Корпус 19", decor: true, door: { x: 740, y: 400 }, parts: [
+    { x: 620, y: 140, w: 240, h: 150, fh: 100, roof: "gableH", rc: "#4f6b80", wc: "#d3cbbd" },
+    { x: 620, y: 280, w: 120, h: 120, fh: 90, roof: "gableV", rc: "#4f6b80", wc: "#d3cbbd" }] },
+  { id: "k20", name: "Корпус 20", decor: true, door: { x: 2180, y: 370 }, parts: [
+    { x: 2080, y: 150, w: 200, h: 220, fh: 90, roof: "gableH", rc: "#5e5146", wc: "#e0d4c0" }] },
+  { id: "k21", name: "Корпус 21", decor: true, door: { x: 2160, y: 1260 }, parts: [
+    { x: 2040, y: 1060, w: 240, h: 200, fh: 84, roof: "flat", rc: "#5a6068", wc: "#c9d2da" },
+    { x: 2160, y: 950, w: 110, h: 250, fh: 170, roof: "hip", rc: "#3f6a5c", wc: "#bcc6cf" }] },
+  { id: "k24", name: "Корпус 24 · спорткомплекс", door: { x: 910, y: 1700 }, parts: [
+    { x: 760, y: 1420, w: 300, h: 280, fh: 80, roof: "arch", rc: "#8a9aa8", wc: "#e2dccf" }] },
+  { id: "dorm", name: "Гуртожиток №7", door: { x: 2600, y: 470 }, parts: [
+    { x: 2470, y: 170, w: 260, h: 300, fh: 196, roof: "flat", rc: "#6b5a52", wc: "#e7d3c2", balcony: true }] },
+  { id: "dorm8", act: "dorm", name: "Гуртожиток №8", door: { x: 2600, y: 960 }, parts: [
+    { x: 2470, y: 690, w: 260, h: 270, fh: 176, roof: "hip", rc: "#7a5444", wc: "#efdcc8", balcony: true }] },
+  { id: "metro", name: "Метро «Політехнічний інститут»", door: { x: 1665, y: 1870 }, parts: [
+    { x: 1600, y: 1780, w: 130, h: 90, fh: 42, roof: "gableH", rc: "#3a4f8a", wc: "#cfd6e6" }] }
 ];
+for (const b of BUILDINGS) {
+  const dp = b.parts.filter(p => b.door.x > p.x && b.door.x < p.x + p.w).sort((a, c) => (c.y + c.h) - (a.y + a.h))[0] || b.parts[0];
+  b.signY = dp.y + dp.h - dp.fh - (dp.classic ? 52 : 14);
+}
 const ZONES = [
-  { id: "park", name: "Парк КПІ", x: 120, y: 990, w: 660, h: 380, point: { x: 450, y: 1180 } },
-  { id: "stadium", name: "Стадіон", x: 1480, y: 580, w: 560, h: 290, point: { x: 1760, y: 725 } },
-  { id: "glade", name: "Поляна", x: 820, y: 1050, w: 210, h: 280, point: { x: 925, y: 1232 } }
+  { id: "park", name: "Парк КПІ", x: 1100, y: 1390, w: 800, h: 470, point: { x: 1500, y: 1690 } },
+  { id: "stadium", name: "Стадіон", x: 1980, y: 1420, w: 320, h: 420, point: { x: 2140, y: 1630 } },
+  { id: "glade", name: "Поляна", x: 300, y: 1390, w: 420, h: 300, point: { x: 510, y: 1590 } }
 ];
-const GLADE = { x: 925, y: 1190, rx: 100, ry: 150 };
+const GLADE = { x: 510, y: 1540, rx: 160, ry: 115 };
+const FOUNTAIN = { x: 1500, y: 1620 };
+const PLAZA = [1280, 480, 540, 340];
 const PATHS = [
-  [140, 430, 1930, 70], [1070, 380, 60, 1050], [140, 880, 1930, 60], [400, 380, 60, 520], [1740, 380, 60, 520],
-  [1070, 1200, 940, 55], [1810, 870, 60, 340], [1310, 1160, 60, 60], [370, 820, 60, 70], [640, 810, 50, 80]
+  [150, 410, 730, 50], [150, 410, 60, 1460], [150, 860, 2120, 60], [150, 1310, 2120, 60], [150, 1760, 950, 50], [880, 1700, 60, 60],
+  PLAZA, [1470, 420, 60, 60], [1470, 820, 60, 40], [1470, 70, 60, 150], [1470, 1370, 60, 500], [1100, 1600, 800, 40],
+  [580, 800, 60, 60], [830, 790, 60, 70], [1120, 760, 60, 100], [2000, 770, 60, 90], [470, 1260, 60, 50],
+  [370, 400, 60, 10], [710, 400, 60, 10], [2150, 370, 60, 490], [2130, 1260, 60, 50],
+  [2270, 70, 60, 1830], [2410, 70, 50, 1830], [2410, 470, 330, 50], [2410, 960, 330, 50], [0, 1860, 2800, 40], [1640, 1860, 50, 10]
 ];
-// дерева: детермінований генератор
+const LAMPS_POS = [[300, 856], [700, 856], [1000, 856], [1300, 856], [1700, 856], [2000, 856], [300, 1306], [700, 1306], [1050, 1306], [1950, 1306], [2200, 1306],
+  [2300, 300], [2300, 700], [2300, 1100], [2300, 1500], [2440, 300], [2440, 1200], [2440, 1600], [1462, 1460], [1540, 1790], [1290, 492], [1810, 492], [1290, 812], [1810, 812], [140, 600], [140, 1100], [140, 1500]];
 function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-const LAMPS_POS = [[250,424],[620,424],[900,424],[1320,424],[1600,424],[1980,424],[250,952],[760,952],[1300,952],[1600,952],[2000,952],[1060,1290],[1150,640],[1150,1150]];
+const inRect = (x, y, r, pad) => x > r[0] - pad && x < r[0] + r[2] + pad && y > r[1] - pad && y < r[1] + r[3] + pad;
+const partRects = BUILDINGS.flatMap(b => b.parts.map(p => [p.x, p.y, p.w, p.h]));
 const TREES = [];
 (function genTrees() {
   const r = mulberry(1898);
   const inGlade = (x, y, k) => ((x - GLADE.x) / (GLADE.rx * k)) ** 2 + ((y - GLADE.y) / (GLADE.ry * k)) ** 2 < 1;
-  const blocked = (x, y, pad) => BUILDINGS.some(b => x > b.x - pad && x < b.x + b.w + pad && y > b.y - pad && y < b.y + b.h + pad + 20) ||
-    PATHS.some(p => x > p[0] - 22 && x < p[0] + p[2] + 22 && y > p[1] - 22 && y < p[1] + p[3] + 30) ||
-    (x > 1470 && x < 2050 && y > 570 && y < 880) || y > 1390 || inGlade(x, y, 1.05) || LAMPS_POS.some(l => Math.hypot(l[0] - x, l[1] - y) < 30);
-  const add = (x, y, kind) => { if (blocked(x, y, 30) || TREES.some(t => Math.hypot(t.x - x, t.y - y) < 44)) return; TREES.push({ x, y, r: 16 + r() * 10, kind }); };
-  for (let a = 0; a < Math.PI * 2; a += 0.3) { const k = 1.2 + r() * 0.25; add(GLADE.x + Math.cos(a) * GLADE.rx * k, GLADE.y + Math.sin(a) * GLADE.ry * k, r() < 0.6 ? "pine" : "oak"); }
+  const sd = ZONES[1];
+  const blocked = (x, y) => partRects.some(p => inRect(x, y, [p[0], p[1], p[2], p[3] + 26], 30)) || PATHS.some(p => inRect(x, y, [p[0], p[1], p[2], p[3] + 10], 24)) ||
+    inRect(x, y, [sd.x, sd.y, sd.w, sd.h], 20) || (x > ROAD_E[0] - 40 && x < ROAD_E[1] + 50) || y > ROAD_S - 50 || y < ROAD_N + 40 ||
+    inGlade(x, y, 1.05) || LAMPS_POS.some(l => Math.hypot(l[0] - x, l[1] - y) < 30) || Math.hypot(x - FOUNTAIN.x, y - FOUNTAIN.y) < 90;
+  const add = (x, y, kind) => { if (blocked(x, y) || TREES.some(t => Math.hypot(t.x - x, t.y - y) < 44)) return; TREES.push({ x, y, r: 16 + r() * 10, kind }); };
+  for (let a = 0; a < Math.PI * 2; a += 0.28) { const k = 1.18 + r() * 0.25; add(GLADE.x + Math.cos(a) * GLADE.rx * k, GLADE.y + Math.sin(a) * GLADE.ry * k, r() < 0.5 ? "chestnut" : "linden"); }
+  const park = ZONES[0];
+  for (let i = 0; i < 400; i++) add(park.x + 20 + r() * (park.w - 40), park.y + 20 + r() * (park.h - 40), r() < 0.7 ? "chestnut" : "linden");
   let tries = 0;
-  while (TREES.length < 150 && tries++ < 5000) {
-    const inPark = r() < 0.4;
-    const x = inPark ? 130 + r() * 640 : 60 + r() * 2080, y = inPark ? 1000 + r() * 360 : 60 + r() * 1330;
-    if (inPark && Math.hypot(x - 450, y - 1180) < 90) continue;
-    add(x, y, inPark ? (r() < 0.6 ? "chestnut" : "linden") : ["chestnut", "chestnut", "linden", "oak", "pine"][Math.floor(r() * 5)]);
-  }
+  while (TREES.length < 230 && tries++ < 8000) add(40 + r() * (WORLD.w - 80), 100 + r() * (WORLD.h - 220), ["chestnut", "chestnut", "linden", "oak", "pine"][Math.floor(r() * 5)]);
 })();
-
 function solidAt(x, y, hw, hh) {
-  if (x - hw < 20 || x + hw > WORLD.w - 20 || y - hh < 30 || y + hh > WORLD.h - 90) return true;
-  for (const b of BUILDINGS) if (x + hw > b.x && x - hw < b.x + b.w && y + hh > b.y && y - hh < b.y + b.h) return true;
+  if (x - hw < 20 || x + hw > WORLD.w - 20 || y - hh < ROAD_N + 6 || y + hh > ROAD_S + 4) return true;
+  for (const p of partRects) if (x + hw > p[0] && x - hw < p[0] + p[2] && y + hh > p[1] && y - hh < p[1] + p[3]) return true;
   for (const t of TREES) if (Math.hypot(t.x - x, t.y + 6 - y) < 10 + hw * 0.5) return true;
   if (Math.hypot(GLADE.x - x, GLADE.y - y) < 20) return true;
+  if (Math.hypot(FOUNTAIN.x - x, FOUNTAIN.y - y) < 32) return true;
   return false;
 }
 
 /* ---------------- стан гри ---------------- */
-let S = null;               // збережений стан
-let mode = "title";         // title | creator | world | boss
-let modalOpen = false;
-const P = { x: 1100, y: 470, dir: "down", phase: 0, moving: false };
+let S = null, mode = "title", modalOpen = false;
+const P = { x: 610, y: 890, dir: "down", phase: 0, moving: false };
 const cam = { x: 0, y: 0 };
 let npcs = [];
 const WEEK = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
 const weekday = d => (d - 1) % 7;
 const SHORT = { int: "Інт", energy: "Енергія", nerves: "Нерви", money: "грн", charisma: "Харизма", health: "Здоров'я" };
-
+const stream = () => STREAMS[(S && S.group || "КН-61").slice(0, 2)] || STREAMS["КН"];
+const lecOf = subj => { const s = stream()[subj]; return s ? teacherById(s.lec) : null; };
+const bossOf = subj => { const s = stream()[subj]; return s && s.boss ? teacherById(s.boss) : null; };
 function newGame(name, look, perkId) {
   const perk = PERKS.find(p => p.id === perkId) || PERKS[0];
-  S = { v: 1, name: name || "Студент", look, perk: perk.id,
+  const group = look.group; delete look.group;
+  S = { v: 2, name: name || "Студент", look, group, perk: perk.id,
     stats: { int: 10, energy: 85, nerves: 80, money: 600, charisma: 10, health: 100 }, hangover: false,
-    day: 1, hour: 8, x: 1100, y: 470, dir: "down",
-    bosses: {}, asked: {}, askN: 0, nextEvent: 22, lastEvent: null };
+    day: 1, hour: 8, x: 610, y: 890, dir: "down", passed: {}, asked: {}, askN: 0, nextEvent: 22, lastEvent: null };
   for (const k in perk.stats) S.stats[k] += perk.stats[k];
 }
 function hhmm(h) { const hh = Math.floor(h), mm = Math.floor((h - hh) * 60); return String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0"); }
-
 function updateHUD() {
-  if (!S) return;
-  const st = S.stats;
-  $("#who").textContent = S.name;
+  if (!S) return; const st = S.stats;
+  $("#who").textContent = `${S.name} · ${S.group}`;
   $("#bEnergy").style.width = st.energy + "%"; $("#vEnergy").textContent = Math.round(st.energy);
   $("#bHealth").style.width = st.health + "%"; $("#vHealth").textContent = Math.round(st.health);
   $("#bNerves").style.width = st.nerves + "%"; $("#vNerves").textContent = Math.round(st.nerves);
@@ -559,7 +695,7 @@ function apply(eff, silent) {
     let v = eff[k]; if (!v || !(k in S.stats)) continue;
     if (k === "nerves" && v < 0 && S.perk === "calm") v *= 0.75;
     const before = S.stats[k]; let nv = before + v;
-    if (k === "energy" || k === "nerves" || k === "charisma" || k === "health") nv = clamp(nv, 0, 100); else nv = Math.max(0, nv);
+    nv = ["energy", "nerves", "charisma", "health"].includes(k) ? clamp(nv, 0, 100) : Math.max(0, nv);
     S.stats[k] = nv; const d = Math.round(nv) - Math.round(before);
     if (d) parts.push((d > 0 ? "+" : "−") + Math.abs(d) + " " + SHORT[k]);
   }
@@ -586,6 +722,7 @@ function openModal({ kicker, title, body, buttons }) {
   const f = modalCard.querySelector("button:not(:disabled)"); if (f && !isTouch) f.focus({ preventScroll: true });
 }
 function closeModal() { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; afterAction(); }
+function hideModal() { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; }
 
 /* ---------------- час, день, вигорання ---------------- */
 function advance(h) { S.hour += h; }
@@ -598,7 +735,7 @@ function newDay(startHour) {
     else toast("Понеділок. Стипендії нема: потрібно 30+ Інт", "bad");
   }
 }
-function toDorm() { P.x = 1840; P.y = 1215; P.dir = "down"; }
+function toDorm() { P.x = 2600; P.y = 500; P.dir = "down"; }
 function afterAction() {
   if (!S || mode !== "world" || modalOpen) { writeSave(); return; }
   if (S.stats.health <= 0) {
@@ -625,12 +762,8 @@ function pickQuestions(filter, n) {
   pool.sort((a, b) => (S.asked[a.id] ?? -1) - (S.asked[b.id] ?? -1));
   return pool.slice(0, n).map(q => { S.asked[q.id] = ++S.askN; return prepQ(q); });
 }
-function prepQ(q) {
-  const idx = shuffle(q.options.map((_, i) => i));
-  return { ...q, opts: idx.map(i => q.options[i]), correct: idx.indexOf(q.answer) };
-}
-
-function runQuiz({ kicker, title, filter, n, perCorrect, perWrong, seconds, onDone }) {
+function prepQ(q) { const idx = shuffle(q.options.map((_, i) => i)); return { ...q, opts: idx.map(i => q.options[i]), correct: idx.indexOf(q.answer) }; }
+function runQuiz({ kicker, title, filter, n, perCorrect, perWrong, seconds }) {
   const qs = pickQuestions(filter, n);
   if (!qs.length) { toast("Немає питань для цього предмета"); return; }
   let i = 0, right = 0, timer = null;
@@ -640,7 +773,6 @@ function runQuiz({ kicker, title, filter, n, perCorrect, perWrong, seconds, onDo
     const gain = {}; for (const k in perCorrect) gain[k] = perCorrect[k] * right;
     for (const k in perWrong) gain[k] = (gain[k] || 0) + perWrong[k] * (qs.length - right);
     if (right === qs.length) gain.charisma = (gain.charisma || 0) + 2;
-    onDone && onDone(right);
     const txt = apply(gain, true);
     openModal({ kicker, title: right === qs.length ? "Ідеально!" : right ? "Непогано" : "Ну, буває",
       body: `<p>Правильних відповідей: <b>${right} з ${qs.length}</b>.</p><p>${esc(txt || "Без змін")}${right === qs.length ? "<br>Викладач тебе запам'ятав (+2 Харизма)." : ""}</p>`,
@@ -669,32 +801,47 @@ function runQuiz({ kicker, title, filter, n, perCorrect, perWrong, seconds, onDo
 
 /* ---------------- дії в будівлях ---------------- */
 const isWeekday = () => weekday(S.day) < 5;
+const classHours = () => isWeekday() && S.hour >= 8 && S.hour < 18;
 function need(e, m) {
   if (e && S.stats.energy < e) { toast("Замало енергії. Поїж або поспи.", "bad"); return false; }
   if (m && S.stats.money < m) { toast("Не вистачає грошей", "bad"); return false; }
   return true;
 }
-function lesson(subject, label) {
-  return { label: "Пара: " + label, sub: "−15 Енергія · 1,5 год",
-    disabled: !isWeekday() || S.hour < 8 || S.hour >= 18,
+function lesson(subj) {
+  const s = stream()[subj]; if (!s) return null;
+  const t = teacherById(s.lec);
+  return { label: s.title, sub: `${t ? shortName(t) : ""} · −15 Енергія · 1,5 год`, disabled: !classHours(),
     onClick: () => {
       if (!need(15)) return;
-      if (S.hour >= 16.5 && Math.random() > S.stats.charisma / 60) { apply({ nerves: -5 }); advance(0.25); openModal({ title: "Запізнення", body: "<p>Ти зайшов на 20 хвилин пізніше. Викладач не пустив. Наступного разу приходь раніше або підкачай харизму.</p>", buttons: [{ label: "Зрозуміло", primary: true, onClick: closeModal }] }); return; }
+      if (S.hour >= 16.5 && Math.random() > S.stats.charisma / 60) { apply({ nerves: -5 }); advance(0.25); openModal({ title: "Запізнення", body: `<p>Ти зайшов на 20 хвилин пізніше. ${esc(t ? t.name : "Викладач")} не пустив(ла) на пару. Наступного разу приходь раніше або підкачай харизму.</p>`, buttons: [{ label: "Зрозуміло", primary: true, onClick: closeModal }] }); return; }
       apply({ energy: -15 }, true); advance(1.5);
-      runQuiz({ kicker: "Пара · " + label, title: "Короткий квіз на початку пари", filter: q => q.subject === subject, n: 4, perCorrect: { int: 3 }, perWrong: { nerves: -4 }, seconds: 20 });
+      runQuiz({ kicker: `${s.title} · ${t ? t.name : ""}`, title: "Короткий квіз на початку пари", filter: q => q.subject === subj, n: 4, perCorrect: { int: 3 }, perWrong: { nerves: -4 }, seconds: 20 });
     } };
 }
+function zalikova() {
+  const rows = BOSS_SUBJECTS.map(subj => { const s = stream()[subj], t = bossOf(subj); const ok = S.passed[subj];
+    return `<div style="display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid rgba(242,239,230,.15);padding:6px 0"><span>${esc(s.title)}<br><small style="color:var(--chalk-dim)">${esc(t ? t.name : "")}</small></span><b style="color:${ok ? "var(--green)" : "var(--chalk-dim)"}">${ok ? "зараховано" : "—"}</b></div>`; }).join("");
+  const all = BOSS_SUBJECTS.every(s => S.passed[s]);
+  openModal({ kicker: `${S.name} · ${S.group} · ННІПСА`, title: "Залікова книжка", body: `<div>${rows}</div>${all ? "<p style='color:var(--green)'>Сесію закрито! Ти пережив перший семестр КПІ.</p>" : "<p style='color:var(--chalk-dim)'>Модульні контрольні — це бої з викладачами. Вони чекають біля корпусу 35 у будні 08:00–19:00.</p>"}`,
+    buttons: [{ label: "Закрити", primary: true, onClick: closeModal }] });
+}
 function getActions(id) {
-  const st = S.stats, closedNote = !isWeekday() ? "Сьогодні вихідний" : (S.hour < 8 || S.hour >= 18) ? "Пари 08:00–18:00" : "";
-  const T = TEACHERS[0];
+  const closed = !isWeekday() ? "Сьогодні вихідний" : !classHours() ? "Пари йдуть з 08:00 до 18:00" : "";
   switch (id) {
-    case "main": return { kicker: "Корпус 1", title: "Головний корпус", note: closedNote, list: [lesson("Матан", "Математичний аналіз"),
-      { label: "Кафедра вищої математики: " + teacherName(T), sub: S.bosses[T.id]?.won ? "Залік уже є" : "Бос", onClick: () => bossIntro(T) }] };
-    case "k7": return { kicker: "Корпус 7", title: "Лінійна алгебра", note: closedNote, list: [lesson("Лінійна алгебра", "Лінійна алгебра")] };
-    case "k18": return { kicker: "Корпус 18", title: "Програмування", note: closedNote, list: [lesson("C++", "Програмування (C++)")] };
-    case "k35": return { kicker: "Корпус 35", title: "Дискретна математика", note: closedNote, list: [lesson("Дискретна математика", "Дискретна математика")] };
+    case "k35": return { kicker: "Корпус 35 · ННІПСА", title: "Рідний інститут", note: closed, list: [
+      ...BOSS_SUBJECTS.map(lesson),
+      ...BOSS_SUBJECTS.map(subj => { const t = bossOf(subj); return { label: `Модульна: ${stream()[subj].title}`, sub: S.passed[subj] ? "зараховано" : `бій · ${t ? shortName(t) : ""}`, onClick: () => bossIntro(subj) }; }),
+      { label: "Деканат: залікова книжка", sub: "твій прогрес", onClick: zalikova }] };
+    case "k7": { const l = lesson("Фізика"); return { kicker: "Корпус 7 · Центр культури та мистецтв", title: "Корпус 7", note: closed || (!l ? "У потоці " + S.group.slice(0, 2) + " фізики в цьому семестрі немає." : ""), list: [
+      ...(l ? [l] : []),
+      { label: "Концерт студентського театру в ЦКМ", sub: "18:00+ · 50 грн · +12 Нерви · +3 Харизма", disabled: S.hour < 18, onClick: () => { if (!need(0, 50)) return; apply({ money: -50, nerves: 12, charisma: 3 }); advance(2); closeModal(); } }] }; }
+    case "k12": { const s = stream()["Англійська"], t = s && teacherById(s.lec); return { kicker: "Корпус 12", title: "Англійська мова", note: closed, list: [
+      { label: "Пара з англійської", sub: `${t ? shortName(t) : ""} · −10 Енергія · +2 Інт · +3 Харизма`, disabled: !classHours(), onClick: () => { if (!need(10)) return; apply({ energy: -10, int: 2, charisma: 3 }); advance(1.5); closeModal(); } }] }; }
+    case "main": return { kicker: "Корпус 1 · Головний корпус", title: "Головний корпус", list: [
+      { label: "Державний політехнічний музей", sub: "1 год · +3 Інт · +5 Нерви", onClick: () => { apply({ int: 3, nerves: 5 }); advance(1); closeModal(); } },
+      { label: "Посидіти на сходах головного корпусу", sub: "0,5 год · +5 Нерви", onClick: () => { apply({ nerves: 5 }); advance(0.5); closeModal(); } }] };
     case "lib": return { kicker: "Науково-технічна бібліотека", title: "НТБ", list: [
-      ...["Матан", "Лінійна алгебра", "Дискретна математика", "C++"].map(s => ({ label: "Готуватися: " + s, sub: "−10 Енергія · 1 год",
+      ...["Матан", "Лінійна алгебра", "Дискретна математика", "C++", "Фізика"].map(s => ({ label: "Готуватися: " + s, sub: "−10 Енергія · 1 год",
         onClick: () => { if (!need(10)) return; apply({ energy: -10 }, true); advance(1); runQuiz({ kicker: "Бібліотека", title: "Самопідготовка: " + s, filter: q => q.subject === s, n: 3, perCorrect: { int: 2 }, perWrong: {}, seconds: 25 }); } })),
       { label: "Посидіти в тиші читальної зали", sub: "+12 Нерви · 1 год", onClick: () => { apply({ nerves: 12 }); advance(1); closeModal(); } }] };
     case "canteen": return { kicker: "Студентська їдальня", title: "Їдальня", note: S.hour >= 20 ? "Їдальня вже зачинена (до 20:00)" : "", list: [
@@ -703,21 +850,27 @@ function getActions(id) {
     case "copy": return { kicker: "Копіцентр", title: "Друк і підробіток", list: [
       { label: "Підробіток: друкувати чужі лаби", sub: "3 год · +260 грн · −20 Енергія", onClick: () => { if (!need(20)) return; apply({ money: 260, energy: -20, nerves: -8 }); advance(3); closeModal(); } },
       { label: "Роздрукувати свою лабу", sub: "20 грн · +2 Харизма", onClick: () => { if (!need(0, 20)) return; apply({ money: -20, charisma: 2 }); advance(0.25); closeModal(); } }] };
-    case "dorm": return { kicker: "Гуртожиток", title: "Рідна кімната", list: [
-      { label: "Спати до ранку", sub: "Енергія 100 · +15 Нерви", primary: true, onClick: () => { closeModal(); newDay(8); S.stats.energy = 100; apply({ nerves: 15, health: 6 }, true); toast("Доброго ранку! Енергія 100", "good"); toDorm(); afterAction(); } },
+    case "dorm": return { kicker: "Студмістечко", title: "Гуртожиток", list: [
+      { label: "Спати до ранку", sub: "Енергія 100 · +15 Нерви", primary: true, onClick: () => { hideModal(); newDay(8); S.stats.energy = 100; apply({ nerves: 15, health: 6 }, true); toast("Доброго ранку! Енергія 100", "good"); toDorm(); afterAction(); } },
       { label: "Подрімати", sub: "2 год · +30 Енергія", onClick: () => { apply({ energy: 30 }); advance(2); closeModal(); } },
       { label: "Чай із сусідами по поверху", sub: "2 год · 30 грн · +4 Харизма · +10 Нерви", onClick: () => { if (!need(5, 30)) return; apply({ money: -30, charisma: 4, nerves: 10, energy: -5 }); advance(2); closeModal(); } }] };
-    case "park": return { kicker: "Зелена зона", title: "Парк КПІ", list: [
-      { label: "Посидіти на лавці", sub: "1 год · +15 Нерви", onClick: () => { apply({ nerves: 15, energy: 3, health: 2 }); advance(1); closeModal(); } },
+    case "park": return { kicker: "Перед головним корпусом", title: "Парк КПІ", list: [
+      { label: "Посидіти біля фонтану", sub: "1 год · +15 Нерви", onClick: () => { apply({ nerves: 15, energy: 3, health: 2 }); advance(1); closeModal(); } },
       { label: "Погодувати білок горішками", sub: "15 грн · +8 Нерви", onClick: () => { if (!need(0, 15)) return; apply({ money: -15, nerves: 8 }); advance(0.5); closeModal(); } }] };
-    case "glade": return { kicker: "Між соснами за корпусом 35", title: "Поляна", note: gladeBusy() ? "Біля вогнища вже сидить компанія. Пахне димом і шашликом." : "Зараз тут тихо. Компанія збирається ввечері (з 15:00) і на вихідних.", list: [
+    case "stadium": return { kicker: "Спорткомплекс КПІ", title: "Стадіон", list: [
+      { label: "Пробіжка", sub: "1 год · −15 Енергія · +18 Нерви", onClick: () => { if (!need(15)) return; apply({ energy: -15, nerves: 18, charisma: 1, health: 6 }); advance(1); closeModal(); } },
+      { label: "Футбол з одногрупниками", sub: "1,5 год · −20 Енергія · +6 Харизма", onClick: () => { if (!need(20)) return; apply({ energy: -20, charisma: 6, nerves: 10, health: 4 }); advance(1.5); closeModal(); } }] };
+    case "k24": return { kicker: "Корпус 24", title: "Спорткомплекс", note: closed, list: [
+      { label: "Фізвиховання (ОЗСЖ)", sub: "−15 Енергія · +8 Здоров'я · +8 Нерви", disabled: !classHours(), onClick: () => { if (!need(15)) return; apply({ energy: -15, health: 8, nerves: 8 }); advance(1.5); closeModal(); } },
+      { label: "Тренажерний зал", sub: "40 грн · −20 Енергія · +10 Здоров'я", onClick: () => { if (!need(20, 40)) return; apply({ money: -40, energy: -20, health: 10, charisma: 1 }); advance(1.5); closeModal(); } }] };
+    case "glade": return { kicker: "Сквер перед корпусом 12", title: "Поляна", note: gladeBusy() ? "Біля вогнища вже сидить компанія." : "Зараз тут тихо. Компанія збирається ввечері (з 15:00) і на вихідних.", list: [
       { label: "Випити з компанією", sub: "60 грн · +25 Нерви · −15 Здоров'я", disabled: !gladeBusy(), onClick: () => { if (!need(0, 60)) return; apply({ money: -60, nerves: 25, health: -15, charisma: 3 }); S.hangover = true; advance(1.5); closeModal(); } },
       { label: "Тусити до ночі", sub: "120 грн · +45 Нерви · −30 Здоров'я · −15 Енергія", disabled: !gladeBusy(), onClick: () => { if (!need(15, 120)) return; apply({ money: -120, nerves: 45, health: -30, energy: -15, charisma: 6, int: -2 }); S.hangover = true; advance(4); closeModal(); } },
       { label: "Посидіти біля вогнища без алкоголю", sub: "1 год · +8 Нерви · +2 Харизма", onClick: () => { apply({ nerves: 8, charisma: gladeBusy() ? 2 : 0 }); advance(1); closeModal(); } }] };
-    case "stadium": return { kicker: "Спорткомплекс", title: "Стадіон", list: [
-      { label: "Пробіжка", sub: "1 год · −15 Енергія · +18 Нерви", onClick: () => { if (!need(15)) return; apply({ energy: -15, nerves: 18, charisma: 1, health: 6 }); advance(1); closeModal(); } },
-      { label: "Футбол з одногрупниками", sub: "1,5 год · −20 Енергія · +6 Харизма", onClick: () => { if (!need(20)) return; apply({ energy: -20, charisma: 6, nerves: 10, health: 4 }); advance(1.5); closeModal(); } }] };
+    case "metro": return { kicker: "Червона лінія", title: "Метро «Політехнічний інститут»", list: [
+      { label: "Поїхати погуляти в центр", sub: "8 грн · 2,5 год · +15 Нерви · +2 Харизма", disabled: S.hour >= 22, onClick: () => { if (!need(10, 8)) return; apply({ money: -8, nerves: 15, charisma: 2, energy: -10 }); advance(2.5); closeModal(); } }] };
   }
+  return null;
 }
 function eat(cost, en, nv) {
   const queue = Math.random() < 0.3;
@@ -728,7 +881,7 @@ function eat(cost, en, nv) {
 function openPlace(id) {
   const a = getActions(id); if (!a) return;
   const body = a.note ? `<p style="color:var(--chalk-dim)">${esc(a.note)}</p>` : "";
-  openModal({ kicker: a.kicker, title: a.title, body, buttons: [...a.list, { label: "Вийти", onClick: closeModal }] });
+  openModal({ kicker: a.kicker, title: a.title, body, buttons: [...a.list.filter(Boolean), { label: "Вийти", onClick: closeModal }] });
 }
 
 /* ---------------- випадкові події ---------------- */
@@ -738,8 +891,7 @@ function triggerEvent() {
   const ev = pick(ok); S.lastEvent = ev.id;
   openModal({ kicker: "Подія · " + hhmm(S.hour), title: ev.title, body: `<p>${esc(ev.text)}</p>`,
     buttons: ev.choices.map(ch => ({ label: ch.label, sub: ch.check ? `потрібно ${SHORT[ch.check.stat]} ${ch.check.min}+` : "", onClick: () => {
-      let out = ch;
-      if (ch.check) out = S.stats[ch.check.stat] >= ch.check.min ? ch.success : ch.fail;
+      let out = ch; if (ch.check) out = S.stats[ch.check.stat] >= ch.check.min ? ch.success : ch.fail;
       const txt = apply(out.effects, true); if (ch.hours) advance(ch.hours);
       openModal({ kicker: ev.title, title: out.result, body: txt ? `<p>${esc(txt)}</p>` : "", buttons: [{ label: "Ок", primary: true, onClick: closeModal }] });
     } })) });
@@ -761,8 +913,9 @@ window.addEventListener("keydown", e => {
 });
 window.addEventListener("keyup", e => keys.delete(e.code));
 window.addEventListener("blur", () => keys.clear());
+const markTouch = () => { if (!isTouch) { isTouch = true; document.body.classList.add("touch"); refreshTouchUI(); } };
 cv.addEventListener("pointerdown", e => {
-  if (e.pointerType !== "mouse") { if (!isTouch) { isTouch = true; document.body.classList.add("touch"); refreshTouchUI(); } }
+  if (e.pointerType !== "mouse") markTouch();
   if (modalOpen || (mode !== "world" && mode !== "boss")) return;
   if (e.pointerType === "mouse" && mode === "world") return;
   joy.active = true; joy.id = e.pointerId; joy.ox = joy.x = e.clientX; joy.oy = joy.y = e.clientY;
@@ -771,7 +924,7 @@ cv.addEventListener("pointerdown", e => {
 cv.addEventListener("pointermove", e => { if (joy.active && e.pointerId === joy.id) { joy.x = e.clientX; joy.y = e.clientY; } });
 const endJoy = e => { if (e.pointerId === joy.id) joy.active = false; };
 cv.addEventListener("pointerup", endJoy); cv.addEventListener("pointercancel", endJoy);
-window.addEventListener("touchstart", () => { if (!isTouch) { isTouch = true; document.body.classList.add("touch"); refreshTouchUI(); } }, { passive: true });
+window.addEventListener("touchstart", markTouch, { passive: true });
 function inputVec() {
   let x = 0, y = 0;
   if (keys.has("KeyA") || keys.has("ArrowLeft")) x -= 1;
@@ -782,61 +935,59 @@ function inputVec() {
   const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; }
   return { x, y };
 }
-function refreshTouchUI() {
-  $("#actBtn").hidden = !(isTouch && mode === "world");
-  $("#pauseBtn").hidden = mode !== "boss";
+function refreshTouchUI() { $("#actBtn").hidden = !(isTouch && mode === "world"); $("#pauseBtn").hidden = mode !== "boss"; }
+
+/* ---------------- викладачі на кампусі ---------------- */
+const TEACHER_SPOTS = [{ x: 330, y: 892 }, { x: 430, y: 892 }, { x: 790, y: 892 }, { x: 890, y: 892 }];
+function teachersOut() {
+  if (!S || !isWeekday() || S.hour < 8 || S.hour >= 19) return [];
+  return BOSS_SUBJECTS.map((subj, i) => ({ subj, t: bossOf(subj), ...TEACHER_SPOTS[i] })).filter(o => o.t && !S.passed[o.subj]);
 }
 
-/* ---------------- взаємодія в світі ---------------- */
+/* ---------------- взаємодія ---------------- */
 let near = null;
-function teacherPresent() { return S && isWeekday() && S.hour >= 8 && S.hour < 19 && !S.bosses[TEACHERS[0].id]?.won; }
-const TEACHER_POS = { x: 1190, y: 420 };
 function findNear() {
   let best = null, bd = 1e9;
-  for (const b of BUILDINGS) { const d = Math.hypot(P.x - b.door.x, P.y - (b.door.y + 18)); if (d < 56 && d < bd) { bd = d; best = { type: "place", id: b.id, label: b.name }; } }
+  for (const b of BUILDINGS) { if (b.decor) continue; const d = Math.hypot(P.x - b.door.x, P.y - (b.door.y + 18)); if (d < 56 && d < bd) { bd = d; best = { type: "place", id: b.act || b.id, label: b.name }; } }
   for (const z of ZONES) { const d = Math.hypot(P.x - z.point.x, P.y - z.point.y); if (d < 80 && d < bd) { bd = d; best = { type: "place", id: z.id, label: z.name }; } }
-  if (teacherPresent()) { const d = Math.hypot(P.x - TEACHER_POS.x, P.y - TEACHER_POS.y); if (d < 50 && d < bd) { bd = d; best = { type: "teacher", label: teacherName(TEACHERS[0]) }; } }
+  for (const o of teachersOut()) { const d = Math.hypot(P.x - o.x, P.y - o.y); if (d < 46 && d < bd) { bd = d; best = { type: "teacher", subj: o.subj, label: `${shortName(o.t)} · ${stream()[o.subj].title}` }; } }
   return best;
 }
-function doAction() {
-  if (!near || modalOpen) return;
-  if (near.type === "teacher") bossIntro(TEACHERS[0]); else openPlace(near.id);
-}
+function doAction() { if (!near || modalOpen) return; if (near.type === "teacher") bossIntro(near.subj); else openPlace(near.id); }
 $("#actBtn").addEventListener("click", doAction);
 $("#mapBtn").addEventListener("click", () => openMap());
 $("#mini").addEventListener("click", () => openMap());
 $("#menuBtn").addEventListener("click", () => {
   if (modalOpen) return;
   openModal({ kicker: S.name, title: "Меню", body: `<p>Гра зберігається автоматично після кожної дії.</p>`, buttons: [
+    { label: "Залікова книжка", onClick: zalikova },
     { label: "Як грати", onClick: howTo },
     { label: "Повернутися в гру", primary: true, onClick: closeModal },
     { label: "Почати заново", sub: "прогрес зникне", onClick: () => openModal({ title: "Точно почати заново?", body: "<p>Поточний персонаж і прогрес буде видалено з цього браузера.</p>", buttons: [
-      { label: "Так, нова гра", onClick: () => { clearSave(); S = null; modalEl.hidden = true; modalOpen = false; showTitle(); } },
+      { label: "Так, нова гра", onClick: () => { clearSave(); S = null; hideModal(); showTitle(); } },
       { label: "Ні, назад", primary: true, onClick: closeModal }] }) }] });
 });
 function howTo() {
   openModal({ kicker: "Довідка", title: "Як грати", body: `
-    <p><b>Мета першого етапу:</b> отримати залік у практика з матану. Він стоїть біля Головного корпусу в будні з 8:00 до 19:00.</p>
-    <p><b>Пари</b> в корпусах дають Інтелект. Інтелект сильніше б'є по босу й дає підказки в бою (20+ прибирає одну хибну відповідь, 45+ підсвічує правильну).</p>
-    <p><b>Енергія</b> витрачається на ходьбу, пари й бої. Відновлюй сном у гуртожитку та їжею в їдальні.</p>
+    <p><b>Мета:</b> закрити сесію: виграти 4 модульні контрольні (матан, алгебра, дискретка, програмування). Викладачі твого потоку стоять біля корпусу 35 у будні з 8:00 до 19:00.</p>
+    <p><b>Пари</b> в корпусі 35 (математика і програмування), 7 (фізика) і 12 (англійська) дають Інтелект. Інтелект сильніше б'є по босу й дає підказки (20+ прибирає одну хибну відповідь, 45+ підсвічує правильну).</p>
+    <p><b>Енергія</b> витрачається на ходьбу, пари й бої. Відновлюй сном у гуртожитку (схід, за вул. Політехнічною) та їжею в їдальні.</p>
     <p><b>Нерви</b> — твоє здоров'я в бою. 0 = вигорання. Парк, стадіон і поляна їх лікують.</p>
-    <p><b>Здоров'я</b> росте від сну, їжі та спорту. Поляна знімає стрес, але б'є по здоров'ю і дає похмілля зранку. Нижче 30 — швидше втомлюєшся, 0 — лікарня.</p>
-    <p><b>Карта</b>: мінікарта справа вгорі, повна — кнопка «Карта» або клавіша M.</p>
-    <p><b>Гроші</b>: стипендія щопонеділка, якщо Інт 30+. Ще можна підробити в копіцентрі.</p>
-    <p><b>Харизма</b> рятує від запізнень, допомагає в подіях і дає «автомат» при перемозі над босом.</p>
-    <p><b>Бій:</b> ухиляйся від формул і двійок, торкайся бульбашки з правильною відповіддю.</p>`,
+    <p><b>Здоров'я</b> росте від сну, їжі та спорту. Поляна знімає стрес, але б'є по здоров'ю і дає похмілля зранку. 0 — лікарня.</p>
+    <p><b>Гроші</b>: стипендія щопонеділка, якщо Інт 30+, і підробіток у копіцентрі.</p>
+    <p><b>Карта</b>: мінікарта справа вгорі, повна — кнопка «Карта» або клавіша M.</p>`,
     buttons: [{ label: "Зрозуміло", primary: true, onClick: closeModal }] });
 }
 
 /* ---------------- NPC студенти ---------------- */
 function spawnNPCs() {
   npcs = [];
-  for (let i = 0; i < 9; i++) {
-    const p = pick(PATHS); const n = { look: randomLook(), x: p[0] + rand(10, p[2] - 10), y: p[1] + rand(10, p[3] - 10), dir: "down", phase: 0, tx: 0, ty: 0, wait: rand(0, 3) };
+  for (let i = 0; i < 16; i++) {
+    const p = pick(PATHS.slice(0, 6)); const n = { look: randomLook(), x: p[0] + rand(10, p[2] - 10), y: p[1] + rand(10, p[3] - 10), dir: "down", phase: 0, tx: 0, ty: 0, wait: rand(0, 3) };
     if (solidAt(n.x, n.y, 8, 5)) continue; npcTarget(n); npcs.push(n);
   }
 }
-function npcTarget(n) { const p = pick(PATHS); n.tx = p[0] + rand(10, p[2] - 10); n.ty = p[1] + rand(10, p[3] - 10); }
+function npcTarget(n) { const p = pick(PATHS); n.tx = p[0] + rand(10, Math.max(11, p[2] - 10)); n.ty = p[1] + rand(10, Math.max(11, p[3] - 10)); }
 function updateNPCs(dt) {
   for (const n of npcs) {
     if (n.wait > 0) { n.wait -= dt; n.phase = 0; continue; }
@@ -856,8 +1007,7 @@ function updateNPCs(dt) {
 let saveTimer = 0;
 function updateWorld(dt) {
   const v = inputVec();
-  const tired = S.stats.energy <= 0;
-  const sp = (tired ? 90 : 175) * dt;
+  const sp = (S.stats.energy <= 0 ? 90 : 175) * dt;
   P.moving = Math.abs(v.x) + Math.abs(v.y) > 0.05;
   if (P.moving) {
     const nx = P.x + v.x * sp, ny = P.y + v.y * sp;
@@ -870,21 +1020,20 @@ function updateWorld(dt) {
     S.nextEvent -= dt;
     if (S.nextEvent <= 0) { S.nextEvent = rand(30, 55); triggerEvent(); }
   } else P.phase = 0;
-  S.hour += dt * (2 / 60); // 1 ігрова хвилина = 0,5 с
+  S.hour += dt * (2 / 60);
   if (S.hour >= 24) afterAction();
   updateNPCs(dt); ambientFX(dt); updateParts(dt);
   near = findNear();
   const pr = $("#prompt");
   if (near && !modalOpen) { pr.hidden = false; pr.innerHTML = isTouch ? esc(near.label) : `<kbd>E</kbd>${esc(near.label)}`; } else pr.hidden = true;
   $("#actBtn").disabled = !near;
-  $("#actBtn").textContent = near ? (near.type === "teacher" ? "Говорити" : near.id === "glade" || near.id === "park" || near.id === "stadium" ? "Підійти" : "Увійти") : "Дія";
+  $("#actBtn").textContent = near ? (near.type === "teacher" ? "Говорити" : ["glade", "park", "stadium"].includes(near.id) ? "Підійти" : "Увійти") : "Дія";
   S.x = P.x; S.y = P.y; S.dir = P.dir;
   saveTimer += dt; if (saveTimer > 8) { saveTimer = 0; writeSave(); }
   updateHUD(); drawMini();
 }
 
 /* ---------------- рендер світу (піксель-арт) ---------------- */
-// Земля пререндериться один раз у текстуру з текселем 2×2 світові одиниці і масштабується без згладжування.
 const TX = 2;
 function worldZoom() { const t = Math.max(2, Math.round(Math.min(CW, CH) / 560 * TX * DPR)); return t / (TX * DPR); }
 function hash2(x, y, s) { let h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) + Math.imul(s | 0, 1442695041)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
@@ -898,7 +1047,6 @@ function inRR(x, y, rx, ry, rw, rh, r) {
   if (x < rx || y < ry || x > rx + rw || y > ry + rh) return false; r = Math.min(r, rw / 2, rh / 2);
   const cx = clamp(x, rx + r, rx + rw - r), cy = clamp(y, ry + r, ry + rh - r); return (x - cx) ** 2 + (y - cy) ** 2 <= r * r;
 }
-const inPath = (x, y) => PATHS.some(p => x >= p[0] && x < p[0] + p[2] && y >= p[1] && y < p[1] + p[3]);
 const GRASS_P = ["#4b8532", "#56953a", "#5fa141", "#69ab48"].map(hexRGB);
 const PARK_P = ["#3f7529", "#488230", "#518e36", "#5b9a3d"].map(hexRGB);
 const FLOWERS = [[240, 240, 232], [245, 215, 110], [230, 110, 120], [170, 150, 230]];
@@ -908,29 +1056,48 @@ function cobble(tx, ty, base, mortar) {
   if (ty % 4 === 0 || (tx + off) % 6 === 0) return mortar;
   return sh3(base, (hash2(Math.floor((tx + off) / 6), row, 3) * 26 | 0) - 13 + (ty % 4 === 1 ? 9 : 0));
 }
+let PMASK = null, PW = 0;
 function groundColor(tx, ty) {
   const x = tx * TX + 1, y = ty * TX + 1, r = hash2(tx, ty, 1);
-  if (y >= 1410) { if (y >= 1452 && y < 1458 && (x % 70) < 36) return [233, 227, 208]; return sh3([69, 72, 77], (r * 14 | 0) - 7); }
-  if (y >= 1400) return tx % 4 === 0 ? [118, 122, 128] : [156, 160, 166];
+  // дороги
+  if (y >= ROAD_S + 8) { if (y >= 1946 && y < 1952 && (x % 70) < 36) return [233, 227, 208]; return sh3([69, 72, 77], (r * 14 | 0) - 7); }
+  if (y >= ROAD_S) return tx % 4 === 0 ? [118, 122, 128] : [156, 160, 166];
+  if (y < ROAD_N - 6) { if (y >= 30 && y < 34 && (x % 70) < 36) return [233, 227, 208]; return sh3([69, 72, 77], (r * 14 | 0) - 7); }
+  if (y < ROAD_N) return tx % 4 === 0 ? [118, 122, 128] : [156, 160, 166];
+  if (x >= ROAD_E[0] && x < ROAD_E[1]) {
+    const zebra = [[860, 920], [1310, 1370], [470, 520], [960, 1010]].some(([a, b]) => y >= a && y < b);
+    if (zebra) return (Math.floor(x / 8) % 2) ? [236, 232, 220] : [69, 72, 77];
+    if (Math.abs(x - 2370) < 2 && (y % 70) < 36) return [233, 210, 120];
+    return sh3([69, 72, 77], (r * 14 | 0) - 7);
+  }
   const sd = ZONES[1];
-  if (inRR(x, y, sd.x, sd.y, sd.w, sd.h, 140)) {
-    const inField = inRR(x, y, sd.x + 40, sd.y + 36, sd.w - 80, sd.h - 72, 100);
-    const lane = inRR(x, y, sd.x + 20, sd.y + 18, sd.w - 40, sd.h - 36, 120) !== inRR(x, y, sd.x + 23, sd.y + 21, sd.w - 46, sd.h - 42, 117);
+  if (inRR(x, y, sd.x, sd.y, sd.w, sd.h, 150)) {
+    const inField = inRR(x, y, sd.x + 36, sd.y + 40, sd.w - 72, sd.h - 80, 110);
+    const lane = inRR(x, y, sd.x + 18, sd.y + 20, sd.w - 36, sd.h - 40, 130) !== inRR(x, y, sd.x + 21, sd.y + 23, sd.w - 42, sd.h - 46, 127);
     if (!inField) return lane ? [236, 230, 220] : sh3([181, 83, 60], (r * 16 | 0) - 8);
     const cx = sd.x + sd.w / 2, cy = sd.y + sd.h / 2;
-    if (Math.abs(x - cx) < 2 || Math.abs(Math.hypot(x - cx, y - cy) - 34) < 1.6) return [236, 236, 226];
-    return sh3(Math.floor((x - sd.x) / 40) % 2 ? [86, 160, 69] : [98, 172, 78], (r * 8 | 0) - 4);
+    if (Math.abs(y - cy) < 2 || Math.abs(Math.hypot(x - cx, y - cy) - 34) < 1.6) return [236, 236, 226];
+    return sh3(Math.floor((y - sd.y) / 40) % 2 ? [86, 160, 69] : [98, 172, 78], (r * 8 | 0) - 4);
   }
-  if (inPath(x, y)) {
-    if (!inPath(x - 3, y) || !inPath(x + 3, y) || !inPath(x, y - 3) || !inPath(x, y + 3)) return [138, 126, 98];
-    return cobble(tx, ty, [205, 193, 160], [156, 144, 114]);
-  }
-  const fd = Math.hypot(x - 450, y - 1180);
+  const fd = Math.hypot(x - FOUNTAIN.x, y - FOUNTAIN.y);
   if (fd < 62) {
     if (fd < 9) return [214, 236, 248];
     if (fd < 27) return Math.sin(fd * 0.9 + vnoise(tx / 3, ty / 3, 5) * 3) > 0.6 ? [120, 176, 220] : [78, 142, 196];
     if (fd < 32) return (tx + ty) % 3 === 0 ? [150, 142, 128] : [192, 184, 168];
     return cobble(tx, ty, [198, 184, 148], [150, 138, 110]);
+  }
+  if (x >= PLAZA[0] && x < PLAZA[0] + PLAZA[2] && y >= PLAZA[1] && y < PLAZA[1] + PLAZA[3]) {
+    const pcx = PLAZA[0] + PLAZA[2] / 2, pcy = PLAZA[1] + PLAZA[3] / 2, pd = Math.hypot(x - pcx, y - pcy);
+    if (Math.abs(pd - 90) < 4 || Math.abs(pd - 40) < 3) return [168, 74, 60];
+    if (pd < 40) return ((tx >> 2) + (ty >> 2)) & 1 ? [214, 206, 186] : [176, 166, 146];
+    const edge = x < PLAZA[0] + 6 || x > PLAZA[0] + PLAZA[2] - 6 || y < PLAZA[1] + 6 || y > PLAZA[1] + PLAZA[3] - 6;
+    if (edge) return [128, 118, 96];
+    return ((tx >> 3) + (ty >> 3)) & 1 ? sh3([206, 198, 178], (r * 10 | 0) - 5) : sh3([188, 178, 156], (r * 10 | 0) - 5);
+  }
+  if (PMASK[ty * PW + tx]) {
+    const m = (xx, yy) => xx < 0 || yy < 0 || xx >= PW || PMASK[yy * PW + xx];
+    if (!m(tx - 1, ty) || !m(tx + 1, ty) || !m(tx, ty - 1) || !m(tx, ty + 1)) return [138, 126, 98];
+    return cobble(tx, ty, [205, 193, 160], [156, 144, 114]);
   }
   const gd = ((x - GLADE.x) / GLADE.rx) ** 2 + ((y - GLADE.y) / GLADE.ry) ** 2;
   if (gd < 1) {
@@ -938,7 +1105,7 @@ function groundColor(tx, ty) {
     if (fpd < 9) return r < 0.5 ? [52, 44, 38] : [74, 62, 52];
     if (fpd < 15) return ((tx + ty) & 1) ? [104, 104, 108] : [142, 142, 146];
     if (vnoise(tx / 5, ty / 5, 7) + (1 - gd) * 0.75 > 0.98) return sh3([136, 104, 68], (r * 18 | 0) - 9);
-    if (r > 0.993) return [70, 120, 70]; // скляна пляшка в траві
+    if (r > 0.993) return [70, 120, 70];
   }
   const park = ZONES[0], inPk = inRR(x, y, park.x, park.y, park.w, park.h, 18);
   if (inPk && !inRR(x, y, park.x + 12, park.y + 12, park.w - 24, park.h - 24, 10)) return sh3(hash2(tx >> 1, ty >> 1, 8) < 0.3 ? [40, 82, 32] : [54, 100, 40], (r * 16 | 0) - 8);
@@ -949,127 +1116,107 @@ function groundColor(tx, ty) {
   if (r > 0.965) return sh3(pal[3], 16);
   return pal[clamp(Math.floor(n * 4.3), 0, 3)];
 }
-
 let BG = null;
 const WINDOWS = [];
 function buildBG() {
   const W = WORLD.w / TX, H = WORLD.h / TX;
+  PW = W; PMASK = new Uint8Array(W * H);
+  for (const p of PATHS) { if (p === PLAZA) continue; for (let ty = Math.floor(p[1] / TX); ty < Math.ceil((p[1] + p[3]) / TX); ty++) for (let tx = Math.floor(p[0] / TX); tx < Math.ceil((p[0] + p[2]) / TX); tx++) if (tx >= 0 && ty >= 0 && tx < W && ty < H) PMASK[ty * W + tx] = 1; }
   BG = document.createElement("canvas"); BG.width = W; BG.height = H;
   const g = BG.getContext("2d"), im = g.createImageData(W, H), d = im.data;
   for (let ty = 0; ty < H; ty++) for (let tx = 0; tx < W; tx++) { const c = groundColor(tx, ty), i = (ty * W + tx) * 4; d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255; }
   g.putImageData(im, 0, 0);
   g.save(); g.scale(1 / TX, 1 / TX);
-  const F = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.max(2, Math.round(w / 2) * 2), Math.max(2, Math.round(h / 2) * 2)); };
-  // лавки в парку
-  for (const [bx, by] of [[380, 1112], [490, 1112], [380, 1240], [490, 1240]]) { F(bx - 24, by - 2, 48, 10, "#2a1a0e"); F(bx - 22, by, 44, 6, "#8a5a32"); F(bx - 22, by, 44, 2, "#a8743f"); F(bx - 20, by + 6, 4, 8, "#3b2614"); F(bx + 16, by + 6, 4, 8, "#3b2614"); }
+  const F = (x, y, w, h, c) => { if (w <= 0 || h <= 0) return; g.fillStyle = c; g.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.max(2, Math.round(w / 2) * 2), Math.max(2, Math.round(h / 2) * 2)); };
+  for (const [bx, by] of [[1380, 1660], [1620, 1660], [1380, 1560], [1620, 1560], [1300, 520], [1700, 520]]) { F(bx - 24, by - 2, 48, 10, "#2a1a0e"); F(bx - 22, by, 44, 6, "#8a5a32"); F(bx - 22, by, 44, 2, "#a8743f"); F(bx - 20, by + 6, 4, 8, "#3b2614"); F(bx + 16, by + 6, 4, 8, "#3b2614"); }
   WINDOWS.length = 0;
   for (const b of BUILDINGS) drawBuildingPx(F, g, b);
   g.restore();
 }
+function drawRoof(F, g, p, rnd) {
+  const roofH = p.h - p.fh, rc = p.rc, fy = p.y + roofH;
+  if (p.roof === "flat") {
+    F(p.x, p.y, p.w, roofH, shade(rc, 14)); F(p.x + 6, p.y + 6, p.w - 12, roofH - 10, rc);
+    for (let i = 0; i < p.w * roofH / 900; i++) F(p.x + 8 + rnd() * (p.w - 16), p.y + 8 + rnd() * (roofH - 14), 2, 2, shade(rc, -14));
+    const n = Math.max(1, Math.floor(p.w / 120));
+    for (let k = 0; k < n && roofH > 50; k++) { const vx = p.x + 20 + rnd() * (p.w - 60), vy = p.y + 14 + rnd() * (roofH - 44); F(vx, vy, 24, 18, "#2a2622"); F(vx + 2, vy + 2, 20, 14, "#9a9da3"); F(vx + 4, vy + 4, 16, 2, "#c4c7cc"); F(vx + 4, vy + 9, 16, 2, "#74777c"); }
+    if (roofH > 60 && rnd() < 0.6) { const hx = p.x + p.w * 0.6, hy = p.y + 12; F(hx, hy, 30, 22, shade(rc, -30)); F(hx + 2, hy + 2, 26, 16, shade(rc, 6)); }
+  } else if (p.roof === "gableH" || p.roof === "hip") {
+    const half = Math.round(roofH / 2 / 2) * 2;
+    F(p.x, p.y, p.w, half, shade(rc, 18)); F(p.x, p.y + half, p.w, roofH - half, shade(rc, -10));
+    for (let y = p.y + 8, i = 0; y < fy; y += 8, i++) { F(p.x, y, p.w, 2, shade(rc, y < p.y + half ? 0 : -28)); for (let x = p.x + (i % 2) * 8; x < p.x + p.w; x += 16) F(x, y - 6, 2, 6, shade(rc, y < p.y + half ? 4 : -22)); }
+    if (p.roof === "hip") for (let y = p.y; y < fy; y += 2) { const t = Math.min(y - p.y, fy - y) * 0.9; F(p.x, y, t, 2, shade(rc, -24)); F(p.x + p.w - t, y, t, 2, shade(rc, -34)); }
+    F(p.x, p.y + half - 2, p.w, 4, shade(rc, 40));
+    F(p.x - 4, fy - 4, p.w + 8, 4, shade(rc, -45));
+  } else if (p.roof === "gableV") {
+    const cx = p.x + p.w / 2;
+    F(p.x, p.y, p.w / 2, roofH, shade(rc, 16)); F(cx, p.y, p.w / 2, roofH, shade(rc, -16));
+    for (let x = p.x + 6; x < p.x + p.w; x += 8) for (let y = p.y + ((x / 8) % 2) * 6; y < fy; y += 12) F(x, y, 2, 6, shade(rc, x < cx ? 0 : -30));
+    F(cx - 2, p.y, 4, roofH, shade(rc, 42));
+    const gh = Math.min(roofH * 0.75, p.w * 0.4);
+    for (let k = 0; k < gh; k += 2) { const wk = p.w * (1 - k / gh); F(cx - wk / 2, fy - k - 2, wk, 2, k % 8 === 0 ? shade(p.wc, -10) : p.wc); F(cx - wk / 2 - 2, fy - k - 2, 2, 2, shade(rc, -40)); F(cx + wk / 2, fy - k - 2, 2, 2, shade(rc, -40)); }
+    const wy = fy - gh * 0.45;
+    for (let dy = -6; dy <= 6; dy += 2) for (let dx = -6; dx <= 6; dx += 2) { const dd = Math.hypot(dx, dy); if (dd <= 6) F(cx + dx, wy + dy, 2, 2, dd > 4.5 ? "#2a1d10" : "#5b86a8"); }
+  } else if (p.roof === "glass") {
+    F(p.x, p.y, p.w, roofH, "#22323d");
+    for (let s = 0; s < 3; s++) { const ins = 8 + s * 26; F(p.x + ins, p.y + ins, p.w - ins * 2, roofH - ins * 2 + (s ? 10 : 0), s % 2 ? "#6d9cbc" : "#86b3d0"); }
+    for (let x = p.x + 8; x < p.x + p.w - 8; x += 20) F(x, p.y + 8, 2, roofH - 12, "rgba(220,235,245,.55)");
+    for (let y = p.y + 8; y < fy - 4; y += 20) F(p.x + 8, y, p.w - 16, 2, "rgba(220,235,245,.55)");
+    for (let k = 0; k < 6; k++) F(p.x + 30 + k * 50, p.y + 14, 6, roofH - 30, "rgba(255,255,255,.18)");
+  } else if (p.roof === "arch") {
+    for (let y = p.y; y < fy; y += 2) { const t = (y - p.y) / roofH; F(p.x, y, p.w, 2, shade(rc, Math.round(Math.cos(t * Math.PI) * 30))); }
+    for (let x = p.x + 10; x < p.x + p.w; x += 24) F(x, p.y, 2, roofH, "rgba(0,0,0,.18)");
+  }
+}
 function drawBuildingPx(F, g, b) {
-  const rnd = mulberry(b.x * 7 + b.y);
-  const fh = b.style === "dorm" ? b.h - 46 : b.style === "classic" ? 84 : 70;
-  const fy = b.y + b.h - fh, roofH = b.h - fh;
-  g.fillStyle = "rgba(0,0,0,.3)"; g.fillRect(b.x + 10, b.y + 12, b.w, b.h);
-  // дах: черепиця
-  F(b.x, b.y, b.w, roofH, b.roof);
-  for (let y = b.y + 10, i = 0; y < fy; y += 8, i++) {
-    F(b.x, y, b.w, 2, shade(b.roof, -26));
-    for (let x = b.x + (i % 2) * 8; x < b.x + b.w; x += 16) { F(x, y - 6, 2, 6, shade(b.roof, -14)); F(x + 2, y - 6, 8, 2, shade(b.roof, 16)); }
-  }
-  F(b.x, b.y, b.w, 4, shade(b.roof, 34)); F(b.x, b.y + 4, b.w, 2, shade(b.roof, -34));
-  if (b.style !== "classic" && b.style !== "library" && roofH > 60) {
-    for (let k = 0; k < 2; k++) { const vx = b.x + 30 + rnd() * (b.w - 90), vy = b.y + 16 + rnd() * (roofH - 50); F(vx, vy, 26, 20, "#2a2622"); F(vx + 2, vy + 2, 22, 16, "#8d9096"); F(vx + 4, vy + 4, 18, 2, "#b5b8bd"); F(vx + 4, vy + 10, 18, 2, "#6c6f74"); }
-  }
-  if (b.style === "library") {
-    F(b.x + 38, b.y + 22, b.w - 76, roofH - 40, "#22323d");
-    F(b.x + 40, b.y + 24, b.w - 80, roofH - 44, "#7fa9c6");
-    for (let x = b.x + 40; x < b.x + b.w - 40; x += 20) F(x, b.y + 24, 2, roofH - 44, "#d8e6ef");
-    for (let y = b.y + 24; y < fy - 20; y += 24) F(b.x + 40, y, b.w - 80, 2, "#d8e6ef");
-    for (let k = 0; k < 6; k++) F(b.x + 60 + k * 50, b.y + 30, 6, roofH - 60, "rgba(255,255,255,.25)");
-  }
-  if (b.style === "classic") {
-    for (let dy = -14; dy <= 14; dy += 2) for (let dx = -14; dx <= 14; dx += 2) { const dd = Math.hypot(dx, dy); if (dd <= 14) F(b.door.x + dx, b.y + 40 + dy, 2, 2, dd > 12 ? "#2a1d10" : dd > 10 ? "#c99a3a" : "#f1e2b0"); }
-    F(b.door.x - 1, b.y + 30, 2, 10, "#2a1d10"); F(b.door.x, b.y + 39, 8, 2, "#2a1d10");
-  }
-  // фасад: цегла або штукатурка
-  F(b.x, fy, b.w, fh, b.wall);
-  if (b.style !== "classic") {
-    for (let y = fy + 6, i = 0; y < b.y + b.h; y += 6, i++) {
-      F(b.x, y, b.w, 2, shade(b.wall, -16));
-      for (let x = b.x + (i % 2) * 6; x < b.x + b.w; x += 12) F(x, y - 4, 2, 4, shade(b.wall, -11));
+  const rnd = mulberry(b.parts[0].x * 7 + b.parts[0].y);
+  const parts = [...b.parts].sort((a, c) => (a.y + a.h) - (c.y + c.h));
+  for (const p of parts) { g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(p.x + 10, p.y + 12, p.w, p.h); }
+  for (const p of parts) {
+    const fy = p.y + p.h - p.fh, wc = p.wc;
+    drawRoof(F, g, p, rnd);
+    // фасад
+    F(p.x, fy, p.w, p.fh, wc);
+    if (!p.classic && p.win !== "arch") { for (let y = fy + 6, i = 0; y < p.y + p.h; y += 6, i++) { F(p.x, y, p.w, 2, shade(wc, -14)); for (let x = p.x + (i % 2) * 6; x < p.x + p.w; x += 12) F(x, y - 4, 2, 4, shade(wc, -10)); } }
+    else for (let y = fy + 20; y < p.y + p.h; y += 20) F(p.x, y, p.w, 2, shade(wc, -10));
+    F(p.x, fy, p.w, 4, shade(wc, 22)); F(p.x, fy + 4, p.w, 2, shade(wc, -46));
+    F(p.x, p.y + p.h - 6, p.w, 6, shade(wc, -38));
+    F(p.x + p.w - 4, fy, 4, p.fh, shade(wc, -22));
+    // вікна
+    const floors = Math.max(1, Math.floor((p.fh - 14) / 34));
+    const doorHere = b.door.x > p.x && b.door.x < p.x + p.w && Math.abs(p.y + p.h - b.door.y) < 4;
+    for (let r = 0; r < floors; r++) {
+      const wy = fy + 12 + r * 34;
+      for (let x = p.x + 14; x < p.x + p.w - 24; x += 30) {
+        if (doorHere && r === floors - 1 && Math.abs(x + 8 - b.door.x) < 34) continue;
+        if (p.classic && Math.abs(x + 8 - b.door.x) < 120 && r === floors - 1) continue;
+        F(x - 2, wy - 2, 20, 24, "#efe9dc"); F(x, wy, 16, 20, "#3f6f94"); F(x, wy, 16, 4, "#2f5674");
+        F(x + 2, wy + 6, 2, 6, "#a9d1ea"); F(x + 4, wy + 4, 2, 4, "#a9d1ea"); F(x + 7, wy, 2, 20, "#efe9dc"); F(x, wy + 9, 16, 2, "#efe9dc");
+        if (p.win === "arch") { F(x, wy - 4, 16, 4, "#efe9dc"); F(x + 4, wy - 6, 8, 2, "#efe9dc"); }
+        F(x - 4, wy + 20, 24, 4, shade(wc, -50));
+        if (p.balcony && r > 0) { F(x - 4, wy + 22, 24, 2, "#4a4a50"); F(x - 4, wy + 16, 2, 6, "#4a4a50"); F(x + 18, wy + 16, 2, 6, "#4a4a50"); }
+        WINDOWS.push({ x, y: wy, w: 16, h: 20, lit: rnd() < 0.55 });
+      }
     }
-  } else { for (let y = fy + 20; y < b.y + b.h; y += 20) F(b.x, y, b.w, 2, shade(b.wall, -10)); }
-  F(b.x, fy, b.w, 6, shade(b.wall, 22)); F(b.x, fy + 6, b.w, 2, shade(b.wall, -46));
-  F(b.x, b.y + b.h - 6, b.w, 6, shade(b.wall, -38));
-  // вікна
-  const floors = Math.max(1, Math.floor((fh - 16) / 38));
-  for (let r = 0; r < floors; r++) {
-    const wy = fy + 14 + r * 38;
-    for (let x = b.x + 16; x < b.x + b.w - 30; x += 34) {
-      if (r === floors - 1 && Math.abs(x + 9 - b.door.x) < 40) continue;
-      if (b.style === "classic" && Math.abs(x + 9 - b.door.x) < 110) continue;
-      F(x - 2, wy - 2, 22, 28, "#efe9dc"); F(x, wy, 18, 24, "#3f6f94"); F(x, wy, 18, 4, "#2f5674");
-      F(x + 2, wy + 8, 2, 6, "#a9d1ea"); F(x + 4, wy + 6, 2, 4, "#a9d1ea");
-      F(x + 8, wy, 2, 24, "#efe9dc"); F(x, wy + 10, 18, 2, "#efe9dc");
-      F(x - 4, wy + 24, 26, 4, shade(b.wall, -50));
-      if (b.style === "dorm") F(x - 4, wy + 28, 26, 2, "#4a4a50");
-      WINDOWS.push({ x, y: wy, w: 18, h: 24, lit: rnd() < 0.55 });
+    if (p.classic) {
+      for (let i = -3; i <= 3; i++) { const cx = b.door.x + i * 28; F(cx - 6, fy - 8, 12, p.fh + 2, "#f6f1e5"); F(cx - 6, fy - 8, 2, p.fh + 2, "#ffffff"); F(cx + 4, fy - 8, 2, p.fh + 2, "#c9c1ae"); F(cx - 8, fy - 12, 16, 4, "#ddd6c5"); F(cx - 8, p.y + p.h - 8, 16, 6, "#c9c1ae"); }
+      const cy = p.y + 26; for (let dy = -14; dy <= 14; dy += 2) for (let dx = -14; dx <= 14; dx += 2) { const dd = Math.hypot(dx, dy); if (dd <= 14) F(b.door.x + dx, cy + dy, 2, 2, dd > 12 ? "#2a1d10" : dd > 10 ? "#c99a3a" : "#f1e2b0"); }
+      F(b.door.x - 1, cy - 10, 2, 10, "#2a1d10"); F(b.door.x, cy - 1, 8, 2, "#2a1d10");
     }
-  }
-  if (b.style === "classic") {
-    for (let k = 0; k < 24; k++) F(b.door.x - 124 + k * 5, fy - 14 - k * 2, 248 - k * 10, 2, k % 4 === 0 ? "#cdc4b1" : "#ebe4d3");
-    for (let i = -3; i <= 3; i++) {
-      const cx = b.door.x + i * 30;
-      F(cx - 6, fy - 8, 12, fh + 2, "#f6f1e5"); F(cx - 6, fy - 8, 2, fh + 2, "#ffffff"); F(cx + 4, fy - 8, 2, fh + 2, "#c9c1ae");
-      F(cx - 8, fy - 12, 16, 4, "#ddd6c5"); F(cx - 8, b.y + b.h - 8, 16, 6, "#c9c1ae");
-    }
+    F(p.x - 2, p.y - 2, p.w + 4, 2, "#1d1510"); F(p.x - 2, p.y + p.h, p.w + 4, 2, "#1d1510"); F(p.x - 2, p.y, 2, p.h, "#1d1510"); F(p.x + p.w, p.y, 2, p.h, "#1d1510");
   }
   // двері
-  F(b.door.x - 26, b.y + b.h - 46, 52, 6, shade(b.roof, 10)); F(b.door.x - 26, b.y + b.h - 40, 52, 2, shade(b.roof, -30));
-  F(b.door.x - 20, b.y + b.h - 38, 40, 38, "#2e1d10");
-  F(b.door.x - 16, b.y + b.h - 34, 14, 34, "#7a4f2c"); F(b.door.x + 2, b.y + b.h - 34, 14, 34, "#7a4f2c");
-  F(b.door.x - 12, b.y + b.h - 34, 2, 34, "#64401f"); F(b.door.x + 8, b.y + b.h - 34, 2, 34, "#64401f");
-  F(b.door.x - 16, b.y + b.h - 34, 14, 2, "#93653b"); F(b.door.x + 2, b.y + b.h - 34, 14, 2, "#93653b");
-  F(b.door.x - 5, b.y + b.h - 18, 2, 2, "#e8c460"); F(b.door.x + 3, b.y + b.h - 18, 2, 2, "#e8c460");
-  F(b.door.x - 28, b.y + b.h, 56, 4, "#b9b1a0"); F(b.door.x - 24, b.y + b.h + 4, 48, 4, "#9d9483");
-  // контур
-  F(b.x - 2, b.y - 2, b.w + 4, 2, "#1d1510"); F(b.x - 2, b.y + b.h, b.w + 4, 2, "#1d1510"); F(b.x - 2, b.y, 2, b.h, "#1d1510"); F(b.x + b.w, b.y, 2, b.h, "#1d1510");
+  const d = b.door, dp = parts.find(p => d.x > p.x && d.x < p.x + p.w && Math.abs(p.y + p.h - d.y) < 4) || parts[parts.length - 1];
+  F(d.x - 26, d.y - 46, 52, 6, shade(dp.rc, 10)); F(d.x - 26, d.y - 40, 52, 2, shade(dp.rc, -30));
+  F(d.x - 20, d.y - 38, 40, 38, "#2e1d10");
+  if (b.id === "metro" || b.id === "lib" || b.id === "k35" || b.id === "k21") { F(d.x - 16, d.y - 34, 32, 34, "#6d9cbc"); F(d.x - 1, d.y - 34, 2, 34, "#2e1d10"); F(d.x - 12, d.y - 30, 4, 10, "#cfe4f2"); }
+  else { F(d.x - 16, d.y - 34, 14, 34, "#7a4f2c"); F(d.x + 2, d.y - 34, 14, 34, "#7a4f2c"); F(d.x - 12, d.y - 34, 2, 34, "#64401f"); F(d.x + 8, d.y - 34, 2, 34, "#64401f"); F(d.x - 5, d.y - 18, 2, 2, "#e8c460"); F(d.x + 3, d.y - 18, 2, 2, "#e8c460"); }
+  F(d.x - 28, d.y, 56, 4, "#b9b1a0"); F(d.x - 24, d.y + 4, 48, 4, "#9d9483");
+  if (b.id === "metro") { const mx = d.x, my = dp.y + 10; F(mx - 12, my, 24, 20, "#c0392b"); F(mx - 8, my + 4, 3, 12, "#fff"); F(mx + 5, my + 4, 3, 12, "#fff"); F(mx - 5, my + 4, 3, 4, "#fff"); F(mx + 2, my + 4, 3, 4, "#fff"); F(mx - 2, my + 8, 4, 4, "#fff"); }
 }
 
-/* спрайти людей з контуром (кеш) */
-const SPR = new WeakMap();
-function makePersonSprite(look, dir, frame) {
-  const c = document.createElement("canvas"); c.width = 40; c.height = 52; const g = c.getContext("2d");
-  drawPerson(g, 20, 46, 2, look, dir, [0, Math.PI / 2, Math.PI * 1.5][frame], true);
-  const im = g.getImageData(0, 0, 40, 52), d = im.data, out = new Uint8ClampedArray(d);
-  for (let i = 3; i < d.length; i += 4) out[i] = d[i] > 110 ? 255 : 0;
-  const a = i => out[i * 4 + 3] === 255;
-  const res = new Uint8ClampedArray(out);
-  for (let y = 0; y < 52; y++) for (let x = 0; x < 40; x++) {
-    const i = y * 40 + x; if (a(i)) continue;
-    if ((x > 0 && a(i - 1)) || (x < 39 && a(i + 1)) || (y > 0 && a(i - 40)) || (y < 51 && a(i + 40))) { res[i * 4] = 26; res[i * 4 + 1] = 20; res[i * 4 + 2] = 18; res[i * 4 + 3] = 255; }
-  }
-  g.putImageData(new ImageData(res, 40, 52), 0, 0); return c;
-}
-function personSprite(look, dir, frame) {
-  let m = SPR.get(look); if (!m) { m = new Map(); SPR.set(look, m); }
-  const k = dir + frame; let s = m.get(k); if (!s) { s = makePersonSprite(look, dir, frame); m.set(k, s); } return s;
-}
-function drawSprite(c, look, dir, phase, x, y, k, noCache) {
-  const st = phase ? Math.sin(phase) : 0, frame = st > 0.2 ? 1 : st < -0.2 ? 2 : 0;
-  c.fillStyle = "rgba(0,0,0,.28)"; c.beginPath(); c.ellipse(x, y, 12 * k, 3.6 * k, 0, 0, 7); c.fill();
-  const spr = noCache ? makePersonSprite(look, dir, frame) : personSprite(look, dir, frame);
-  c.imageSmoothingEnabled = false; c.drawImage(spr, x - 20 * k, y - 46 * k, 40 * k, 52 * k);
-}
-
-/* дерева: процедурний піксель-арт */
-const TREE_PAL = {
-  chestnut: ["#1f4527", "#2b6030", "#3a7c38", "#53a046", "#6cbb52"],
-  linden: ["#29561f", "#377429", "#4b9334", "#66b043", "#86c95a"],
-  oak: ["#22471d", "#2f6226", "#417e31", "#5a9c3f", "#79b952"],
-  pine: ["#143726", "#1c4b33", "#266042", "#337a52", "#469466"]
-};
+/* дерева */
+const TREE_PAL = { chestnut: ["#1f4527", "#2b6030", "#3a7c38", "#53a046", "#6cbb52"], linden: ["#29561f", "#377429", "#4b9334", "#66b043", "#86c95a"], oak: ["#22471d", "#2f6226", "#417e31", "#5a9c3f", "#79b952"], pine: ["#143726", "#1c4b33", "#266042", "#337a52", "#469466"] };
 function makeTree(t, seed) {
   const r = mulberry(seed), R = Math.round(t.r / TX * 1.2), pal = TREE_PAL[t.kind].map(hexRGB);
   const W = R * 2 + 6, H = R * 2 + 16, cx = W / 2 | 0, base = H - 2;
@@ -1078,13 +1225,13 @@ function makeTree(t, seed) {
   const put = (x, y, col) => { if (x < 0 || y < 0 || x >= W || y >= H) return; const i = (y * W + x) * 4; d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = 255; };
   const bark = [[95, 62, 34], [74, 47, 24], [124, 86, 50]];
   for (let y = base - 14; y <= base; y++) for (let x = cx - 2; x <= cx + 1; x++) put(x, y, x === cx - 2 ? bark[2] : x === cx + 1 ? bark[1] : r() < 0.2 ? bark[1] : bark[0]);
-  put(cx - 3, base, bark[1]); put(cx + 2, base, bark[1]); put(cx - 3, base - 1, bark[0]); put(cx + 2, base - 1, bark[1]);
+  put(cx - 3, base, bark[1]); put(cx + 2, base, bark[1]);
   const ccy = R + 2;
   const blobs = t.kind === "pine" ? null : [[cx, ccy, R], [cx - R * 0.55, ccy + 3, R * 0.62], [cx + R * 0.55, ccy + 3, R * 0.62], [cx, ccy - R * 0.35, R * 0.72]];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     let inside = false;
     if (blobs) inside = blobs.some(([bx, by, br]) => Math.hypot(x + 0.5 - bx, y + 0.5 - by) < br * (0.88 + vnoise(x / 2.5, y / 2.5, seed) * 0.24));
-    else { const top = 1, bot = R * 2 + 3; if (y >= top && y <= bot) { const tier = ((y - top) % Math.max(4, R * 0.55)) / Math.max(4, R * 0.55); const hw = (y - top) / (bot - top) * R * 0.95 * (0.55 + tier * 0.45) + 1; inside = Math.abs(x + 0.5 - cx) < hw; } }
+    else { const top = 1, bot = R * 2 + 3, tl = Math.max(4, R * 0.55); if (y >= top && y <= bot) { const tier = ((y - top) % tl) / tl; inside = Math.abs(x + 0.5 - cx) < (y - top) / (bot - top) * R * 0.95 * (0.55 + tier * 0.45) + 1; } }
     if (!inside) continue;
     const lv = ((cx - x) * 0.6 + (ccy - y)) / (R * 1.6) + 0.45 + (vnoise(x / 2, y / 2, seed + 9) - 0.5) * 0.5;
     let k = clamp(Math.floor(lv * 4.2), 0, 4); if (((x + y) & 1) && lv * 4.2 - k < 0.25 && k > 0) k--;
@@ -1116,34 +1263,25 @@ function drawLamp(l, night) {
 }
 const PARTS = [];
 function addPart(x, y, vx, vy, life, col, sz, grav) { if (PARTS.length < 350) PARTS.push({ x, y, vx, vy, life, max: life, col, sz: sz || 2, grav: grav || 0 }); }
-function updateParts(dt) {
-  for (const p of PARTS) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += p.grav * dt; p.life -= dt; }
-  for (let i = PARTS.length - 1; i >= 0; i--) if (PARTS[i].life <= 0) PARTS.splice(i, 1);
-}
-let fxT = 0;
-function ambientFX(dt, now) {
-  fxT += dt;
+function updateParts(dt) { for (const p of PARTS) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += p.grav * dt; p.life -= dt; } for (let i = PARTS.length - 1; i >= 0; i--) if (PARTS[i].life <= 0) PARTS.splice(i, 1); }
+function ambientFX(dt) {
   if (Math.random() < dt * 14) addPart(GLADE.x + rand(-6, 6), GLADE.y - 8, rand(-8, 8), rand(-50, -26), rand(0.5, 1.1), pick(["#ffd04a", "#ff8a2a", "#ffef9a"]), 2, -10);
   if (Math.random() < dt * 4) addPart(GLADE.x + rand(-4, 4), GLADE.y - 22, rand(-6, 6), rand(-22, -14), rand(1.5, 2.6), "rgba(120,120,120,.35)", 4);
-  if (Math.random() < dt * 10) addPart(450 + rand(-4, 4), 1178, rand(-20, 20), rand(-60, -40), 0.7, "#d6ecf8", 2, 120);
-  if (Math.random() < dt * 1.2) { const vis = TREES.filter(t => t.x > cam.x && t.x < cam.x + CW && t.y > cam.y && t.y < cam.y + CH); if (vis.length) { const t = pick(vis); addPart(t.x + rand(-t.r, t.r), t.y - t.r * 1.5, rand(6, 20), rand(12, 22), 3, pick(["#c8a23a", "#9c6b2a", "#6aa34a"]), 2); } }
+  if (Math.random() < dt * 10) addPart(FOUNTAIN.x + rand(-4, 4), FOUNTAIN.y - 2, rand(-20, 20), rand(-60, -40), 0.7, "#d6ecf8", 2, 120);
+  if (Math.random() < dt * 1.5) { const vis = TREES.filter(t => t.x > cam.x && t.x < cam.x + CW && t.y > cam.y && t.y < cam.y + CH); if (vis.length) { const t = pick(vis); addPart(t.x + rand(-t.r, t.r), t.y - t.r * 1.5, rand(6, 20), rand(12, 22), 3, pick(["#c8a23a", "#9c6b2a", "#6aa34a"]), 2); } }
 }
 function drawCampfire(now) {
   const x = GLADE.x, y = GLADE.y, F = (a, b, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x + a, y + b, w, h); };
   F(-14, -2, 28, 6, "#4a2e18"); F(-12, -6, 24, 4, "#6b4426"); F(-14, -2, 28, 2, "#7d522f");
   const t = now / 90;
-  for (let i = -3; i <= 3; i++) {
-    const h = 10 + Math.abs(Math.sin(t + i * 1.7)) * 14 - Math.abs(i) * 2;
-    F(i * 3 - 1, -6 - h, 4, h, "#c8321a"); F(i * 3, -6 - h * 0.8, 2, h * 0.8, "#ff6a1f");
-    if (Math.abs(i) < 2) F(i * 3, -6 - h * 0.55, 2, h * 0.55, "#ffb43c");
-  }
+  for (let i = -3; i <= 3; i++) { const h = 10 + Math.abs(Math.sin(t + i * 1.7)) * 14 - Math.abs(i) * 2; F(i * 3 - 1, -6 - h, 4, h, "#c8321a"); F(i * 3, -6 - h * 0.8, 2, h * 0.8, "#ff6a1f"); if (Math.abs(i) < 2) F(i * 3, -6 - h * 0.55, 2, h * 0.55, "#ffb43c"); }
   F(-2, -14, 4, 8, "#ffef9a");
 }
 const GLADE_FOLKS = [];
 function gladeCrowd() {
   if (GLADE_FOLKS.length) return GLADE_FOLKS;
   const r = mulberry(77);
-  [[-46, -22, "right"], [46, -22, "left"], [-40, 36, "right"], [40, 36, "left"], [0, -52, "down"]].forEach(([dx, dy, dir], i) => {
+  [[-50, -22, "right"], [50, -22, "left"], [-44, 34, "right"], [44, 34, "left"], [0, -50, "down"]].forEach(([dx, dy, dir], i) => {
     const look = { skin: SKINS[Math.floor(r() * SKINS.length)], hair: OPTS.hair[Math.floor(r() * 7)][0], hairColor: HAIRC[Math.floor(r() * HAIRC.length)], outfit: OPTS.outfit[Math.floor(r() * 4)][0], outfitColor: CLOTHC[Math.floor(r() * CLOTHC.length)], glasses: "none", accessory: i % 2 ? "cap" : "none", accColor: CLOTHC[i], beard: i === 2 ? "stubble" : "none", pants: "#2c3344" };
     GLADE_FOLKS.push({ x: GLADE.x + dx, y: GLADE.y + dy, dir, look, i });
   });
@@ -1153,31 +1291,25 @@ function gladeBusy() { return S && (S.hour >= 15 || weekday(S.day) >= 5); }
 function drawFolk(f, now) {
   const bob = Math.sin(now / 400 + f.i) > 0.85 ? -2 : 0;
   drawSprite(ctx, f.look, f.dir, 0, f.x, f.y + bob, 1);
-  // колода, на якій сидять, і пляшка в руці
-  ctx.fillStyle = "#5a3a20"; ctx.fillRect(f.x - 16, f.y - 8, 32, 10); ctx.fillStyle = "#7a5230"; ctx.fillRect(f.x - 16, f.y - 8, 32, 3); ctx.fillStyle = "#2a1a0e"; ctx.fillRect(f.x - 18, f.y - 8, 2, 10); ctx.fillRect(f.x + 16, f.y - 8, 2, 10);
+  ctx.fillStyle = "#5a3a20"; ctx.fillRect(f.x - 18, f.y - 8, 36, 10); ctx.fillStyle = "#7a5230"; ctx.fillRect(f.x - 18, f.y - 8, 36, 3); ctx.fillStyle = "#1a120b"; ctx.fillRect(f.x - 20, f.y - 8, 2, 10); ctx.fillRect(f.x + 18, f.y - 8, 2, 10);
   const hx = f.dir === "left" ? f.x - 14 : f.x + 12;
-  ctx.fillStyle = "#2f6b3a"; ctx.fillRect(hx, f.y - 26 + bob, 4, 9); ctx.fillStyle = "#9fd3a8"; ctx.fillRect(hx + 1, f.y - 25 + bob, 1, 4); ctx.fillStyle = "#c9a35a"; ctx.fillRect(hx + 1, f.y - 29 + bob, 2, 3);
+  ctx.fillStyle = "#2f6b3a"; ctx.fillRect(hx, f.y - 18 + bob, 4, 9); ctx.fillStyle = "#9fd3a8"; ctx.fillRect(hx + 1, f.y - 17 + bob, 1, 4); ctx.fillStyle = "#c9a35a"; ctx.fillRect(hx + 1, f.y - 21 + bob, 2, 3);
 }
-
 function sign(text, x, y) {
   ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   const w = Math.ceil(ctx.measureText(text).width / 2) * 2 + 12;
-  ctx.fillStyle = "#1a120b"; ctx.fillRect(x - w / 2 - 2, y - 9, w + 4, 18);
-  ctx.fillStyle = "#6b4426"; ctx.fillRect(x - w / 2, y - 7, w, 14);
-  ctx.fillStyle = "#83562f"; ctx.fillRect(x - w / 2, y - 7, w, 2);
-  ctx.fillStyle = "#2a1a0e"; ctx.fillText(text, x + 1, y + 1);
-  ctx.fillStyle = "#f6edd8"; ctx.fillText(text, x, y);
+  ctx.fillStyle = "#1a120b"; ctx.fillRect(Math.round(x - w / 2 - 2), Math.round(y - 9), w + 4, 18);
+  ctx.fillStyle = "#6b4426"; ctx.fillRect(Math.round(x - w / 2), Math.round(y - 7), w, 14);
+  ctx.fillStyle = "#83562f"; ctx.fillRect(Math.round(x - w / 2), Math.round(y - 7), w, 2);
+  ctx.fillStyle = "#2a1a0e"; ctx.fillText(text, x + 1, y + 1); ctx.fillStyle = "#f6edd8"; ctx.fillText(text, x, y);
   ctx.textBaseline = "alphabetic";
 }
 function roundRect(x, y, w, h, r) { ctx.beginPath(); r = Math.min(r, w / 2, h / 2); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-
 function darkness(h) { h = h % 24; if (h < 6) return 0.78; if (h < 8) return 0.78 * (8 - h) / 2; if (h < 17) return 0; if (h < 20.5) return 0.6 * (h - 17) / 3.5; return 0.6 + 0.18 * (h - 20.5) / 3.5; }
-
 function drawWorld(focusX, focusY, actors, now) {
   if (!BG) buildBG();
   const Z = worldZoom(), hour = S ? S.hour : 12, night = darkness(hour) > 0.2;
-  cam.x = clamp(focusX - CW / (2 * Z), 0, Math.max(0, WORLD.w - CW / Z));
-  cam.y = clamp(focusY - CH / (2 * Z), 0, Math.max(0, WORLD.h - CH / Z));
+  cam.x = clamp(focusX - CW / (2 * Z), 0, Math.max(0, WORLD.w - CW / Z)); cam.y = clamp(focusY - CH / (2 * Z), 0, Math.max(0, WORLD.h - CH / Z));
   cam.x = Math.round(cam.x * Z * DPR) / (Z * DPR); cam.y = Math.round(cam.y * Z * DPR) / (Z * DPR);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.fillStyle = "#14211c"; ctx.fillRect(0, 0, CW, CH);
   ctx.setTransform(DPR * Z, 0, 0, DPR * Z, -cam.x * DPR * Z, -cam.y * DPR * Z); ctx.imageSmoothingEnabled = false;
@@ -1185,26 +1317,26 @@ function drawWorld(focusX, focusY, actors, now) {
   const sx = Math.max(0, Math.floor(cam.x / TX)), sy = Math.max(0, Math.floor(cam.y / TX));
   const sw = Math.min(BG.width - sx, Math.ceil(vw / TX) + 2), sh = Math.min(BG.height - sy, Math.ceil(vh / TX) + 2);
   ctx.drawImage(BG, sx, sy, sw, sh, sx * TX, sy * TX, sw * TX, sh * TX);
-  // тіні хмар
   ctx.fillStyle = "rgba(10,20,30,.07)";
-  for (let i = 0; i < 4; i++) { const cx = ((now / 1000) * 12 + i * 700) % (WORLD.w + 600) - 300, cy = 200 + i * 340; ctx.beginPath(); ctx.ellipse(cx, cy, 220, 90, 0, 0, 7); ctx.ellipse(cx + 150, cy + 30, 160, 70, 0, 0, 7); ctx.fill(); }
+  for (let i = 0; i < 5; i++) { const cx = ((now / 1000) * 12 + i * 700) % (WORLD.w + 600) - 300, cy = 200 + i * 380; ctx.beginPath(); ctx.ellipse(cx, cy, 220, 90, 0, 0, 7); ctx.ellipse(cx + 150, cy + 30, 160, 70, 0, 0, 7); ctx.fill(); }
   const vis = (x, y, m) => x > cam.x - m && x < cam.x + vw + m && y > cam.y - m && y < cam.y + vh + m * 2;
   const list = [];
   for (const t of TREES) if (vis(t.x, t.y, 80)) list.push({ y: t.y, d: () => drawTree(t) });
   for (const l of LAMPS) if (vis(l.x, l.y, 60)) list.push({ y: l.y, d: () => drawLamp(l, night) });
-  if (vis(GLADE.x, GLADE.y, 200)) {
-    list.push({ y: GLADE.y + 2, d: () => drawCampfire(now) });
-    if (!S || gladeBusy()) for (const f of gladeCrowd()) list.push({ y: f.y, d: () => drawFolk(f, now) });
-  }
-  for (const a of actors) if (vis(a.x, a.y, 60)) list.push({ y: a.y, d: () => drawSprite(ctx, a.look, a.dir, a.phase, a.x, a.y, (a.s || 2) / 2) });
+  if (vis(GLADE.x, GLADE.y, 200)) { list.push({ y: GLADE.y + 2, d: () => drawCampfire(now) }); if (!S || gladeBusy()) for (const f of gladeCrowd()) list.push({ y: f.y, d: () => drawFolk(f, now) }); }
+  for (const a of actors) if (vis(a.x, a.y, 60)) list.push({ y: a.y, d: () => { drawSprite(ctx, a.look, a.dir, a.phase, a.x, a.y, a.k || 1); if (a.mark) { const by = Math.round(a.y - 66 + Math.sin(now / 250) * 3); ctx.fillStyle = "#1a120b"; ctx.fillRect(a.x - 4, by - 2, 8, 18); ctx.fillStyle = "#f5d76e"; ctx.fillRect(a.x - 2, by, 4, 9); ctx.fillRect(a.x - 2, by + 11, 4, 3); } } });
   list.sort((a, b) => a.y - b.y); for (const it of list) it.d();
   for (const p of PARTS) { ctx.globalAlpha = clamp(p.life / p.max * 1.5, 0, 1); ctx.fillStyle = p.col; ctx.fillRect(Math.round(p.x / 2) * 2, Math.round(p.y / 2) * 2, p.sz, p.sz); }
   ctx.globalAlpha = 1;
-  for (const b of BUILDINGS) sign(b.name, b.door.x, b.y + b.h - (b.style === "dorm" ? b.h - 46 : b.style === "classic" ? 84 : 70) - 16 - (b.style === "classic" ? 34 : 0));
-  sign(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 26);
+  for (const b of BUILDINGS) if (vis(b.door.x, b.signY, 200)) sign(b.name, b.door.x, b.signY);
+  sign("Площа Знань", PLAZA[0] + PLAZA[2] / 2, PLAZA[1] + 24);
+  sign(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 28);
   sign(ZONES[1].name, ZONES[1].x + ZONES[1].w / 2, ZONES[1].y - 12);
-  sign("Поляна", GLADE.x, GLADE.y - GLADE.ry + 10);
-  ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = "center"; ctx.fillStyle = "rgba(240,236,220,.75)"; ctx.fillText("БЕРЕСТЕЙСЬКИЙ ПРОСПЕКТ", 1100, 1490);
+  sign("Поляна", GLADE.x, GLADE.y - GLADE.ry + 6);
+  ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = "center"; ctx.fillStyle = "rgba(240,236,220,.75)";
+  for (const x of [500, 1300, 2100]) ctx.fillText("БЕРЕСТЕЙСЬКИЙ ПРОСПЕКТ", x, 1985);
+  for (const x of [500, 1300, 2100]) ctx.fillText("ВУЛ. БОРЩАГІВСЬКА", x, 20);
+  ctx.save(); ctx.translate(2374, 1150); ctx.rotate(-Math.PI / 2); ctx.fillText("ВУЛ. ПОЛІТЕХНІЧНА", 0, 0); ctx.restore();
   if (S) drawLighting(Z, now, hour);
 }
 const lightC = document.createElement("canvas"), lg = lightC.getContext("2d");
@@ -1223,7 +1355,7 @@ function drawLighting(Z, now, hour) {
   };
   for (const l of LAMPS) L(l.x, l.y - 40, 85, 0.9);
   L(GLADE.x, GLADE.y - 10, 130 + Math.sin(now / 90) * 7 + Math.sin(now / 37) * 4, 0.95);
-  for (const wd of WINDOWS) if (wd.lit) L(wd.x + 9, wd.y + 34, 30, 0.5);
+  for (const wd of WINDOWS) if (wd.lit) L(wd.x + 8, wd.y + 30, 30, 0.5);
   L(P.x, P.y - 20, 55, 0.35);
   lg.globalCompositeOperation = "source-over";
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.imageSmoothingEnabled = true; ctx.drawImage(lightC, 0, 0, CW, CH);
@@ -1234,8 +1366,16 @@ function drawLighting(Z, now, hour) {
   for (const l of LAMPS) glow(l.x, l.y - 50, 50, `rgba(255,200,110,${0.25 * dk})`);
   ctx.globalCompositeOperation = "source-over";
   ctx.fillStyle = `rgba(255,214,120,${Math.min(0.9, dk * 1.4)})`;
-  for (const wd of WINDOWS) if (wd.lit) { ctx.fillRect(wd.x, wd.y, 8, 10); ctx.fillRect(wd.x + 10, wd.y, 8, 10); ctx.fillRect(wd.x, wd.y + 12, 8, 12); ctx.fillRect(wd.x + 10, wd.y + 12, 8, 12); }
+  for (const wd of WINDOWS) if (wd.lit) { ctx.fillRect(wd.x, wd.y, 7, 9); ctx.fillRect(wd.x + 9, wd.y, 7, 9); ctx.fillRect(wd.x, wd.y + 11, 7, 9); ctx.fillRect(wd.x + 9, wd.y + 11, 7, 9); }
   for (const l of LAMPS) { ctx.fillStyle = "#fff3c4"; ctx.fillRect(l.x - 6, l.y - 52, 12, 6); }
+}
+function drawJoy() {
+  if (!joy.active) return;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = "rgba(242,239,230,.12)"; ctx.strokeStyle = "rgba(242,239,230,.4)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(joy.ox, joy.oy, 55, 0, 7); ctx.fill(); ctx.stroke();
+  const dx = joy.x - joy.ox, dy = joy.y - joy.oy, l = Math.hypot(dx, dy), m = Math.min(l, 55);
+  ctx.fillStyle = "rgba(245,215,110,.75)"; ctx.beginPath(); ctx.arc(l ? joy.ox + dx / l * m : joy.ox, l ? joy.oy + dy / l * m : joy.oy, 22, 0, 7); ctx.fill();
 }
 
 /* мінікарта і повна карта */
@@ -1243,9 +1383,9 @@ const mini = $("#mini"), mctx = mini.getContext("2d");
 function drawMini() {
   if (!BG) return;
   mctx.imageSmoothingEnabled = true; mctx.drawImage(BG, 0, 0, mini.width, mini.height);
-  const k = mini.width / WORLD.w;
-  const Z = worldZoom(); mctx.strokeStyle = "rgba(255,255,255,.8)"; mctx.lineWidth = 1; mctx.strokeRect(cam.x * k, cam.y * k, CW / Z * k, CH / Z * k);
-  if (teacherPresent()) { mctx.fillStyle = "#f5d76e"; mctx.fillRect(TEACHER_POS.x * k - 2, TEACHER_POS.y * k - 2, 4, 4); }
+  const k = mini.width / WORLD.w, Z = worldZoom();
+  mctx.strokeStyle = "rgba(255,255,255,.8)"; mctx.lineWidth = 1; mctx.strokeRect(cam.x * k, cam.y * k, CW / Z * k, CH / Z * k);
+  for (const o of teachersOut()) { mctx.fillStyle = "#f5d76e"; mctx.fillRect(o.x * k - 2, o.y * k - 2, 4, 4); }
   mctx.fillStyle = "#ff7a3a"; mctx.fillRect(GLADE.x * k - 2, GLADE.y * k - 2, 4, 4);
   mctx.fillStyle = "#fff"; mctx.fillRect(P.x * k - 3, P.y * k - 3, 6, 6); mctx.fillStyle = "#e0453a"; mctx.fillRect(P.x * k - 2, P.y * k - 2, 4, 4);
 }
@@ -1253,88 +1393,78 @@ function openMap() {
   if (modalOpen || mode !== "world") return;
   if (!BG) buildBG();
   const box = document.createElement("div"); box.style.display = "grid"; box.style.gap = "8px";
-  const c = document.createElement("canvas"); c.width = 1100; c.height = 750; c.style.width = "100%"; c.style.height = "auto"; c.style.border = "3px solid var(--frame)"; c.style.borderRadius = "4px"; c.style.imageRendering = "pixelated";
+  const c = document.createElement("canvas"); c.width = BG.width; c.height = BG.height; c.style.width = "100%"; c.style.height = "auto"; c.style.border = "3px solid var(--frame)"; c.style.borderRadius = "4px"; c.style.imageRendering = "pixelated";
   const g = c.getContext("2d"); g.imageSmoothingEnabled = false; g.drawImage(BG, 0, 0);
-  const k = 0.5;
-  g.font = "700 18px Rubik, sans-serif"; g.textAlign = "center";
-  const lab = (t, x, y, col) => { g.lineWidth = 4; g.strokeStyle = "rgba(20,15,10,.85)"; g.strokeText(t, x * k, y * k); g.fillStyle = col || "#fff"; g.fillText(t, x * k, y * k); };
-  for (const b of BUILDINGS) lab(b.name, b.x + b.w / 2, b.y + b.h / 2);
-  lab(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 60); lab(ZONES[1].name, ZONES[1].x + ZONES[1].w / 2, ZONES[1].y + ZONES[1].h / 2 + 8);
-  lab("Поляна", GLADE.x, GLADE.y - 40, "#ffb27a");
-  if (teacherPresent()) lab("! " + teacherName(TEACHERS[0]), TEACHER_POS.x + 60, TEACHER_POS.y + 30, "#f5d76e");
-  g.fillStyle = "#fff"; g.beginPath(); g.arc(P.x * k, P.y * k, 9, 0, 7); g.fill(); g.fillStyle = "#e0453a"; g.beginPath(); g.arc(P.x * k, P.y * k, 6, 0, 7); g.fill();
-  lab("Ти", P.x, P.y - 30, "#ffd0c8");
+  const k = 1 / TX;
+  g.font = "700 20px Rubik, sans-serif"; g.textAlign = "center";
+  const lab = (t, x, y, col) => { g.lineWidth = 5; g.strokeStyle = "rgba(20,15,10,.85)"; g.strokeText(t, x * k, y * k); g.fillStyle = col || "#fff"; g.fillText(t, x * k, y * k); };
+  for (const b of BUILDINGS) { const p = b.parts[0]; lab(b.name.split(" · ")[0].replace("Метро «Політехнічний інститут»", "Метро"), b.door.x, b.door.y - 60, b.decor ? "#cfcfcf" : "#fff"); }
+  lab("Площа Знань", PLAZA[0] + PLAZA[2] / 2, PLAZA[1] + PLAZA[3] / 2 + 8, "#f5d76e");
+  lab(ZONES[0].name, ZONES[0].x + ZONES[0].w / 2, ZONES[0].y + 70); lab(ZONES[1].name, ZONES[1].x + ZONES[1].w / 2, ZONES[1].y + ZONES[1].h / 2 + 8);
+  lab("Поляна", GLADE.x, GLADE.y - 30, "#ffb27a");
+  lab("Берестейський проспект", 1100, 1975, "#d8d4c8"); lab("вул. Борщагівська", 900, 50, "#d8d4c8");
+  for (const o of teachersOut()) { g.fillStyle = "#f5d76e"; g.fillRect(o.x * k - 5, o.y * k - 5, 10, 10); }
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(P.x * k, P.y * k, 10, 0, 7); g.fill(); g.fillStyle = "#e0453a"; g.beginPath(); g.arc(P.x * k, P.y * k, 7, 0, 7); g.fill();
+  lab("Ти", P.x, P.y - 34, "#ffd0c8");
   box.appendChild(c);
-  const p = document.createElement("p"); p.style.fontSize = "13px"; p.style.color = "var(--chalk-dim)"; p.textContent = "Червона точка — ти. Жовтий знак оклику — викладач, помаранчева — поляна. На комп'ютері карта відкривається клавішею M.";
+  const p = document.createElement("p"); p.style.fontSize = "13px"; p.style.color = "var(--chalk-dim)"; p.textContent = "Червона точка — ти, жовті — викладачі біля корпусу 35, помаранчева — поляна. Сірим підписано корпуси інших факультетів. На комп'ютері карта відкривається клавішею M.";
   box.appendChild(p);
-  openModal({ kicker: `${WEEK[weekday(S.day)]} · ${hhmm(S.hour)}`, title: "Карта кампусу", body: box, buttons: [{ label: "Закрити", primary: true, onClick: closeModal }] });
-}
-
-function drawJoy() {
-  if (!joy.active) return;
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.fillStyle = "rgba(242,239,230,.12)"; ctx.strokeStyle = "rgba(242,239,230,.4)"; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.arc(joy.ox, joy.oy, 55, 0, 7); ctx.fill(); ctx.stroke();
-  const dx = joy.x - joy.ox, dy = joy.y - joy.oy, l = Math.hypot(dx, dy), m = Math.min(l, 55);
-  const kx = l ? joy.ox + dx / l * m : joy.ox, ky = l ? joy.oy + dy / l * m : joy.oy;
-  ctx.fillStyle = "rgba(245,215,110,.75)"; ctx.beginPath(); ctx.arc(kx, ky, 22, 0, 7); ctx.fill();
+  openModal({ kicker: `${WEEK[weekday(S.day)]} · ${hhmm(S.hour)}`, title: "Карта кампусу КПІ", body: box, buttons: [{ label: "Закрити", primary: true, onClick: closeModal }] });
 }
 
 /* ---------------- БІЙ З БОСОМ ---------------- */
 const AW = 420, AH = 720, FT = 176;
 let B = null;
-const CHALK_BG = []; { const r = mulberry(7); const f = ["∫ f(x) dx", "lim", "ε > 0", "δ(ε)", "∑ 1/n²", "e^{iπ}+1=0", "dy/dx", "sin²x+cos²x=1", "∀ε ∃δ", "x→0", "n!", "√2"]; for (let i = 0; i < 22; i++) CHALK_BG.push([r() * AW, FT + 20 + r() * (AH - FT - 40), f[Math.floor(r() * f.length)], r() * 0.6 - 0.3]); }
-
-function bossIntro(t) {
-  const won = S.bosses[t.id]?.won;
+const CHALK_BG = []; { const r = mulberry(7); const f = ["∫ f(x) dx", "lim", "ε > 0", "det A", "∑ 1/n²", "p → q", "dy/dx", "int main()", "∀ε ∃δ", "x→0", "n!", "A⁻¹"]; for (let i = 0; i < 22; i++) CHALK_BG.push([r() * AW, FT + 20 + r() * (AH - FT - 40), f[Math.floor(r() * f.length)], r() * 0.6 - 0.3]); }
+function bossIntro(subj) {
+  const t = bossOf(subj), cfg = BOSS_CFG[subj], title = stream()[subj].title, won = S.passed[subj];
+  if (!t) return;
   const box = document.createElement("div"); box.style.display = "grid"; box.style.gap = "10px";
   const face = document.createElement("div"); face.className = "teacher-face";
   const fc = document.createElement("canvas"); fc.width = 96; fc.height = 110; face.appendChild(fc);
   const info = document.createElement("div"); info.style.display = "grid"; info.style.gap = "4px";
-  info.innerHTML = `<b style="font-size:17px">${esc(teacherName(t))}</b><span style="color:var(--chalk-dim);font-size:13px">${esc(t.role)}</span><span class="quote">«${esc(won ? t.win : t.intro)}»</span>`;
+  info.innerHTML = `<b style="font-size:17px">${esc(t.name)}</b><span style="color:var(--chalk-dim);font-size:13px">${esc(title)} · ННІПСА</span><span class="quote">«${esc(won ? cfg.win : cfg.intro)}»</span>`;
   face.appendChild(info); box.appendChild(face);
-  const c2 = fc.getContext("2d"); c2.fillStyle = "#264a3f"; c2.fillRect(0, 0, 96, 110); drawSprite(c2, t.look, "down", 0, 48, 104, 2.4);
-  const st = S.stats;
-  const blockers = [];
+  const c2 = fc.getContext("2d"); c2.fillStyle = "#264a3f"; c2.fillRect(0, 0, 96, 110); drawSprite(c2, t.look, "down", 0, 48, 104, 1.9);
+  const st = S.stats, blockers = [];
   if (st.energy < 20) blockers.push("Енергія менше 20");
   if (st.nerves < 25) blockers.push("Нерви менше 25");
-  if (!isWeekday() || S.hour < 8 || S.hour >= 19) blockers.push("Викладач приймає в будні 08:00–19:00");
+  if (!isWeekday() || S.hour < 8 || S.hour >= 19) blockers.push("Модульні приймають у будні 08:00–19:00");
   const p = document.createElement("div"); p.style.display = "grid"; p.style.gap = "6px";
-  p.innerHTML = won ? `<p>Залік з матану вже в заліковці. Далі буде модульна контрольна!</p>` :
-    `<p>Бій: ухиляйся від формул, двійок і «незарахів». Торкайся бульбашки з правильною відповіддю, щоб завдати удару. Твоє здоров'я в бою — це Нерви (${Math.round(st.nerves)}).</p>
-     <p style="color:var(--chalk-dim);font-size:13px">Удар по босу: ${bossDmg()} · ${st.int >= 45 ? "підсвітка правильної відповіді" : st.int >= 20 ? "одна хибна відповідь прибрана" : "підказок немає (потрібно 20+ Інт)"}${st.charisma >= 40 ? " · викладач у гарному настрої (−10% здоров'я)" : ""}</p>
+  p.innerHTML = won ? `<p>Модульну вже зараховано. Глянь залікову книжку.</p>` :
+    `<p>Ухиляйся від того, що летить з дошки, і торкайся бульбашки з правильною відповіддю, щоб завдати удару. Здоров'я в бою — це Нерви (${Math.round(st.nerves)}).</p>
+     <p style="color:var(--chalk-dim);font-size:13px">Удар: ${bossDmg()} · ${st.int >= 45 ? "підсвітка правильної відповіді" : st.int >= 20 ? "одна хибна відповідь прибрана" : "підказок немає (потрібно 20+ Інт)"}${st.charisma >= 40 ? " · викладач у гарному настрої (−10% здоров'я)" : ""}</p>
      ${blockers.length ? `<p style="color:var(--red)">${esc(blockers.join(". "))}.</p>` : ""}`;
   box.appendChild(p);
-  openModal({ kicker: "Кафедра вищої математики", title: won ? "Залік отримано" : "Захист практики", body: box,
+  openModal({ kicker: "Модульна контрольна", title, body: box,
     buttons: won ? [{ label: "Дякую!", primary: true, onClick: closeModal }] : [
-      { label: "Почати бій", sub: "−25 Енергія · 1,5 год", primary: true, disabled: blockers.length > 0, onClick: () => { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; startBoss(t); } },
+      { label: "Почати бій", sub: "−25 Енергія · 1,5 год", primary: true, disabled: blockers.length > 0, onClick: () => { hideModal(); startBoss(subj); } },
       { label: "Ще не готовий", onClick: closeModal }] });
 }
 function bossDmg() { return Math.min(32, 16 + Math.floor(S.stats.int / 10) * 2); }
-function startBoss(t) {
-  const maxhp = S.stats.charisma >= 40 ? 90 : 100;
-  B = { t, hp: maxhp, maxhp, px: AW / 2, py: AH - 90, dir: "up", phase: 0, nerves: S.stats.nerves, bullets: [], bubbles: [], fx: [],
-    ph: 1, q: null, qLeft: 0, nextQ: 2.5, inv: 2, speech: t.intro, speechT: 3.2, t1: 1.5, t2: 2.5, t3: 0, t4: 0, t5: 3, spin: 0, shake: 0, over: false, endT: 0, msg: null, msgT: 0, time: 0 };
+function startBoss(subj) {
+  const t = bossOf(subj) || TEACHERS[0], maxhp = S.stats.charisma >= 40 ? 90 : 100, cfg = BOSS_CFG[subj];
+  B = { t, subj, cfg, hp: maxhp, maxhp, px: AW / 2, py: AH - 90, dir: "up", phase: 0, nerves: S.stats.nerves, bullets: [], bubbles: [], fx: [],
+    ph: 1, q: null, qLeft: 0, nextQ: 2.5, inv: 2, speech: cfg.intro, speechT: 3.2, t1: 1.5, t2: 2.5, t3: 0, t4: 0, t5: 3, spin: 0, shake: 0, over: false, endT: 0, msg: null, msgT: 0, time: 0 };
   mode = "boss"; refreshTouchUI(); $("#hud").hidden = true; $("#prompt").hidden = true;
 }
 function fire(x, y, a, sp, kind) {
-  const K = { two: ["2", "#e87a6a", 9], ring: [pick(["∞", "∂", "Σ", "dx", "0/0"]), "#8ec9f0", 10], spiral: [pick(["ε", "δ"]), "#f5d76e", 8], rain: ["lim", "#c9a6f0", 11], big: ["НЕЗАРАХ", "#e05a4a", 15] }[kind];
+  const c = B.cfg;
+  const K = { two: ["2", "#e87a6a", 9], ring: [pick(c.ring), "#8ec9f0", 10], spiral: [pick(c.spiral), "#f5d76e", 8], rain: [c.rain, "#c9a6f0", 11], big: [c.big, "#e05a4a", 15] }[kind];
   B.bullets.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t: K[0], c: K[1], r: K[2], big: kind === "big" });
 }
 function bossQuestion() {
-  const t = B.t;
-  const [q] = pickQuestions(x => x.subject === t.subject && x.topic === t.topic, 1);
+  const [q] = pickQuestions(B.cfg.filter, 1);
   B.q = q; B.qLeft = 13;
   let opts = q.opts.map((o, i) => ({ text: o, correct: i === q.correct }));
-  if (S.stats.int >= 20) { const wrong = opts.filter(o => !o.correct); const drop = pick(wrong); opts = opts.filter(o => o !== drop); }
+  if (S.stats.int >= 20) { const drop = pick(opts.filter(o => !o.correct)); opts = opts.filter(o => o !== drop); }
   B.bubbles = [];
   for (const o of opts) {
-    ctx.font = "700 14px Rubik, sans-serif"; const r = clamp(ctx.measureText(o.text).width / 2 + 14, 24, 60);
+    ctx.font = "700 14px Rubik, sans-serif"; const r = clamp(ctx.measureText(o.text).width / 2 + 14, 24, 64);
     let x, y, tries = 0;
     do { x = rand(r + 10, AW - r - 10); y = rand(FT + r + 20, AH - r - 30); tries++; }
     while (tries < 80 && (Math.hypot(x - B.px, y - B.py) < 110 || B.bubbles.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 24)));
-    const a = rand(0, 6.28);
-    B.bubbles.push({ ...o, x, y, vx: Math.cos(a) * 22, vy: Math.sin(a) * 22, r });
+    const a = rand(0, 6.28); B.bubbles.push({ ...o, x, y, vx: Math.cos(a) * 22, vy: Math.sin(a) * 22, r });
   }
 }
 function bossHitPlayer(dmg, why) {
@@ -1350,38 +1480,33 @@ function answerBubble(bb) {
     B.fx.push({ x: AW / 2, y: 110, t: "−" + d, c: "#9fdc8a", life: 1.2 });
     B.bullets = B.bullets.filter(b => Math.hypot(b.x - B.px, b.y - B.py) > 140);
     B.msg = "Правильно! " + q.opts[q.correct]; B.msgT = 1.6; B.nextQ = 1.8;
-  } else {
-    bossHitPlayer(12, "Ні. Правильно: " + q.opts[q.correct] + ". " + q.explain); B.nextQ = 4.5;
-  }
+  } else { bossHitPlayer(12, "Ні. Правильно: " + q.opts[q.correct] + ". " + q.explain); B.nextQ = 4.5; }
   B.q = null; B.bubbles = [];
 }
 function updateBoss(dt) {
   if (B.over) { B.endT -= dt; updateFx(dt); if (B.endT <= 0 && !modalOpen) bossEnd(); return; }
   B.time += dt;
   const v = inputVec(), sp = 210 * dt;
-  B.px = clamp(B.px + v.x * sp, 14, AW - 14); B.py = clamp(B.py + v.y * sp, FT + 24, AH - 12);
+  B.px = clamp(B.px + v.x * sp, 14, AW - 14); B.py = clamp(B.py + v.y * sp, FT + 30, AH - 12);
   B.phase = Math.abs(v.x) + Math.abs(v.y) > 0.05 ? B.phase + dt * 12 : 0;
   B.dir = Math.abs(v.x) > Math.abs(v.y) + 0.1 ? (v.x > 0 ? "right" : "left") : "up";
   if (B.inv > 0) B.inv -= dt; if (B.shake > 0) B.shake -= dt; if (B.speechT > 0) B.speechT -= dt; if (B.msgT > 0) B.msgT -= dt;
   const r = B.hp / B.maxhp, newPh = r > 0.66 ? 1 : r > 0.33 ? 2 : 3;
-  if (newPh !== B.ph) { B.ph = newPh; B.speech = newPh === 2 ? B.t.phase2 : B.t.phase3; B.speechT = 3; }
-  // атаки
+  if (newPh !== B.ph) { B.ph = newPh; B.speech = newPh === 2 ? B.cfg.p2 : B.cfg.p3; B.speechT = 3; }
   const ox = AW / 2, oy = 92, ph = B.ph;
   if (B.speechT <= 0 || B.time > 3) {
     B.t1 -= dt; B.t2 -= dt; B.t3 -= dt; B.t4 -= dt; B.t5 -= dt;
     if (B.t1 <= 0) { B.t1 = [0, 1.4, 1.2, 1.0][ph]; const a = Math.atan2(B.py - oy, B.px - ox), n = ph === 1 ? 3 : 5; for (let i = 0; i < n; i++) fire(ox, oy, a + (i - (n - 1) / 2) * 0.2, 125 + ph * 10, "two"); }
     if (ph < 3 && B.t2 <= 0) { B.t2 = ph === 1 ? 2.6 : 2.2; const n = ph === 1 ? 12 : 14, off = Math.random() * 6.28; for (let i = 0; i < n; i++) fire(ox, oy, off + i / n * 6.283, 85, "ring"); }
     if (ph >= 2 && B.t3 <= 0) { B.t3 = ph === 2 ? 0.14 : 0.11; B.spin += 0.43; fire(ox, oy, B.spin, 100, "spiral"); if (ph === 3) fire(ox, oy, -B.spin + Math.PI, 100, "spiral"); }
-    if (ph === 3 && B.t4 <= 0) { B.t4 = 0.55; B.bullets.push({ x: rand(20, AW - 20), y: FT, vx: 0, vy: 115, t: "lim", c: "#c9a6f0", r: 11 }); }
+    if (ph === 3 && B.t4 <= 0) { B.t4 = 0.55; B.bullets.push({ x: rand(20, AW - 20), y: FT, vx: 0, vy: 115, t: B.cfg.rain, c: "#c9a6f0", r: 11 }); }
     if (ph === 3 && B.t5 <= 0) { B.t5 = 2.8; fire(ox, oy, Math.atan2(B.py - oy, B.px - ox), 80, "big"); }
   }
   for (const b of B.bullets) { b.x += b.vx * dt; b.y += b.vy * dt; }
   B.bullets = B.bullets.filter(b => b.x > -40 && b.x < AW + 40 && b.y > -40 && b.y < AH + 40);
-  // зіткнення з кулями (хітбокс — серце на грудях)
-  const hx = B.px, hy = B.py - 14;
+  const hx = B.px, hy = B.py - 16;
   if (B.inv <= 0) for (const b of B.bullets) if (Math.hypot(b.x - hx, b.y - hy) < b.r + 4) { bossHitPlayer(b.big ? 14 : 7); B.inv = 1.1; b.dead = true; break; }
   B.bullets = B.bullets.filter(b => !b.dead);
-  // питання
   if (!B.q) { B.nextQ -= dt; if (B.nextQ <= 0) bossQuestion(); }
   else {
     B.qLeft -= dt;
@@ -1390,37 +1515,35 @@ function updateBoss(dt) {
       if (bb.x < bb.r || bb.x > AW - bb.r) bb.vx *= -1; if (bb.y < FT + bb.r || bb.y > AH - bb.r) bb.vy *= -1;
       bb.x = clamp(bb.x, bb.r, AW - bb.r); bb.y = clamp(bb.y, FT + bb.r, AH - bb.r);
     }
-    const hit = B.bubbles.find(bb => Math.hypot(bb.x - B.px, bb.y - (B.py - 14)) < bb.r + 8);
+    const hit = B.bubbles.find(bb => Math.hypot(bb.x - B.px, bb.y - (B.py - 16)) < bb.r + 8);
     if (hit) answerBubble(hit);
     else if (B.qLeft <= 0) { const q = B.q; bossHitPlayer(5, "Час вийшов. Правильно: " + q.opts[q.correct] + ". " + q.explain); B.q = null; B.bubbles = []; B.nextQ = 4; }
   }
   updateFx(dt);
-  if (B.hp <= 0) { B.over = "win"; B.endT = 1.2; B.bullets = []; B.bubbles = []; B.speech = B.t.win; B.speechT = 3; }
-  else if (B.nerves <= 0) { B.over = "lose"; B.endT = 1.2; B.bubbles = []; B.speech = B.t.lose; B.speechT = 3; }
+  if (B.hp <= 0) { B.over = "win"; B.endT = 1.2; B.bullets = []; B.bubbles = []; B.speech = B.cfg.win; B.speechT = 3; }
+  else if (B.nerves <= 0) { B.over = "lose"; B.endT = 1.2; B.bubbles = []; B.speech = B.cfg.lose; B.speechT = 3; }
 }
 function updateFx(dt) { for (const f of B.fx) { f.life -= dt; f.y -= 30 * dt; } B.fx = B.fx.filter(f => f.life > 0); }
 function bossEnd() {
-  const t = B.t, win = B.over === "win";
-  S.bosses[t.id] = S.bosses[t.id] || { won: false, tries: 0 }; S.bosses[t.id].tries++;
+  const { t, subj, cfg } = B, win = B.over === "win";
   S.stats.nerves = win ? Math.max(5, B.nerves) : 15;
   apply({ energy: -25 }, true); advance(1.5);
-  let txt = "";
-  const auto = win && S.stats.charisma >= 30;
-  if (win) { S.bosses[t.id].won = true; txt = apply({ int: 15, charisma: 8, money: auto ? 300 : 0 }, true); }
+  let txt = ""; const auto = win && S.stats.charisma >= 30;
+  if (win) { S.passed[subj] = true; txt = apply({ int: 15, charisma: 8, money: auto ? 300 : 0 }, true); }
+  const all = BOSS_SUBJECTS.every(s => S.passed[s]);
   mode = "world"; B = null; $("#hud").hidden = false; refreshTouchUI(); updateHUD();
-  openModal({ kicker: win ? "Перемога" : "Поразка", title: win ? (auto ? "Залік автоматом!" : "Залік!") : "Незарах. Перездача",
-    body: win ? `<p class="quote">«${esc(t.win)}»</p><p>${esc(txt)}${auto ? "<br>Харизма 30+: викладач поставив «автомат» і порадив тебе старості як приклад (+300 грн премії від профбюро)." : ""}</p><p>Перший етап пройдено! Далі буде модульна контрольна.</p>`
-      : `<p class="quote">«${esc(t.lose)}»</p><p>Нерви впали до нуля. Відпочинь, підтягни Інтелект на парах і в бібліотеці та приходь знову.</p>`,
+  openModal({ kicker: win ? "Перемога" : "Поразка", title: win ? (auto ? "Зараховано автоматом!" : "Зараховано!") : "Незарах. Перескладання",
+    body: win ? `<p class="quote">«${esc(cfg.win)}» — ${esc(t.name)}</p><p>${esc(txt)}${auto ? "<br>Харизма 30+: «автомат» і премія від профбюро (+300 грн)." : ""}</p><p>${all ? "Усі чотири модульні здано. Сесію закрито!" : "Залишилось: " + BOSS_SUBJECTS.filter(s => !S.passed[s]).map(s => stream()[s].title).join(", ") + "."}</p>`
+      : `<p class="quote">«${esc(cfg.lose)}» — ${esc(t.name)}</p><p>Нерви впали до нуля. Відпочинь, підтягни Інтелект на парах і в бібліотеці та приходь знову.</p>`,
     buttons: [{ label: "Повернутися на кампус", primary: true, onClick: closeModal }] });
 }
 function bossPause() {
   if (modalOpen || !B || B.over) return;
-  openModal({ kicker: "Пауза", title: "Бій на паузі", body: `<p>${esc(teacherName(B.t))} терпляче чекає.</p>`, buttons: [
-    { label: "Продовжити", primary: true, onClick: () => { modalEl.hidden = true; modalOpen = false; modalCard.innerHTML = ""; } },
-    { label: "Втекти з пари", sub: "рахується як поразка", onClick: () => { modalEl.hidden = true; modalOpen = false; B.nerves = 0; B.over = "lose"; B.endT = 0.01; } }] });
+  openModal({ kicker: "Пауза", title: "Бій на паузі", body: `<p>${esc(B.t.name)} терпляче чекає.</p>`, buttons: [
+    { label: "Продовжити", primary: true, onClick: hideModal },
+    { label: "Втекти з модульної", sub: "рахується як поразка", onClick: () => { hideModal(); B.nerves = 0; B.over = "lose"; B.endT = 0.01; } }] });
 }
 $("#pauseBtn").addEventListener("click", bossPause);
-
 function wrapText(text, x, y, maxW, lh, maxLines) {
   const words = String(text).split(" "); let line = "", lines = [];
   for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
@@ -1432,60 +1555,48 @@ function drawBoss() {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.fillStyle = "#14211c"; ctx.fillRect(0, 0, CW, CH);
   const sh = B.shake > 0 ? rand(-3, 3) : 0;
   ctx.setTransform(DPR * s, 0, 0, DPR * s, DPR * (ox + sh), DPR * oy); ctx.imageSmoothingEnabled = false;
-  // дошка
   ctx.fillStyle = "#8a5a2b"; ctx.fillRect(-6, -6, AW + 12, AH + 12);
   ctx.fillStyle = "#1f3a32"; ctx.fillRect(0, 0, AW, AH);
   ctx.fillStyle = "rgba(242,239,230,.07)"; ctx.font = "16px Rubik, sans-serif"; ctx.textAlign = "center";
   for (const c of CHALK_BG) { ctx.save(); ctx.translate(c[0], c[1]); ctx.rotate(c[3]); ctx.fillText(c[2], 0, 0); ctx.restore(); }
-  ctx.fillStyle = "#264a3f"; ctx.fillRect(0, 0, AW, FT);
-  ctx.fillStyle = "#8a5a2b"; ctx.fillRect(0, FT - 3, AW, 3);
-  // бос
-  const bob = Math.sin(B.time * 2) * 2;
-  drawSprite(ctx, B.t.look, "down", 0, AW / 2, Math.round(92 + bob), 1.8);
-  ctx.textAlign = "left"; ctx.fillStyle = "#f5d76e"; ctx.font = "700 13px Rubik, sans-serif"; ctx.fillText(teacherName(B.t), 12, 20);
-  ctx.fillStyle = "#b9c4bb"; ctx.font = "11px Rubik, sans-serif"; ctx.fillText(B.t.name && B.t.name.trim() ? B.t.role : "Математичний аналіз", 12, 35);
-  // HP боса
+  ctx.fillStyle = "#264a3f"; ctx.fillRect(0, 0, AW, FT); ctx.fillStyle = "#8a5a2b"; ctx.fillRect(0, FT - 3, AW, 3);
+  drawSprite(ctx, B.t.look, "down", 0, AW / 2, Math.round(94 + Math.sin(B.time * 2) * 2), 1.8);
+  ctx.textAlign = "left"; ctx.fillStyle = "#f5d76e"; ctx.font = "700 13px Rubik, sans-serif"; ctx.fillText(shortName(B.t), 12, 20);
+  ctx.fillStyle = "#b9c4bb"; ctx.font = "11px Rubik, sans-serif"; wrapText(stream()[B.subj].title, 12, 35, 120, 13, 2);
   ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(12, 100, AW - 24, 9);
   ctx.fillStyle = "#e87a6a"; ctx.fillRect(12, 100, (AW - 24) * B.hp / B.maxhp, 9);
   ctx.fillStyle = "#f2efe6"; ctx.font = "10px Rubik, sans-serif"; ctx.textAlign = "right"; ctx.fillText("фаза " + B.ph + " · " + Math.ceil(B.hp) + "/" + B.maxhp, AW - 12, 96);
-  // бульбашки відповідей
+  ctx.textAlign = "center";
   for (const bb of B.bubbles) {
     const glow = bb.correct && S.stats.int >= 45;
     ctx.fillStyle = glow ? "rgba(159,220,138,.25)" : "rgba(245,215,110,.14)"; ctx.beginPath(); ctx.arc(bb.x, bb.y, bb.r, 0, 7); ctx.fill();
     ctx.strokeStyle = glow ? "#9fdc8a" : "#f5d76e"; ctx.lineWidth = 2.5; ctx.stroke();
     ctx.fillStyle = "#f2efe6"; ctx.font = "700 14px Rubik, sans-serif"; ctx.textBaseline = "middle"; ctx.fillText(bb.text, bb.x, bb.y); ctx.textBaseline = "alphabetic";
   }
-  // гравець
-  if (!(B.inv > 0 && Math.floor(B.time * 12) % 2 === 0 && B.time > 0.1) || B.over) drawSprite(ctx, S.look, B.dir, B.phase, B.px, B.py, 0.9);
-  ctx.fillStyle = "#e87a6a"; ctx.beginPath(); ctx.arc(B.px, B.py - 14, 3.2, 0, 7); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
-  // кулі
+  if (!(B.inv > 0 && Math.floor(B.time * 12) % 2 === 0 && B.time > 0.1) || B.over) drawSprite(ctx, S.look, B.dir, B.phase, B.px, B.py, 0.85);
+  ctx.fillStyle = "#e87a6a"; ctx.beginPath(); ctx.arc(B.px, B.py - 16, 3.2, 0, 7); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
   ctx.textBaseline = "middle";
   for (const b of B.bullets) {
-    if (b.big) { ctx.fillStyle = b.c; roundRect(b.x - 36, b.y - 11, 72, 22, 6); ctx.fill(); ctx.fillStyle = "#fff"; ctx.font = "700 10px Rubik, sans-serif"; ctx.fillText(b.t, b.x, b.y + 1); continue; }
+    if (b.big) { ctx.fillStyle = b.c; roundRect(b.x - 38, b.y - 11, 76, 22, 6); ctx.fill(); ctx.fillStyle = "#fff"; ctx.font = "700 10px Rubik, sans-serif"; ctx.fillText(b.t, b.x, b.y + 1); continue; }
     ctx.fillStyle = b.c; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill();
     ctx.fillStyle = "#14211c"; ctx.font = `700 ${b.t.length > 2 ? 8 : 11}px Rubik, sans-serif`; ctx.fillText(b.t, b.x, b.y + 1);
   }
-  ctx.textBaseline = "alphabetic";
-  // панель питання / повідомлення
-  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic"; ctx.textAlign = "center";
   ctx.fillStyle = "rgba(38,74,63,.92)"; ctx.fillRect(0, 114, AW, FT - 117);
   if (B.q) {
     ctx.fillStyle = "#f2efe6"; ctx.font = "700 16px Rubik, sans-serif"; wrapText(B.q.q, AW / 2, 134, AW - 30, 19, 2);
     ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.fillRect(12, 162, AW - 24, 4); ctx.fillStyle = "#f5d76e"; ctx.fillRect(12, 162, (AW - 24) * clamp(B.qLeft / 13, 0, 1), 4);
-  } else if (B.msgT > 0 && B.msg) {
-    ctx.fillStyle = B.msg.startsWith("Правильно") ? "#9fdc8a" : "#f2efe6"; ctx.font = "13px Rubik, sans-serif"; wrapText(B.msg, AW / 2, 128, AW - 30, 16, 3);
-  } else { ctx.fillStyle = "#b9c4bb"; ctx.font = "13px Rubik, sans-serif"; ctx.fillText("Ухиляйся. Наступне питання вже скоро…", AW / 2, 140); }
+  } else if (B.msgT > 0 && B.msg) { ctx.fillStyle = B.msg.startsWith("Правильно") ? "#9fdc8a" : "#f2efe6"; ctx.font = "13px Rubik, sans-serif"; wrapText(B.msg, AW / 2, 128, AW - 30, 16, 3); }
+  else { ctx.fillStyle = "#b9c4bb"; ctx.font = "13px Rubik, sans-serif"; ctx.fillText("Ухиляйся. Наступне питання вже скоро…", AW / 2, 140); }
   for (const f of B.fx) { ctx.globalAlpha = clamp(f.life, 0, 1); ctx.fillStyle = f.c; ctx.font = "700 16px Rubik, sans-serif"; ctx.fillText(f.t, f.x, f.y); ctx.globalAlpha = 1; }
-  // репліка боса
   if (B.speechT > 0 && B.speech) {
     ctx.font = "italic 13px Rubik, sans-serif"; const w = Math.min(AW - 40, ctx.measureText(B.speech).width + 20);
     ctx.fillStyle = "#f2efe6"; roundRect(AW / 2 - w / 2, FT + 10, w, 44, 8); ctx.fill();
     ctx.fillStyle = "#14211c"; wrapText(B.speech, AW / 2, FT + 28, w - 16, 15, 2);
   }
-  // нерви гравця
   ctx.fillStyle = "rgba(0,0,0,.4)"; ctx.fillRect(12, AH - 18, 150, 8); ctx.fillStyle = "#8ec9f0"; ctx.fillRect(12, AH - 18, 150 * B.nerves / 100, 8);
   ctx.textAlign = "left"; ctx.fillStyle = "#f2efe6"; ctx.font = "10px Rubik, sans-serif"; ctx.fillText("Нерви " + Math.round(B.nerves), 168, AH - 10);
-  if (B.over) { ctx.fillStyle = "rgba(20,33,28,.5)"; ctx.fillRect(0, FT, AW, AH - FT); ctx.textAlign = "center"; ctx.fillStyle = B.over === "win" ? "#9fdc8a" : "#e87a6a"; ctx.font = "20px 'Press Start 2P', monospace"; ctx.fillText(B.over === "win" ? "ЗАЛІК!" : "НЕЗАРАХ", AW / 2, AH / 2); }
+  if (B.over) { ctx.fillStyle = "rgba(20,33,28,.5)"; ctx.fillRect(0, FT, AW, AH - FT); ctx.textAlign = "center"; ctx.fillStyle = B.over === "win" ? "#9fdc8a" : "#e87a6a"; ctx.font = "20px 'Press Start 2P', monospace"; ctx.fillText(B.over === "win" ? "ЗАРАХ!" : "НЕЗАРАХ", AW / 2, AH / 2); }
   drawJoy();
 }
 
@@ -1494,22 +1605,24 @@ let demoT = 0;
 function showTitle() {
   mode = "title"; $("#title").hidden = false; $("#creator").hidden = true; $("#hud").hidden = true; $("#prompt").hidden = true; refreshTouchUI();
   const sv = loadSave();
-  if (sv && sv.look) { $("#contBtn").hidden = false; $("#contInfo").textContent = `${sv.name} · день ${sv.day}`; } else $("#contBtn").hidden = true;
+  if (sv && sv.look) { $("#contBtn").hidden = false; $("#contInfo").textContent = `${sv.name} · ${sv.group} · день ${sv.day}`; } else $("#contBtn").hidden = true;
 }
 function enterWorld() {
   mode = "world"; $("#title").hidden = true; $("#creator").hidden = true; $("#hud").hidden = false;
   P.x = S.x; P.y = S.y; P.dir = S.dir || "down";
-  if (solidAt(P.x, P.y, 9, 5)) { P.x = 1100; P.y = 470; }
+  if (solidAt(P.x, P.y, 9, 5)) { P.x = 610; P.y = 890; }
   spawnNPCs(); refreshTouchUI(); updateHUD();
 }
 $("#newBtn").onclick = () => { mode = "creator"; $("#title").hidden = true; $("#creator").hidden = false; buildCreator(); };
-$("#contBtn").onclick = () => { const sv = loadSave(); if (!sv) return showTitle(); S = sv; S.asked = S.asked || {}; S.bosses = S.bosses || {}; if (S.stats.health == null) S.stats.health = 100; enterWorld(); };
+$("#contBtn").onclick = () => { const sv = loadSave(); if (!sv) return showTitle(); S = sv; S.asked = S.asked || {}; S.passed = S.passed || {}; if (S.stats.health == null) S.stats.health = 100; enterWorld(); };
 $("#startBtn").onclick = () => {
   const name = $("#nameIn").value.trim().slice(0, 18) || "Студент";
   newGame(name, { ...draftLook }, draftPerk); enterWorld(); writeSave();
-  openModal({ kicker: "1 вересня · Понеділок", title: `Вітаємо в КПІ, ${name}!`, body: `
-    <p>Попереду перший семестр. Найближча ціль — отримати залік у <b>${esc(teacherName(TEACHERS[0]))}</b>. Викладач чекає біля Головного корпусу.</p>
-    <p>Спершу походи на пари, щоб підняти Інтелект, і не забувай їсти та спати. Довідка є в «Меню».</p>`,
+  const st = stream();
+  const list = BOSS_SUBJECTS.map(s => `<li>${esc(st[s].title)} — ${esc(bossOf(s).name)}</li>`).join("");
+  openModal({ kicker: `1 вересня · ${S.group} · ННІПСА`, title: `Вітаємо в КПІ, ${name}!`, body: `
+    <p>Ти стоїш біля корпусу 35, свого інституту. Щоб закрити сесію, треба здати чотири модульні контрольні:</p><ul style="margin:0;padding-left:18px;line-height:1.6">${list}</ul>
+    <p>Викладачі чекають біля корпусу 35 у будні. Спершу походи на пари, щоб підняти Інтелект, і не забувай їсти та спати. Гуртожиток — на сході, за вул. Політехнічною. Довідка й залікова є в «Меню».</p>`,
     buttons: [{ label: "Вперед!", primary: true, onClick: closeModal }] });
 };
 
@@ -1522,21 +1635,18 @@ function loop(now) {
   else if (mode === "world" && S) {
     if (!modalOpen) updateWorld(dt);
     const actors = npcs.map(n => ({ x: n.x, y: n.y, look: n.look, dir: n.dir, phase: n.phase }));
-    if (teacherPresent()) actors.push({ x: TEACHER_POS.x, y: TEACHER_POS.y, look: TEACHERS[0].look, dir: "down", phase: 0, s: 2.2 });
+    for (const o of teachersOut()) actors.push({ x: o.x, y: o.y, look: o.t.look, dir: "down", phase: 0, k: 1.1, mark: true });
     actors.push({ x: P.x, y: P.y, look: S.look, dir: P.dir, phase: P.phase });
     drawWorld(P.x, P.y - 20, actors, now);
-    if (teacherPresent()) { const Z = worldZoom(); ctx.setTransform(DPR * Z, 0, 0, DPR * Z, -cam.x * DPR * Z, -cam.y * DPR * Z); const by = Math.round(TEACHER_POS.y - 62 + Math.sin(now / 250) * 3); ctx.fillStyle = "#1a120b"; ctx.fillRect(TEACHER_POS.x - 4, by - 2, 8, 18); ctx.fillStyle = "#f5d76e"; ctx.fillRect(TEACHER_POS.x - 2, by, 4, 9); ctx.fillRect(TEACHER_POS.x - 2, by + 11, 4, 3); }
     drawJoy();
   } else {
     demoT += dt * 30;
-    const x = 600 + (demoT % 1400), y = 500 + Math.sin(demoT / 300) * 200;
-    drawWorld(x, y, npcs.map(n => ({ x: n.x, y: n.y, look: n.look, dir: n.dir, phase: n.phase })), now);
+    drawWorld(500 + (demoT % 1800), 900 + Math.sin(demoT / 300) * 400, npcs.map(n => ({ x: n.x, y: n.y, look: n.look, dir: n.dir, phase: n.phase })), now);
     updateNPCs(dt); ambientFX(dt); updateParts(dt);
   }
   requestAnimationFrame(loop);
 }
 spawnNPCs(); showTitle(); requestAnimationFrame(loop);
-// для тестів
-window.__kpi = { get S() { return S; }, get B() { return B; }, get mode() { return mode; }, startBoss: () => startBoss(TEACHERS[0]) };
+window.__kpi = { get S() { return S; }, get B() { return B; }, get mode() { return mode; }, startBoss: s => startBoss(s || "Матан"), tp: (x, y) => { P.x = x; P.y = y; } };
 })();
 </script>
